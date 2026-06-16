@@ -72,17 +72,17 @@ public class Actividad {
         this.descripcionActividad = descripcionActividad;
     }
 
-    public LocalDate getFechainicioactividad() {
+    public LocalDate getFechaInicioActividad() {
         return fechaInicioActividad;
     }
-    public void setFechainicioactividad(LocalDate fechainicioactividad) {
+    public void setFechaInicioActividad(LocalDate fechainicioactividad) {
         this.fechaInicioActividad = fechainicioactividad;
     }
 
-    public LocalDate getFechafinactividad() {
+    public LocalDate getFechaFinActividad() {
         return fechaFinActividad;
     }
-    public void setFechafinactividad(LocalDate fechafinactividad) {
+    public void setFechaFinActividad(LocalDate fechafinactividad) {
         this.fechaFinActividad = fechafinactividad;
     }
 
@@ -93,11 +93,11 @@ public class Actividad {
         this.estadoActividad = estadoActividad;
     }
 
-    public LocalDate getFechaejecucionactividad() {
+    public LocalDate getFechaEjecucionActividad() {
         return fechaEjecucionActividad;
     }
-    public void setFechaejecucionactividad(LocalDate fechaejecucionactividad) {
-        this.fechaEjecucionActividad = fechaejecucionactividad;
+    public void setFechaEjecucionActividad(LocalDate fechaEjecucionActividad) {
+        this.fechaEjecucionActividad = fechaEjecucionActividad;
     }
 
     public Etapa getEtapa() {

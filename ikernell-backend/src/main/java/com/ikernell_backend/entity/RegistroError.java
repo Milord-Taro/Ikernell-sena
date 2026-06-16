@@ -37,7 +37,7 @@ public class RegistroError {
 
     @ManyToOne
     @JoinColumn(name = "iddesarrollador")
-    private Usuario desarrolador;
+    private Usuario desarrollador;
 
     public RegistroError() {
     }
@@ -98,11 +98,11 @@ public class RegistroError {
         this.etapa = etapa;
     }
 
-    public Usuario getDesarrolador() {
-        return desarrolador;
+    public Usuario getDesarrollador() {
+        return desarrollador;
     }
-    public void setDesarrolador(Usuario usuario) {
-        this.desarrolador = desarrolador;
+    public void setDesarrollador(Usuario usuario) {
+        this.desarrollador = desarrollador;
     }
 
 }

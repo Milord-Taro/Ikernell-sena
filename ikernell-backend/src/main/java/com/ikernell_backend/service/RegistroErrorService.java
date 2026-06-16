@@ -22,4 +22,12 @@ public class RegistroErrorService {
     public RegistroError obtenerPorId(Integer id) {
         return registroErrorRepository.findById(id).orElse(null);
     }
+
+    public RegistroError guardarRegistroError(RegistroError registroError) {
+        return registroErrorRepository.save(registroError);
+    }
+
+    public void eliminarRegistroError(Integer id) {
+        registroErrorRepository.deleteById(id);
+    }
 }

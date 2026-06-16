@@ -22,4 +22,12 @@ public class EtapaService {
     public Etapa obtenerPorId(Integer id) {
         return etapaRepository.findById(id).orElse(null);
     }
+
+    public Etapa guardarEtapa(Etapa etapa) {
+        return etapaRepository.save(etapa);
+    }
+
+    public void eliminarEtapa(Integer id) {
+        etapaRepository.deleteById(id);
+    }
 }
