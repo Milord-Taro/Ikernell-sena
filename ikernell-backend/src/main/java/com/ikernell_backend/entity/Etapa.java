@@ -13,16 +13,16 @@ public class Etapa {
     private Integer idEtapa;
 
     @Column(name = "codetapa")
-    private String codetapa;
+    private String codEtapa;
 
     @Column(name = "nombreetapa")
-    private String nombreetapa;
+    private String nombreEtapa;
 
     @Column(name = "descripcionetapa")
-    private String descripcionetapa;
+    private String descripcionEtapa;
 
     @Column(name = "fechaetapa")
-    private LocalDate fechaetapa;
+    private LocalDate fechaEtapa;
 
     @ManyToOne
     @JoinColumn(name = "idproyecto")
@@ -38,32 +38,32 @@ public class Etapa {
         this.idEtapa = idEtapa;
     }
 
-    public String getCodetapa() {
-        return codetapa;
+    public String getCodEtapa() {
+        return codEtapa;
     }
-    public void setCodetapa(String codetapa) {
-        this.codetapa = codetapa;
-    }
-
-    public String getNombreetapa() {
-        return nombreetapa;
-    }
-    public void setNombreetapa(String nombreetapa) {
-        this.nombreetapa = nombreetapa;
+    public void setCodEtapa(String codetapa) {
+        this.codEtapa = codetapa;
     }
 
-    public String getDescripcionetapa() {
-        return descripcionetapa;
+    public String getNombreEtapa() {
+        return nombreEtapa;
     }
-    public void setDescripcionetapa(String descripcionetapa) {
-        this.descripcionetapa = descripcionetapa;
+    public void setNombreEtapa(String nombreEtapa) {
+        this.nombreEtapa = nombreEtapa;
     }
 
-    public LocalDate getFechaetapa() {
-        return fechaetapa;
+    public String getDescripcionEtapa() {
+        return descripcionEtapa;
     }
-    public void setFechaetapa(LocalDate fechaetapa) {
-        this.fechaetapa = fechaetapa;
+    public void setDescripcionEtapa(String descripcionEtapa) {
+        this.descripcionEtapa = descripcionEtapa;
+    }
+
+    public LocalDate getFechaEtapa() {
+        return fechaEtapa;
+    }
+    public void setFechaEtapa(LocalDate fechaetapa) {
+        this.fechaEtapa = fechaetapa;
     }
 
     public Proyecto getProyecto() {
