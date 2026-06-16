@@ -63,7 +63,6 @@ public class Usuario {
     public Integer getIdUsuario() {
         return idUsuario;
     }
-
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
@@ -71,7 +70,6 @@ public class Usuario {
     public String getCodUsuario() {
         return codUsuario;
     }
-
     public void setCodUsuario(String codUsuario) {
         this.codUsuario = codUsuario;
     }
@@ -79,7 +77,6 @@ public class Usuario {
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -87,7 +84,6 @@ public class Usuario {
     public String getApellido() {
         return apellido;
     }
-
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
@@ -95,7 +91,6 @@ public class Usuario {
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
-
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
@@ -103,7 +98,6 @@ public class Usuario {
     public String getTipoIdentificacion() {
         return tipoIdentificacion;
     }
-
     public void setTipoIdentificacion(String tipoIdentificacion) {
         this.tipoIdentificacion = tipoIdentificacion;
     }
@@ -111,7 +105,6 @@ public class Usuario {
     public String getNumeroIdentificacion() {
         return numeroIdentificacion;
     }
-
     public void setNumeroIdentificacion(String numeroIdentificacion) {
         this.numeroIdentificacion = numeroIdentificacion;
     }
@@ -119,7 +112,6 @@ public class Usuario {
     public String getCorreoElectronico() {
         return correoElectronico;
     }
-
     public void setCorreoElectronico(String correoElectronico) {
         this.correoElectronico = correoElectronico;
     }
@@ -127,7 +119,6 @@ public class Usuario {
     public String getDireccion() {
         return direccion;
     }
-
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
@@ -135,7 +126,6 @@ public class Usuario {
     public String getContrasena() {
         return contrasena;
     }
-
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
@@ -143,7 +133,6 @@ public class Usuario {
     public String getFotoPerfil() {
         return fotoPerfil;
     }
-
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
     }
@@ -151,7 +140,6 @@ public class Usuario {
     public Boolean getEstado() {
         return estado;
     }
-
     public void setEstado(Boolean estado) {
         this.estado = estado;
     }
@@ -159,7 +147,6 @@ public class Usuario {
     public Rol getRol() {
         return rol;
     }
-
     public void setRol(Rol rol) {
         this.rol = rol;
     }
@@ -167,7 +154,6 @@ public class Usuario {
     public Profesion getProfesion() {
         return profesion;
     }
-
     public void setProfesion(Profesion profesion) {
         this.profesion = profesion;
     }
@@ -175,7 +161,6 @@ public class Usuario {
     public Especialidad getEspecialidad() {
         return especialidad;
     }
-
     public void setEspecialidad(Especialidad especialidad) {
         this.especialidad = especialidad;
     }
