@@ -21,13 +21,11 @@ public class Rol {
     private String descripcionRol;
 
     public Rol () {
-
     }
 
     public Integer getIdRol() {
         return idRol;
     }
-
     public void setIdRol(Integer idRol) {
         this.idRol = idRol;
     }
@@ -35,7 +33,6 @@ public class Rol {
     public String getCodRol() {
         return codRol;
     }
-
     public void setCodRol(String codRol) {
         this.codRol = codRol;
     }
@@ -43,12 +40,10 @@ public class Rol {
     public String getNombreRol() {
         return nombreRol;
     }
-
     public void setNombreRol(String nombreRol) {
         this.nombreRol = nombreRol;
     }
 
     public String getDescripcionRol() { return descripcionRol;}
-
     public void setDescripcionRol (String descripcionRol) {this.descripcionRol = descripcionRol; }
 }

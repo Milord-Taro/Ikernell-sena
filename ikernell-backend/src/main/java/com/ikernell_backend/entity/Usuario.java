@@ -105,9 +105,7 @@ public class Usuario {
     public String getNumeroIdentificacion() {
         return numeroIdentificacion;
     }
-    public void setNumeroIdentificacion(String numeroIdentificacion) {
-        this.numeroIdentificacion = numeroIdentificacion;
-    }
+    public void setNumeroIdentificacion(String numeroIdentificacion) {this.numeroIdentificacion = numeroIdentificacion;}
 
     public String getCorreoElectronico() {
         return correoElectronico;
@@ -137,9 +135,7 @@ public class Usuario {
         this.fotoPerfil = fotoPerfil;
     }
 
-    public Boolean getEstado() {
-        return estado;
-    }
+    public Boolean getEstado() {return estado;}
     public void setEstado(Boolean estado) {
         this.estado = estado;
     }

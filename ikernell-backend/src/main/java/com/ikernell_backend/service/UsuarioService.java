@@ -22,4 +22,31 @@ public class UsuarioService {
     public Usuario obtenerPorId(Integer id) {
         return usuarioRepository.findById(id).orElse(null);
     }
+
+    public Usuario crearUsuario(Usuario usuario) {
+
+        usuario.setEstado(true);
+
+        return usuarioRepository.save(usuario);
+    }
+
+    public Usuario actualizarUsuario(Usuario usuario) {
+
+        return usuarioRepository.save(usuario);
+    }
+
+    public Usuario inhabilitarUsuario(Integer id) {
+
+        Usuario usuario =
+                usuarioRepository.findById(id)
+                        .orElse(null);
+
+        if (usuario == null) {
+            return null;
+        }
+
+        usuario.setEstado(false);
+
+        return usuarioRepository.save(usuario);
+    }
 }

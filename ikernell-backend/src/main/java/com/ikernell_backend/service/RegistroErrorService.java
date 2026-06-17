@@ -23,7 +23,16 @@ public class RegistroErrorService {
         return registroErrorRepository.findById(id).orElse(null);
     }
 
-    public RegistroError guardarRegistroError(RegistroError registroError) {
+    public RegistroError crearRegistroError(RegistroError registroError) {
+            registroError.setFechaRegistroError(
+                    java.time.LocalDate.now());
+            registroError.setEstadoError("Abierto");
+        return registroErrorRepository.save(registroError);
+    }
+
+    public RegistroError actualizarRegistroError(
+            RegistroError registroError) {
+
         return registroErrorRepository.save(registroError);
     }
 
