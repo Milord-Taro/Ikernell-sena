@@ -18,7 +18,19 @@ public class ProfesionService {
     public List<Profesion> listarProfesiones() {
         return profesionRepository.findAll();
     }
+
     public Profesion obtenerPorId(Integer id) {
         return profesionRepository.findById(id).orElse(null);
+    }
+
+    public Profesion crearProfesion(Profesion profesion) {
+        return profesionRepository.save(profesion);
+    }
+
+    public Profesion actualizarProfesion(Profesion profesion) {
+        return profesionRepository.save(profesion);
+    }
+
+    public void eliminarProfesion(Integer id) {profesionRepository.deleteById(id);
     }
 }

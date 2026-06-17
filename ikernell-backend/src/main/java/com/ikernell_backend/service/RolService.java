@@ -22,4 +22,15 @@ public class RolService {
     public Rol obtenerPorId(Integer id) {
         return rolRepository.findById(id).orElse(null);
     }
+
+    public Rol crearRol(Rol rol) {
+        return rolRepository.save(rol);
+    }
+
+    public Rol actualizarRol(Rol rol) {
+        return rolRepository.save(rol);
+    }
+
+    public void eliminarRol(Integer id) {rolRepository.deleteById(id);
+    }
 }

@@ -1,7 +1,5 @@
 package com.ikernell_backend.controller;
 
-
-import com.ikernell_backend.entity.Actividad;
 import com.ikernell_backend.entity.RegistroError;
 import com.ikernell_backend.service.RegistroErrorService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +35,7 @@ public class RegistroErrorController {
     public RegistroError crearRegistroError(
             @RequestBody RegistroError registroError) {
 
-        return registroErrorService.guardarRegistroError(registroError);
+        return registroErrorService.crearRegistroError(registroError);
     }
 
     @PutMapping("/api/registroerrores/{id}")
@@ -53,14 +51,13 @@ public class RegistroErrorController {
 
         registroError.setCodError(registroErrorActualizado.getCodError());
         registroError.setDescripcionError(registroErrorActualizado.getDescripcionError());
-        registroError.setFechaRegistroError(registroErrorActualizado.getFechaRegistroError());
         registroError.setEstadoError(registroErrorActualizado.getEstadoError());
         registroError.setComentarioError(registroErrorActualizado.getComentarioError());
         registroError.setTipoError(registroErrorActualizado.getTipoError());
         registroError.setEtapa(registroErrorActualizado.getEtapa());
         registroError.setDesarrollador(registroErrorActualizado.getDesarrollador());
 
-        return registroErrorService.guardarRegistroError(registroError);
+        return registroErrorService.actualizarRegistroError(registroError);
     }
 
     @DeleteMapping("/api/registroerrores/{id}")

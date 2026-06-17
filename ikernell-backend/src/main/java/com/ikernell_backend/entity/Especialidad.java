@@ -12,7 +12,7 @@ public class Especialidad {
     private Integer idEspecialidad;
 
     @Column(name = "codespecialidad")
-    private String codEspcialidad;
+    private String codEspecialidad;
 
     @Column(name = "nombreespecialidad")
     private String nombreEspecialidad;
@@ -23,23 +23,20 @@ public class Especialidad {
     public Integer getIdEspecialidad() {
         return idEspecialidad;
     }
-
     public void setIdEspecialidad(Integer idEspecialidad) {
         this.idEspecialidad = idEspecialidad;
     }
 
-    public String getCodEspcialidad() {
-        return codEspcialidad;
+    public String getCodEspecialidad() {
+        return codEspecialidad;
     }
-
-    public void setCodEspcialidad(String codEspcialidad) {
-        this.codEspcialidad = codEspcialidad;
+    public void setCodEspecialidad(String codEspecialidad) {
+        this.codEspecialidad = codEspecialidad;
     }
 
     public String getNombreEspecialidad() {
         return nombreEspecialidad;
     }
-
     public void setNombreEspecialidad(String nombreEspecialidad) {
         this.nombreEspecialidad = nombreEspecialidad;
     }

@@ -22,4 +22,16 @@ public class TipoInterrupcionService {
     public TipoInterrupcion obtenerPorId(Integer id) {
         return tipoInterrupcionRepository.findById(id).orElse(null);
     }
+
+    public TipoInterrupcion crearTipoInterrupcion(TipoInterrupcion tipoInterrupcion) {
+        return tipoInterrupcionRepository.save(tipoInterrupcion);
+    }
+
+    public TipoInterrupcion actualizarTipoInterrupcion(TipoInterrupcion tipoInterrupcion) {
+        return tipoInterrupcionRepository.save(tipoInterrupcion);
+    }
+
+    public void eliminarTipoInterrupcion(Integer id) {
+        tipoInterrupcionRepository.deleteById(id);
+    }
 }

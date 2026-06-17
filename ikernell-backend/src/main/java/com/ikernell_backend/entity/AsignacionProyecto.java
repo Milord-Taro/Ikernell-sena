@@ -35,24 +35,28 @@ public class AsignacionProyecto {
     public void setIdAsignacion(Integer idAsignacion) {
         this.idAsignacion = idAsignacion;
     }
+
     public LocalDate getFechaAsignacion() {
         return fechaAsignacion;
     }
     public void setFechaAsignacion(LocalDate fechaAsignacion) {
         this.fechaAsignacion = fechaAsignacion;
     }
+
     public Boolean getEstadoAsignacion() {
         return estadoAsignacion;
     }
     public void setEstadoAsignacion(Boolean estadoAsignacion) {
         this.estadoAsignacion = estadoAsignacion;
     }
+
     public Proyecto getProyecto() {
         return proyecto;
     }
     public void setProyecto(Proyecto proyecto) {
         this.proyecto = proyecto;
     }
+
     public Usuario getUsuario() {
         return usuario;
     }

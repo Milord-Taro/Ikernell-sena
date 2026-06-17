@@ -23,4 +23,19 @@ public class ProyectoService {
         return proyectoRepository.findById(id).orElse(null);
     }
 
+    public Proyecto crearProyecto(
+            Proyecto proyecto) {
+
+        return proyectoRepository.save(proyecto);
+    }
+
+    public Proyecto actualizarProyecto(
+            Proyecto proyecto) {
+
+        return proyectoRepository.save(proyecto);
+    }
+
+    public void eliminarProyecto(Integer id) {
+        proyectoRepository.deleteById(id);
+    }
 }

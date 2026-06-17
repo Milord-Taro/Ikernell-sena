@@ -101,8 +101,7 @@ public class RegistroError {
     public Usuario getDesarrollador() {
         return desarrollador;
     }
-    public void setDesarrollador(Usuario usuario) {
+    public void setDesarrollador(Usuario desarrollador) {
         this.desarrollador = desarrollador;
     }
-
 }

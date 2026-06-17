@@ -22,4 +22,62 @@ public class MensajeContactoService {
     public MensajeContacto obtenerPorId(Integer id) {
         return mensajeContactoRepository.findById(id).orElse(null);
     }
+
+    public MensajeContacto crearMensaje(
+            MensajeContacto mensaje) {
+
+        mensaje.setFechaEnvio(
+                java.time.LocalDateTime.now());
+
+        mensaje.setEstadoMensaje("Pendiente");
+
+        return mensajeContactoRepository.save(mensaje);
+    }
+
+    public MensajeContacto actualizarMensaje(
+            MensajeContacto mensaje) {
+
+        return mensajeContactoRepository.save(mensaje);
+    }
+
+    public void eliminarMensaje(Integer id) {
+        mensajeContactoRepository.deleteById(id);
+    }
+
+    public MensajeContacto marcarComoLeido(Integer id) {
+
+        MensajeContacto mensaje =
+                mensajeContactoRepository.findById(id)
+                        .orElse(null);
+
+        if (mensaje == null) {
+            return null;
+        }
+
+        mensaje.setEstadoMensaje("Leido");
+
+        return mensajeContactoRepository.save(mensaje);
+    }
+
+    public MensajeContacto responderMensaje(
+            Integer id,
+            String respuesta) {
+
+        MensajeContacto mensaje =
+                mensajeContactoRepository.findById(id)
+                        .orElse(null);
+
+        if (mensaje == null) {
+            return null;
+        }
+
+        mensaje.setRespuesta(respuesta);
+
+        mensaje.setEstadoMensaje("Atendido");
+
+        mensaje.setFechaRespuesta(
+                java.time.LocalDateTime.now());
+
+        return mensajeContactoRepository.save(mensaje);
+    }
 }

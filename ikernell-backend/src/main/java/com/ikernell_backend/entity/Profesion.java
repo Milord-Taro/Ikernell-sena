@@ -23,7 +23,6 @@ public class Profesion {
     public Integer getIdProfesion() {
         return idProfesion;
     }
-
     public void setIdProfesion(Integer idProfesion) {
         this.idProfesion = idProfesion;
     }
@@ -31,7 +30,6 @@ public class Profesion {
     public String getCodProfesion() {
         return codProfesion;
     }
-
     public void setCodProfesion(String codProfesion) {
         this.codProfesion = codProfesion;
     }
@@ -39,7 +37,6 @@ public class Profesion {
     public String getNombreProfesion() {
         return nombreProfesion;
     }
-
     public void setNombreProfesion(String nombreProfesion) {
         this.nombreProfesion = nombreProfesion;
     }

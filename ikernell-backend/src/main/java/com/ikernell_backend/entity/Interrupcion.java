@@ -19,7 +19,7 @@ public class Interrupcion {
     private String descripcionInterrupcion;
 
     @Column(name = "fechainterrupcion")
-    private LocalDate fechaiterrupcion;
+    private LocalDate fechaInterrupcion;
 
     @Column(name = "duracioninterrupcion")
     private Integer duracionInterrupcion;
@@ -60,11 +60,11 @@ public class Interrupcion {
         this.descripcionInterrupcion = descripcionInterrupcion;
     }
 
-    public LocalDate getFechaiterrupcion() {
-        return fechaiterrupcion;
+    public LocalDate getFechaInterrupcion() {
+        return fechaInterrupcion;
     }
-    public void setFechaiterrupcion(LocalDate fechaiterrupcion) {
-        this.fechaiterrupcion = fechaiterrupcion;
+    public void setFechaInterrupcion(LocalDate fechaInterrupcion) {
+        this.fechaInterrupcion = fechaInterrupcion;
     }
 
     public Integer getDuracionInterrupcion() {

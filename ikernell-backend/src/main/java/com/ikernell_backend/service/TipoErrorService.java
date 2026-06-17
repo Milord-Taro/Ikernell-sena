@@ -22,4 +22,19 @@ public class TipoErrorService {
     public TipoError obtenerPorId(Integer id) {
         return tipoErrorRepository.findById(id).orElse(null);
     }
+
+    public TipoError crearTipoError(TipoError tipoError) {
+
+        return tipoErrorRepository.save(tipoError);
+    }
+
+    public TipoError actualizarTipoError(TipoError tipoError) {
+
+        return tipoErrorRepository.save(tipoError);
+    }
+
+    public void eliminarTipoError(Integer id) {
+
+        tipoErrorRepository.deleteById(id);
+    }
 }

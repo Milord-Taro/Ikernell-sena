@@ -22,4 +22,29 @@ public class AsignacionProyectoService {
     public AsignacionProyecto obtenerPorId(Integer id) {
         return asignacionProyectoRepository.findById(id).orElse(null);
     }
+
+    public AsignacionProyecto crearAsignacionProyecto(
+            AsignacionProyecto asignacionProyecto) {
+
+        asignacionProyecto.setFechaAsignacion(
+                java.time.LocalDate.now());
+
+        asignacionProyecto.setEstadoAsignacion(true);
+
+        return asignacionProyectoRepository.save(
+                asignacionProyecto);
+    }
+
+    public AsignacionProyecto actualizarAsignacionProyecto(
+            AsignacionProyecto asignacionProyecto) {
+
+        return asignacionProyectoRepository.save(
+                asignacionProyecto);
+    }
+
+    public void eliminarAsignacionProyecto(
+            Integer id) {
+
+        asignacionProyectoRepository.deleteById(id);
+    }
 }

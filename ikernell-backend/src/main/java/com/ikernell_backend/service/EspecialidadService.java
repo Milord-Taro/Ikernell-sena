@@ -21,4 +21,15 @@ public class EspecialidadService {
     public Especialidad obtenerPorId(Integer id) {
         return especialidadRepository.findById(id).orElse(null);
     }
+
+    public Especialidad crearEspecialidad(Especialidad especialidad) {
+        return especialidadRepository.save(especialidad);
+    }
+
+    public Especialidad actualizarEspecialidad(Especialidad especialidad) {
+        return especialidadRepository.save(especialidad);
+    }
+
+    public void eliminarEspecialidad(Integer id) {especialidadRepository.deleteById(id);
+    }
 }
