@@ -1,7 +1,6 @@
 package com.ikernell_backend.controller;
 
 import com.ikernell_backend.entity.Especialidad;
-import com.ikernell_backend.entity.Profesion;
 import com.ikernell_backend.service.EspecialidadService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,22 +21,22 @@ public class EspecialidadController {
         this.especialidadService = especialidadService;
     }
 
-    @GetMapping("/api/especialidad")
+    @GetMapping("/api/especialidades")
     public List<Especialidad> listarProfesiones() {
         return especialidadService.listarEspecialidades();
     }
 
-    @GetMapping("/api/especialidad/{id}")
+    @GetMapping("/api/especialidades/{id}")
     public Especialidad obtenerPorId(@PathVariable Integer id) {
         return especialidadService.obtenerPorId(id);
     }
 
-    @PostMapping("/api/especialidad")
+    @PostMapping("/api/especialidades")
     public Especialidad crearEspecialidad(@RequestBody Especialidad especialidad) {
         return especialidadService.crearEspecialidad(especialidad);
     }
 
-    @PutMapping("/api/especialidad/{id}")
+    @PutMapping("/api/especialidades/{id}")
     public Especialidad actualizarEspecialidad(
             @PathVariable Integer id,
             @RequestBody Especialidad especialidadActualizada) {
