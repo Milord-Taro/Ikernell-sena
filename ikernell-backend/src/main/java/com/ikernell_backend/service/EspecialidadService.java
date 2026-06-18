@@ -18,6 +18,7 @@ public class EspecialidadService {
     public List<Especialidad> listarEspecialidades() {
         return especialidadRepository.findAll();
     }
+
     public Especialidad obtenerPorId(Integer id) {
         return especialidadRepository.findById(id).orElse(null);
     }
