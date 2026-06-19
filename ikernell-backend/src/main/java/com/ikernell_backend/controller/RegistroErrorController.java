@@ -31,6 +31,14 @@ public class RegistroErrorController {
         return registroErrorService.obtenerPorId(id);
     }
 
+    @GetMapping("/api/etapas/{id}/errores")
+    public List<RegistroError> obtenerErroresEtapa(
+            @PathVariable Integer id) {
+
+        return registroErrorService
+                .obtenerPorEtapa(id);
+    }
+
     @PostMapping("/api/registroerrores")
     public RegistroError crearRegistroError(
             @RequestBody RegistroError registroError) {

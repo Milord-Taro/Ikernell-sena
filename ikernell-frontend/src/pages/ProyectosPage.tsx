@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 import {
   obtenerProyectos,
   crearProyecto,
@@ -203,7 +205,11 @@ export default function ProyectosPage() {
             <TableRow key={proyecto.idProyecto}>
               <TableCell>{proyecto.codProyecto}</TableCell>
 
-              <TableCell>{proyecto.nombreProyecto}</TableCell>
+              <TableCell>
+                <Link to={`/dashboard/proyectos/${proyecto.idProyecto}`}>
+                  {proyecto.nombreProyecto}
+                </Link>
+              </TableCell>
 
               <TableCell>
                 {proyecto.lider.nombre} {proyecto.lider.apellido}

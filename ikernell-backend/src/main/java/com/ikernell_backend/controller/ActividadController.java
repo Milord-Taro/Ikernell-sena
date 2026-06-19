@@ -32,6 +32,13 @@ public class ActividadController {
         return actividadService.obtenerPorId(id);
     }
 
+    @GetMapping("/api/etapas/{id}/actividades")
+    public List<Actividad> obtenerActividadesEtapa(
+            @PathVariable Integer id) {
+
+        return actividadService
+                .obtenerPorEtapa(id);
+    }
 
     @PostMapping("/api/actividades")
     public Actividad crearActividad(@RequestBody Actividad actividad) {

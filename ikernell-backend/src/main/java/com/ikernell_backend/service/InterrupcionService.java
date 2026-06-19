@@ -33,4 +33,11 @@ public class InterrupcionService {
     }
 
     public void eliminarInterrupcion(Integer id) { interrupcionRepository.deleteById(id); }
+
+    public List<Interrupcion> obtenerPorEtapa(
+            Integer idEtapa) {
+
+        return interrupcionRepository
+                .findByEtapaIdEtapa(idEtapa);
+    }
 }

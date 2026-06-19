@@ -67,6 +67,16 @@ export async function actualizarProyecto(
   return response.json();
 }
 
+export async function obtenerProyectoPorId(
+  id: number
+) {
+  const response = await fetch(
+    `http://localhost:8080/api/proyectos/${id}`
+  );
+
+  return response.json();
+}
+
 
 
 

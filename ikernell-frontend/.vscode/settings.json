@@ -1,3 +1,24 @@
 {
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "apellido",
+    "Cargando",
+    "cargar",
+    "Datos",
+    "descripcion",
+    "Detalle",
+    "etapa",
+    "Etapa",
+    "etapas",
+    "Etapas",
+    "fecha",
+    "Inicio",
+    "lider",
+    "Líder",
+    "nombre",
+    "obtener",
+    "proyecto",
+    "Proyecto",
+    "registradas"
+  ]
 }
