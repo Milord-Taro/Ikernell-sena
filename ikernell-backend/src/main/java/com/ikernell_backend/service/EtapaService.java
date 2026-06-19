@@ -30,4 +30,12 @@ public class EtapaService {
     public void eliminarEtapa(Integer id) {
         etapaRepository.deleteById(id);
     }
+
+    public List<Etapa> obtenerPorProyecto(
+            Integer idProyecto) {
+
+        return etapaRepository
+                .findByProyectoIdProyecto(
+                        idProyecto);
+    }
 }

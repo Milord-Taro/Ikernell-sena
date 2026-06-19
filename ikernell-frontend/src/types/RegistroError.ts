@@ -28,3 +28,15 @@ export interface RegistroError {
     nombreTipo: string;
   };
 }
+
+export async function obtenerErroresPorEtapa(
+  idEtapa: number
+) {
+
+  const response =
+    await fetch(
+      `http://localhost:8080/api/etapas/${idEtapa}/errores`
+    );
+
+  return response.json();
+}

@@ -46,4 +46,12 @@ public class ActividadService {
 
         return actividadRepository.save(actividad);
     }
+
+    public List<Actividad> obtenerPorEtapa(
+            Integer idEtapa) {
+
+        return actividadRepository
+                .findByEtapaIdEtapa(idEtapa);
+    }
+
 }

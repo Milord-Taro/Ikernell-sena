@@ -32,6 +32,14 @@ public class EtapaController {
         return etapaService.obtenerPorId(id);
     }
 
+    @GetMapping("/api/proyectos/{id}/etapas")
+    public List<Etapa> obtenerEtapasProyecto(
+            @PathVariable Integer id) {
+
+        return etapaService
+                .obtenerPorProyecto(id);
+    }
+
     @PostMapping("/api/etapas")
     public Etapa crearEtapa(@RequestBody Etapa etapa) {
         return etapaService.guardarEtapa(etapa);

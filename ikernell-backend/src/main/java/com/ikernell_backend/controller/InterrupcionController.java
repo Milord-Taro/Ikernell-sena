@@ -32,6 +32,14 @@
             return interrupcionService.obtenerPorId(id);
         }
 
+        @GetMapping("/api/etapas/{id}/interrupciones")
+        public List<Interrupcion> obtenerInterrupcionesEtapa(
+                @PathVariable Integer id) {
+
+            return interrupcionService
+                    .obtenerPorEtapa(id);
+        }
+
         @PostMapping ("/api/interrupciones")
         public Interrupcion crearInterrupcion(
                 @RequestBody Interrupcion interrupcion) {
@@ -65,4 +73,5 @@
         public void eliminarInterrupcion(@PathVariable Integer id) {
             interrupcionService.eliminarInterrupcion(id);
         }
+
     }

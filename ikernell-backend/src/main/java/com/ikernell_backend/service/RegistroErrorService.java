@@ -39,4 +39,11 @@ public class RegistroErrorService {
     public void eliminarRegistroError(Integer id) {
         registroErrorRepository.deleteById(id);
     }
+
+    public List<RegistroError> obtenerPorEtapa(
+            Integer idEtapa) {
+
+        return registroErrorRepository
+                .findByEtapaIdEtapa(idEtapa);
+    }
 }
