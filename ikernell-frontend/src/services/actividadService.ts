@@ -49,3 +49,17 @@ export async function obtenerActividadPorId(
   return response.json();
 }
 
+export async function obtenerActividadesPorEtapa(
+  idEtapa: number
+): Promise<Actividad[]> {
+
+  const response =
+    await fetch(
+      `http://localhost:8080/api/etapas/${idEtapa}/actividades`
+    );
+
+  return response.json();
+}
+
+
+

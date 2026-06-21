@@ -1,7 +1,6 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Actividad;
-import com.ikernell_backend.entity.Etapa;
 import com.ikernell_backend.repository.ActividadRepository;
 import org.springframework.stereotype.Service;
 

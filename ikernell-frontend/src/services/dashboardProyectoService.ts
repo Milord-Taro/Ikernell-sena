@@ -45,6 +45,7 @@ export async function obtenerResumenProyecto(
       interrupciones.length;
   }
 
+
   return {
     etapas: etapasProyecto.length,
     actividades:
@@ -52,5 +53,16 @@ export async function obtenerResumenProyecto(
     errores: totalErrores,
     interrupciones:
       totalInterrupciones,
+    progreso: actividadesProyecto.length > 0
+      ? Math.round(
+        (actividadesProyecto.filter(
+          (a) =>
+            a.estadoActividad ===
+            "Ejecutada"
+        ).length /
+          actividadesProyecto.length) *
+        100
+      )
+      : 0,
   };
 }

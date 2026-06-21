@@ -1,0 +1,1358 @@
+node_modules/@radix-ui/react-accordion/dist/index.d.ts(2,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/@radix-ui/react-toggle-group/dist/index.d.ts(2,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-day-picker/dist/index.d.ts(26,48): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(38,58): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(51,40): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(196,54): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(216,50): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(223,46): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(232,46): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(246,40): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(261,54): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(799,40): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(801,50): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(813,32): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(815,46): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(817,42): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(819,38): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(821,18): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(823,21): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(825,48): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(827,45): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(829,44): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(831,38): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(833,32): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(835,46): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(913,68): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1025,129): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1028,20): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1035,57): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1040,58): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1043,26): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1048,29): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1053,56): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1058,53): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1063,52): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1178,60): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1212,5): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1227,52): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1252,78): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1258,115): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1289,72): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1295,109): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1322,74): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-day-picker/dist/index.d.ts(1328,106): error TS2503: Cannot find namespace 'JSX'.
+node_modules/react-hook-form/dist/form.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-hook-form/dist/types/controller.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-hook-form/dist/types/form.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-hook-form/dist/useFormContext.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/react-router-dom/dist/index.d.ts(1,69): error TS2307: Cannot find module 'react-router/dom' or its corresponding type declarations.
+  There are types at '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/react-router-dom/node_modules/react-router/dist/development/dom-export.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+node_modules/react-router-dom/node_modules/react-router/dist/development/data-CjO11-hU.d.ts(413,5): error TS18028: Private identifiers are only available when targeting ECMAScript 2015 and higher.
+node_modules/react-router-dom/node_modules/react-router/dist/development/index.d.ts(8,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/Area.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/Bar.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/Brush.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/CartesianAxis.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/CartesianGrid.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/ErrorBar.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/Line.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/ReferenceArea.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/ReferenceDot.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/ReferenceLine.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/Scatter.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/XAxis.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/YAxis.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/cartesian/ZAxis.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/chart/Sankey.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/chart/SunburstChart.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/chart/Treemap.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/chart/generateCategoricalChart.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/Customized.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/DefaultLegendContent.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/DefaultTooltipContent.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/Label.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/LabelList.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/Legend.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/ResponsiveContainer.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/Text.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/component/Tooltip.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/container/Layer.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/container/Surface.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/numberAxis/Funnel.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/polar/Pie.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/polar/PolarAngleAxis.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/polar/PolarGrid.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/polar/PolarRadiusAxis.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/polar/Radar.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/polar/RadialBar.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Cross.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Curve.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Dot.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Polygon.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Rectangle.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Sector.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Symbols.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/shape/Trapezoid.d.ts(4,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/recharts/types/util/BarUtils.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/sonner/dist/index.d.ts(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/vaul/dist/index.d.ts(2,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+node_modules/vite/dist/node/index.d.ts(5,41): error TS2307: Cannot find module 'rollup/parseAst' or its corresponding type declarations.
+  There are types at '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/rollup/dist/parseAst.d.ts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
+src/app/App.tsx(4,27): error TS6142: Module './components/AuthModal' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/AuthModal.tsx', but '--jsx' is not set.
+src/app/App.tsx(6,29): error TS6142: Module './components/DashboardLayout' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/DashboardLayout.tsx', but '--jsx' is not set.
+src/app/App.tsx(7,31): error TS6142: Module '../pages/DashboardHomePage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/DashboardHomePage.tsx', but '--jsx' is not set.
+src/app/App.tsx(9,27): error TS6142: Module '../pages/ProyectosPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/ProyectosPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(10,26): error TS6142: Module '../pages/MensajesPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/MensajesPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(11,26): error TS6142: Module '../pages/UsuariosPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/UsuariosPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(12,33): error TS6142: Module '../pages/RegistroErroresPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/RegistroErroresPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(13,32): error TS6142: Module '../pages/InterrupcionesPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/InterrupcionesPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(14,27): error TS6142: Module '../pages/TipoErrorPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/TipoErrorPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(15,34): error TS6142: Module '../pages/TipoInterrupcionPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/TipoInterrupcionPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(16,25): error TS6142: Module '../pages/LandingPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/LandingPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(17,29): error TS6142: Module '../pages/ActividadesPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/ActividadesPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(18,34): error TS6142: Module '../pages/ActividadDetallePage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/ActividadDetallePage.tsx', but '--jsx' is not set.
+src/app/App.tsx(19,33): error TS6142: Module '../pages/ProyectoDetallePage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/ProyectoDetallePage.tsx', but '--jsx' is not set.
+src/app/App.tsx(20,30): error TS6142: Module '../pages/EtapaDetallePage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/EtapaDetallePage.tsx', but '--jsx' is not set.
+src/app/App.tsx(21,36): error TS6142: Module '../pages/RegistroErrorNuevoPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/RegistroErrorNuevoPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(22,43): error TS6142: Module '../pages/RegistroInterrupcionNuevoPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/RegistroInterrupcionNuevoPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(23,33): error TS6142: Module '../pages/ProyectoErroresPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/ProyectoErroresPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(24,40): error TS6142: Module '../pages/ProyectoInterrupcionesPage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/ProyectoInterrupcionesPage.tsx', but '--jsx' is not set.
+src/app/App.tsx(30,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(31,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(32,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(33,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(33,36): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(35,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(38,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(39,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(44,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(47,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(48,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(53,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(56,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(57,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(62,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(65,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(66,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(71,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(74,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(75,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(80,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(83,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(84,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(89,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(92,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(93,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(98,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(101,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(103,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(108,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(111,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(112,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(117,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(120,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(121,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(126,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(129,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(130,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(135,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(138,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(139,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(144,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(147,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(148,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(153,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(156,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(157,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(162,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(165,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(166,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(171,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(174,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(175,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/App.tsx(183,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(3,24): error TS6142: Module './ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/AuthModal.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(34,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(41,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(43,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(49,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(51,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(52,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(53,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(57,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(59,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(60,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(63,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(68,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(73,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(78,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(79,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(83,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(86,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(90,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(95,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(96,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(97,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(98,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(102,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(104,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(105,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(108,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(125,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(126,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(127,27): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(129,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(144,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(145,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(148,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(164,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(165,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(166,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(170,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(175,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(176,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(190,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(196,35): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(196,68): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(202,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(203,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(211,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(213,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(217,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(225,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(231,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(236,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/AuthModal.tsx(238,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(3,24): error TS6142: Module './ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/Contact.tsx(83,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(89,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(91,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(92,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(98,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(103,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(105,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(111,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(113,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(115,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(119,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(123,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(125,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(126,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(127,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(133,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(139,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(140,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(141,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(147,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(148,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(150,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(151,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(155,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(157,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(160,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(164,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(173,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(174,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(175,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(179,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(181,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(184,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(185,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(186,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(187,41): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(189,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(207,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(208,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(209,44): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(211,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(228,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(229,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(232,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(246,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(247,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(248,30): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(250,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(262,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(263,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(264,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(265,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(266,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(267,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(271,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(272,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(273,31): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(275,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(291,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(296,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(300,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Contact.tsx(302,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(9,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(15,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(23,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(25,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(33,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(35,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(37,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(39,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(41,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(43,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(45,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(47,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/DashboardLayout.tsx(53,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(46,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(52,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(54,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(55,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(61,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(66,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(68,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(75,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(79,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(88,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(95,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(96,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(100,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(107,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(116,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(123,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(133,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(134,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/FAQ.tsx(136,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(55,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(69,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(73,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(74,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(75,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(76,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(77,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(81,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(86,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(93,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(106,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(107,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(109,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(110,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(111,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(115,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(117,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(119,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(123,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(130,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(132,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(142,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(148,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(150,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(163,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(164,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(165,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(167,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(168,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(184,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(188,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(189,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(191,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(195,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(196,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(197,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Footer.tsx(205,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(2,24): error TS6142: Module './ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/Hero.tsx(3,35): error TS6142: Module './figma/ImageWithFallback' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/figma/ImageWithFallback.tsx', but '--jsx' is not set.
+src/app/components/Hero.tsx(23,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(32,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(37,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(43,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(44,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(46,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(47,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(49,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(53,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(54,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(59,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(71,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(78,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(80,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(81,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(82,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(88,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(89,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(97,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(99,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(106,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(112,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(114,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(115,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(116,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(118,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(119,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(120,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(128,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(129,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(134,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(135,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(140,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(148,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(152,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(153,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(154,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(156,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(157,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(158,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(163,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(167,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(168,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(170,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(173,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(174,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(175,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(184,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(185,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Hero.tsx(186,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(56,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(64,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(65,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(71,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(76,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(78,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(84,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(88,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(93,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(97,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(99,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Lineamientos.tsx(100,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(74,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(79,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(81,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(82,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(88,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(93,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(95,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(101,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(105,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(109,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(110,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(114,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(116,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(119,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(121,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(122,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(129,25): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(130,27): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(136,27): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/LinksInteres.tsx(138,25): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(3,24): error TS6142: Module './ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/Navbar.tsx(37,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(45,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(46,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(48,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(54,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(55,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(57,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(61,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(62,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(67,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(69,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(81,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(82,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(89,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(99,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(106,25): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(106,53): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(113,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(119,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(121,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(130,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(131,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Navbar.tsx(134,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(2,24): error TS6142: Module './ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/News.tsx(3,23): error TS6142: Module './ui/badge' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/badge.tsx', but '--jsx' is not set.
+src/app/components/News.tsx(4,35): error TS6142: Module './figma/ImageWithFallback' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/figma/ImageWithFallback.tsx', but '--jsx' is not set.
+src/app/components/News.tsx(50,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(51,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(53,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(54,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(55,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(61,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(66,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(69,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(73,36): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(78,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(80,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(88,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(89,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(94,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(95,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(99,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(104,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(105,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(108,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(112,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(113,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(114,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(117,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/News.tsx(118,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(11,24): error TS6142: Module './ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/Services.tsx(12,23): error TS6142: Module './ui/badge' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/badge.tsx', but '--jsx' is not set.
+src/app/components/Services.tsx(79,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(84,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(86,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(87,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(93,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(95,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(97,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(104,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(108,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(114,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(115,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(119,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(122,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(135,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(136,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(140,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(142,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(143,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(149,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(153,29): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(161,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(162,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/Services.tsx(167,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(10,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(14,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(15,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(17,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(18,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(24,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(30,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(31,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(34,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/StatsBar.tsx(36,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/figma/ImageWithFallback.tsx(1,8): error TS1259: Module '"/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@types/react/index"' can only be default-imported using the 'esModuleInterop' flag
+src/app/components/figma/ImageWithFallback.tsx(16,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/figma/ImageWithFallback.tsx(20,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/figma/ImageWithFallback.tsx(21,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/figma/ImageWithFallback.tsx(25,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(12,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(20,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(34,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(35,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(44,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(56,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/accordion.tsx(61,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(7,32): error TS6142: Module './button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/ui/alert-dialog.tsx(12,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(19,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(36,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(52,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(53,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(54,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(71,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(84,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(100,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(113,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(126,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert-dialog.tsx(138,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert.tsx(28,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert.tsx(39,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/alert.tsx(55,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/aspect-ratio.tsx(8,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/avatar.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/avatar.tsx(29,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/avatar.tsx(42,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/badge.tsx(38,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(8,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(26,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(44,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(54,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(71,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(78,20): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(88,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(95,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/breadcrumb.tsx(96,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/button.tsx(50,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/calendar.tsx(8,32): error TS6142: Module './button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/ui/calendar.tsx(17,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/calendar.tsx(64,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/calendar.tsx(67,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(7,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(20,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(33,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(43,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(53,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(66,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/card.tsx(76,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(10,24): error TS6142: Module './button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/ui/carousel.tsx(108,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(121,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(139,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(144,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(160,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(183,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(198,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(199,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(213,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(228,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/carousel.tsx(229,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(53,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(54,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(63,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(64,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(82,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(146,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(156,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(174,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(181,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(188,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(198,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(200,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(203,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(223,19): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(229,21): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(231,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(236,23): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(271,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(283,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(290,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/chart.tsx(292,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/checkbox.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/checkbox.tsx(22,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/checkbox.tsx(26,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/collapsible.tsx(8,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/collapsible.tsx(15,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/collapsible.tsx(26,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(14,8): error TS6142: Module './dialog' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/dialog.tsx', but '--jsx' is not set.
+src/app/components/ui/command.tsx(21,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(42,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(43,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(44,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(45,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(47,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(48,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(61,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(65,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(66,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(83,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(98,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(111,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(127,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(140,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/command.tsx(156,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(12,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(19,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(35,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(42,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(49,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(65,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(75,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(85,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(101,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(102,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(124,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(144,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(153,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(154,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(155,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(169,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(177,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(178,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(179,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(195,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(212,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/context-menu.tsx(225,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(12,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(18,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(24,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(30,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(38,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(55,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(56,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(57,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(66,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(67,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(68,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(77,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(87,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(103,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dialog.tsx(116,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(11,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(17,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(23,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(29,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(37,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(54,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(55,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(56,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(68,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(77,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(87,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(100,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/drawer.tsx(113,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(12,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(19,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(40,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(41,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(58,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(72,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(92,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(101,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(102,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(103,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(115,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(128,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(136,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(137,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(138,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(154,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(171,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(184,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(198,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(210,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(220,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/dropdown-menu.tsx(230,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(17,23): error TS6142: Module './label' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/label.tsx', but '--jsx' is not set.
+src/app/components/ui/form.tsx(39,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(40,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(80,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(81,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(97,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(112,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(130,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/form.tsx(148,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/hover-card.tsx(11,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/hover-card.tsx(18,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/hover-card.tsx(29,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/hover-card.tsx(30,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(17,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(31,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(50,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(61,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(62,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(71,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input-otp.tsx(72,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/input.tsx(7,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/label.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(28,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(34,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(40,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(47,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(56,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(75,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(76,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(101,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(121,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(130,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(131,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(132,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(146,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(154,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(155,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(156,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(172,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(189,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(202,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(216,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(228,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(238,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/menubar.tsx(248,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(17,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(27,20): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(37,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(53,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(71,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(77,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(90,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(107,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(112,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(129,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(145,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/navigation-menu.tsx(153,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(9,40): error TS6142: Module './button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/ui/pagination.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(28,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(37,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(52,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(73,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(79,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(80,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(90,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(96,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(97,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(107,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(113,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/pagination.tsx(114,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/popover.tsx(11,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/popover.tsx(17,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/popover.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/popover.tsx(28,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/popover.tsx(45,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/progress.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/progress.tsx(22,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/radio-group.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/radio-group.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/radio-group.tsx(35,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/radio-group.tsx(39,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/resizable.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/resizable.tsx(28,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/resizable.tsx(39,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/resizable.tsx(48,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/resizable.tsx(49,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/scroll-area.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/scroll-area.tsx(19,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/scroll-area.tsx(25,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/scroll-area.tsx(26,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/scroll-area.tsx(37,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/scroll-area.tsx(50,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(16,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(22,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(28,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(40,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(50,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(51,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(64,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(65,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(76,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(77,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(86,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(97,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(111,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(119,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(120,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(121,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(124,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(134,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(147,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(155,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(165,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/select.tsx(173,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/separator.tsx(15,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(10,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(16,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(22,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(28,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(36,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(56,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(57,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(58,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(75,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(76,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(77,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(86,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(96,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(109,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sheet.tsx(122,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(10,24): error TS6142: Module './button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/app/components/ui/sidebar.tsx(11,23): error TS6142: Module './input' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/input.tsx', but '--jsx' is not set.
+src/app/components/ui/sidebar.tsx(12,27): error TS6142: Module './separator' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/separator.tsx', but '--jsx' is not set.
+src/app/components/ui/sidebar.tsx(19,8): error TS6142: Module './sheet' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/sheet.tsx', but '--jsx' is not set.
+src/app/components/ui/sidebar.tsx(20,26): error TS6142: Module './skeleton' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/skeleton.tsx', but '--jsx' is not set.
+src/app/components/ui/sidebar.tsx(26,8): error TS6142: Module './tooltip' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/tooltip.tsx', but '--jsx' is not set.
+src/app/components/ui/sidebar.tsx(130,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(131,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(132,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(170,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(185,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(186,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(198,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(199,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(200,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(202,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(209,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(218,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(229,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(244,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(264,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(276,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(277,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(286,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(309,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(326,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(337,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(348,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(362,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(373,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(387,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(404,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(425,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(445,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(456,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(467,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(515,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(536,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(537,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(538,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(560,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(585,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(615,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(622,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(627,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(642,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(660,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sidebar.tsx(683,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/skeleton.tsx(5,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/slider.tsx(27,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/slider.tsx(39,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/slider.tsx(45,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/slider.tsx(53,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/sonner.tsx(10,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/switch.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/switch.tsx(21,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(9,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(13,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(24,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(34,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(44,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(57,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(70,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(83,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/table.tsx(99,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tabs.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tabs.tsx(26,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tabs.tsx(42,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tabs.tsx(58,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/textarea.tsx(7,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/toggle-group.tsx(8,32): error TS6142: Module './toggle' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/toggle.tsx', but '--jsx' is not set.
+src/app/components/ui/toggle-group.tsx(26,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/toggle-group.tsx(36,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/toggle-group.tsx(54,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/toggle.tsx(39,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(13,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(25,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(26,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(34,10): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(44,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(45,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/app/components/ui/tooltip.tsx(55,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/main.tsx(4,17): error TS6142: Module './app/App' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/App.tsx', but '--jsx' is not set.
+src/main.tsx(8,3): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/main.tsx(9,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(28,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(32,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(33,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(35,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(37,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(38,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(42,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(43,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(47,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(48,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(52,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(53,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(57,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(58,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(63,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(67,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(68,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(72,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(74,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(76,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(83,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(85,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(89,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(91,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(96,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(98,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadDetallePage.tsx(104,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(45,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(46,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(48,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(56,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(57,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(58,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(59,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(60,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(61,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(62,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(63,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(64,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(65,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(69,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(71,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(72,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(74,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(75,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(80,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(86,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(88,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(90,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(92,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(94,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(95,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ActividadesPage.tsx(98,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(5,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(6,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(7,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(11,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(16,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(17,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(18,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(19,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(23,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(26,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(31,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(32,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(33,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(37,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(40,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(45,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(46,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(47,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(51,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(54,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(59,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(60,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(61,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(65,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardHomePage.tsx(68,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardPage.tsx(3,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardPage.tsx(4,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/DashboardPage.tsx(6,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(51,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(55,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(56,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(58,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(68,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(70,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(73,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(76,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(82,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapaDetallePage.tsx(88,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(37,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(38,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(40,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(48,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(49,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(50,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(51,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(52,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(53,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(54,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(55,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(59,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(61,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(62,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(64,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(66,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(70,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(72,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(74,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/EtapasPage.tsx(75,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(19,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/InterrupcionesPage.tsx(22,6): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/InterrupcionesPage.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(69,3): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(71,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(73,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(75,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(77,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(79,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(81,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(83,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(85,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(87,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(89,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(95,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(99,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(103,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(107,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(114,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(120,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(125,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(129,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/InterrupcionesPage.tsx(131,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(1,22): error TS6142: Module '../app/components/Hero' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/Hero.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(2,26): error TS6142: Module '../app/components/StatsBar' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/StatsBar.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(3,26): error TS6142: Module '../app/components/Services' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/Services.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(4,30): error TS6142: Module '../app/components/Lineamientos' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/Lineamientos.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(5,22): error TS6142: Module '../app/components/News' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/News.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(6,21): error TS6142: Module '../app/components/FAQ' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/FAQ.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(7,30): error TS6142: Module '../app/components/LinksInteres' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/LinksInteres.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(8,25): error TS6142: Module '../app/components/Contact' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/Contact.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(9,24): error TS6142: Module '../app/components/Navbar' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/Navbar.tsx', but '--jsx' is not set.
+src/pages/LandingPage.tsx(14,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(16,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(20,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(27,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(28,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(29,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(30,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(31,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(32,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/LandingPage.tsx(33,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(8,24): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/MensajeDetallePage.tsx(35,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(39,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(40,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(42,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(44,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(46,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(49,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(50,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(56,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(74,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(75,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajeDetallePage.tsx(77,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(11,32): error TS6142: Module './MensajeDetallePage' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/pages/MensajeDetallePage.tsx', but '--jsx' is not set.
+src/pages/MensajesPage.tsx(20,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/MensajesPage.tsx(22,24): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/MensajesPage.tsx(61,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(65,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(66,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(69,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(79,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(80,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(81,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(82,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(84,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(86,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(88,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(90,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(94,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(96,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(97,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(99,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(101,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(103,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(105,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(106,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/MensajesPage.tsx(114,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(53,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(57,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(58,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(67,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(77,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(86,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(93,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(94,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(95,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(99,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(100,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(101,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(105,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(106,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(107,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(112,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(114,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(123,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(131,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(132,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(135,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(143,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(144,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(147,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(155,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(156,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(159,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(167,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(168,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(172,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(174,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(182,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(188,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(194,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(200,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(208,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(218,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(220,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(230,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(238,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(249,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(258,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoDetallePage.tsx(267,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(56,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(58,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(64,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(72,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(76,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(80,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(86,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoErroresPage.tsx(92,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(58,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(60,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(65,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(72,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(84,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(90,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(96,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(106,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectoInterrupcionesPage.tsx(116,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(19,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/ProyectosPage.tsx(21,24): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/ProyectosPage.tsx(109,12): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(113,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(114,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(116,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(119,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(120,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(132,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(133,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(135,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(147,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(148,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(150,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(161,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(172,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(173,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(175,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(186,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(192,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(193,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(194,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(195,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(196,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(197,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(198,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(199,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(203,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(205,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(206,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(208,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(209,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(214,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(218,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(222,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(223,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/ProyectosPage.tsx(244,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(84,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(85,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(87,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(88,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(90,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(101,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(103,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(104,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(106,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(115,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(120,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(130,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(132,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(133,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(135,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(144,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(149,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(159,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(161,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(162,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(164,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(176,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(178,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(179,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(181,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(193,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErrorNuevoPage.tsx(195,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(19,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/RegistroErroresPage.tsx(22,6): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/RegistroErroresPage.tsx(45,3): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(47,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(49,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(51,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(53,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(55,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(57,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(59,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(61,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(63,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(65,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(71,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(75,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(79,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(83,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(87,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(93,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(97,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(101,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroErroresPage.tsx(103,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(93,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(94,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(96,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(97,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(99,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(111,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(113,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(114,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(116,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(126,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(131,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(141,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(143,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(144,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(146,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(155,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(160,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(170,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(172,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(173,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(175,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(190,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(192,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(193,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(195,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(209,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/RegistroInterrupcionNuevoPage.tsx(211,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(19,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/TipoErrorPage.tsx(22,6): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/TipoErrorPage.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(69,3): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(71,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(73,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(75,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(77,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(79,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(81,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(83,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(89,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(93,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(97,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(101,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(105,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoErrorPage.tsx(107,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(19,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/TipoInterrupcionPage.tsx(22,6): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/TipoInterrupcionPage.tsx(62,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(69,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(71,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(75,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(77,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(79,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(81,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(85,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(89,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(97,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(101,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(107,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(111,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(117,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/TipoInterrupcionPage.tsx(119,17): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(20,8): error TS6142: Module '../app/components/ui/table' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/table.tsx', but '--jsx' is not set.
+src/pages/UsuariosPage.tsx(23,6): error TS6142: Module '../app/components/ui/button' was resolved to '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/src/app/components/ui/button.tsx', but '--jsx' is not set.
+src/pages/UsuariosPage.tsx(47,3): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(49,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(51,5): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(53,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(55,9): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(57,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(59,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(61,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(63,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(65,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(67,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(73,7): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(77,11): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(81,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(85,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(89,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(93,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(97,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(103,13): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+src/pages/UsuariosPage.tsx(105,15): error TS17004: Cannot use JSX unless the '--jsx' flag is provided.
+vite.config.ts(2,8): error TS1259: Module '"path"' can only be default-imported using the 'esModuleInterop' flag
+vite.config.ts(3,25): error TS2307: Cannot find module '@tailwindcss/vite' or its corresponding type declarations.
+  There are types at '/home/milord-taro/Proyectos_Sena/Ikernell-sena/ikernell-frontend/node_modules/@tailwindcss/vite/dist/index.d.mts', but this result could not be resolved under your current 'moduleResolution' setting. Consider updating to 'node16', 'nodenext', or 'bundler'.
