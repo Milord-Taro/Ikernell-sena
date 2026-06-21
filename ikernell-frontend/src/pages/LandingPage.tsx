@@ -6,19 +6,17 @@ import { News } from "../app/components/News";
 import { FAQ } from "../app/components/FAQ";
 import { LinksInteres } from "../app/components/LinksInteres";
 import { Contact } from "../app/components/Contact";
-
 import { Navbar } from "../app/components/Navbar";
-import { Footer } from "../app/components/Footer";
 
 export default function LandingPage() {
   return (
-    
+
     <>
 
-    <Navbar
-  onSignIn={() => {}}
-  onSignUp={() => {}}
-/>
+      <Navbar
+        onSignIn={() => { }}
+        onSignUp={() => { }}
+      />
       <Hero
         onGetStarted={() =>
           document.querySelector("#contacto")?.scrollIntoView({

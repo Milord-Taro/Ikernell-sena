@@ -4,9 +4,27 @@ import { useParams, Link } from "react-router-dom";
 import { obtenerProyectoPorId } from "../services/proyectoService";
 import { obtenerEtapas } from "../services/etapaService";
 import { obtenerResumenProyecto } from "../services/dashboardProyectoService";
+import { obtenerResumenEtapa } from "../services/etapaDashboardService";
 
 import type { Proyecto } from "../types/Proyecto";
 import type { Etapa } from "../types/Etapa";
+import StatCard from "../app/components/dashboard/project/StatCard";
+import ActionCard from "../app/components/dashboard/project/ActionCard";
+import StageCard from "../app/components/dashboard/project/StageCard";
+import ProjectHeader from "../app/components/dashboard/project/ProjectHeader";
+import DashboardSection from "../app/components/dashboard/DashboardSection";
+
+import {
+  Layers3,
+  ListTodo,
+  TriangleAlert,
+  PauseCircle,
+  PlusCircle,
+  FileText,
+  History,
+} from "lucide-react";
+
+
 
 export default function ProyectoDetallePage() {
   const { id } = useParams();
@@ -19,7 +37,11 @@ export default function ProyectoDetallePage() {
     actividades: 0,
     errores: 0,
     interrupciones: 0,
+    progreso: 0,
   });
+
+  const [progresoEtapas, setProgresoEtapas] =
+    useState<Record<number, number>>({});
 
   useEffect(() => {
     async function cargarDatos() {
@@ -38,6 +60,20 @@ export default function ProyectoDetallePage() {
 
         setEtapas(etapasProyecto);
 
+        const progresoMap: Record<number, number> = {};
+
+        for (const etapa of etapasProyecto) {
+          const resumenEtapa =
+            await obtenerResumenEtapa(
+              etapa.idEtapa
+            );
+
+          progresoMap[etapa.idEtapa] =
+            resumenEtapa.progreso;
+        }
+
+        setProgresoEtapas(progresoMap);
+
         const resumenProyecto = await obtenerResumenProyecto(Number(id));
 
         setResumen(resumenProyecto);
@@ -55,170 +91,129 @@ export default function ProyectoDetallePage() {
 
   return (
     <div>
-      <h1>{proyecto.nombreProyecto}</h1>
-
-      <p>{proyecto.descripcionProyecto}</p>
-
-      <p>
-        Líder: {proyecto.lider.nombre} {proyecto.lider.apellido}
-      </p>
-
-      <p>Inicio: {proyecto.fechaInicioProyecto}</p>
-
-      <p>Fin: {proyecto.fechaFinProyecto}</p>
-
+      <ProjectHeader
+        proyecto={proyecto}
+        progreso={resumen.progreso}
+      />
       <hr />
 
       <div
         style={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(220px, 1fr))",
           gap: "20px",
-          flexWrap: "wrap",
           marginTop: "20px",
           marginBottom: "20px",
         }}
       >
-        <div
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: "12px",
-            padding: "15px",
-            minWidth: "150px",
-          }}
-        >
-          <h3>Etapas</h3>
-          <p>{resumen.etapas}</p>
-        </div>
+        <StatCard
+          titulo="Etapas"
+          valor={resumen.etapas}
+          descripcion="Total de etapas"
+          icono={Layers3}
+          color="#2563eb"
+          fondo="#dbeafe"
+        />
 
-        <div
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: "12px",
-            padding: "15px",
-            minWidth: "150px",
-          }}
-        >
-          <h3>Actividades</h3>
-          <p>{resumen.actividades}</p>
-        </div>
+        <StatCard
+          titulo="Actividades"
+          valor={resumen.actividades}
+          descripcion="Total de actividades"
+          icono={ListTodo}
+          color="#16a34a"
+          fondo="#dcfce7"
+        />
 
-        <div
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: "12px",
-            padding: "15px",
-            minWidth: "150px",
-          }}
-        >
-          <h3>Errores</h3>
-          <p>{resumen.errores}</p>
-        </div>
+        <StatCard
+          titulo="Errores"
+          valor={resumen.errores}
+          descripcion="Errores registrados"
+          icono={TriangleAlert}
+          color="#dc2626"
+          fondo="#fee2e2"
+        />
 
-        <div
-          style={{
-            border: "1px solid #ddd",
-            borderRadius: "12px",
-            padding: "15px",
-            minWidth: "150px",
-          }}
-        >
-          <h3>Interrupciones</h3>
-          <p>{resumen.interrupciones}</p>
-        </div>
+        <StatCard
+          titulo="Interrupciones"
+          valor={resumen.interrupciones}
+          descripcion="Interrupciones registradas"
+          icono={PauseCircle}
+          color="#ea580c"
+          fondo="#ffedd5"
+        />
       </div>
 
       <hr />
 
-      <Link to={`/dashboard/proyectos/${proyecto.idProyecto}/error/nuevo`}>
-        Registrar Error
-      </Link>
-
-      <br />
-
-      <Link
-        to={`/dashboard/proyectos/${proyecto.idProyecto}/interrupcion/nueva`}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "20px",
+          marginTop: "20px",
+          marginBottom: "20px",
+        }}
       >
-        Registrar Interrupción
-      </Link>
+        <ActionCard
+          titulo="Registrar Error"
+          descripcion="Reportar un nuevo error"
+          to={`/dashboard/proyectos/${proyecto.idProyecto}/error/nuevo`}
+          icono={PlusCircle}
+        />
 
-      <hr />
+        <ActionCard
+          titulo="Registrar Interrupción"
+          descripcion="Reportar una interrupción"
+          to={`/dashboard/proyectos/${proyecto.idProyecto}/interrupcion/nueva`}
+          icono={PauseCircle}
+        />
 
-      <h2>Etapas</h2>
+        <ActionCard
+          titulo="Historial Errores"
+          descripcion="Ver errores registrados"
+          to={`/dashboard/proyectos/${proyecto.idProyecto}/errores`}
+          icono={FileText}
+        />
 
-      <Link to={`/dashboard/proyectos/${proyecto.idProyecto}/errores`}>
-        Ver Historial de Errores
-      </Link>
+        <ActionCard
+          titulo="Historial Interrupciones"
+          descripcion="Ver interrupciones registradas"
+          to={`/dashboard/proyectos/${proyecto.idProyecto}/interrupciones`}
+          icono={History}
+        />
+      </div>
 
-      <br />
-      <br />
 
-      <Link to={`/dashboard/proyectos/${proyecto.idProyecto}/interrupciones`}>
-        Ver Historial de Interrupciones
-      </Link>
+      <DashboardSection
+        title="Etapas del Proyecto"
+        subtitle="Seguimiento y avance de cada etapa"
+      />
 
       {etapas.length === 0 ? (
         <p>No hay etapas registradas.</p>
       ) : (
-        <div
-  style={{
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fill, minmax(280px, 1fr))",
-    gap: "20px",
-    marginTop: "20px",
-  }}
->
-  {etapas.map((etapa) => (
-    <Link
-      key={etapa.idEtapa}
-      to={`/dashboard/etapas/${etapa.idEtapa}`}
-      style={{
-        textDecoration: "none",
-        color: "inherit",
-      }}
-    >
-      <div
-        style={{
-          border: "1px solid #e2e8f0",
-          borderRadius: "16px",
-          padding: "20px",
-          background: "white",
-          boxShadow:
-            "0 2px 8px rgba(0,0,0,0.05)",
-          transition: "0.2s",
-        }}
-      >
-        <h3
-          style={{
-            color: "#4338ca",
-            marginBottom: "10px",
-          }}
-        >
-          {etapa.nombreEtapa}
-        </h3>
-
-        <p
-          style={{
-            color: "#64748b",
-            fontSize: "14px",
-          }}
-        >
-          {etapa.descripcionEtapa}
-        </p>
 
         <div
           style={{
-            marginTop: "15px",
-            fontSize: "13px",
-            color: "#94a3b8",
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: "20px",
+            marginTop: "20px",
           }}
         >
-          Fecha: {etapa.fechaEtapa}
+          {etapas.map((etapa) => (
+            <StageCard
+              key={etapa.idEtapa}
+              etapa={etapa}
+              progreso={
+                progresoEtapas[etapa.idEtapa] ?? 0
+              }
+            />
+          ))}
         </div>
-      </div>
-    </Link>
-  ))}
-</div>
       )}
     </div>
   );

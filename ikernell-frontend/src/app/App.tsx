@@ -22,6 +22,7 @@ import RegistroErrorNuevoPage from "../pages/RegistroErrorNuevoPage";
 import RegistroInterrupcionNuevoPage from "../pages/RegistroInterrupcionNuevoPage";
 import ProyectoErroresPage from "../pages/ProyectoErroresPage";
 import ProyectoInterrupcionesPage from "../pages/ProyectoInterrupcionesPage";
+import PerfilPage from "../pages/PerfilPage";
 
 export default function App() {
   const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
@@ -176,6 +177,17 @@ export default function App() {
               </DashboardLayout>
             }
           />
+
+          <Route
+            path="/dashboard/perfil"
+            element={
+              <DashboardLayout>
+                <PerfilPage />
+              </DashboardLayout>
+            }
+          />
+
+
         </Routes>
       </main>
 

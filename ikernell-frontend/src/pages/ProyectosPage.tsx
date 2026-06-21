@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import ProjectCard from "../app/components/dashboard/ProjectCard";
 
 import {
   obtenerProyectos,
@@ -189,66 +190,49 @@ export default function ProyectosPage() {
         </div>
       )}
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Código</TableHead>
-            <TableHead>Proyecto</TableHead>
-            <TableHead>Líder</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fill, minmax(320px, 1fr))",
+          gap: "20px",
+          marginTop: "24px",
+        }}
+      >
+        {proyectos.map((proyecto) => (
+          <ProjectCard
+            key={proyecto.idProyecto}
+            id={proyecto.idProyecto}
+            codigo={proyecto.codProyecto}
+            nombre={proyecto.nombreProyecto}
+            lider={`${proyecto.lider.nombre} ${proyecto.lider.apellido}`}
+            activo={proyecto.estadoProyecto}
+            descripcion={proyecto.descripcionProyecto}
 
-        <TableBody>
-          {proyectos.map((proyecto) => (
-            <TableRow key={proyecto.idProyecto}>
-              <TableCell>{proyecto.codProyecto}</TableCell>
+            onEdit={() => {
+              setProyectoEditando(proyecto);
 
-              <TableCell>
-                <Link to={`/dashboard/proyectos/${proyecto.idProyecto}`}>
-                  {proyecto.nombreProyecto}
-                </Link>
-              </TableCell>
+              setNuevoProyecto({
+                codProyecto: proyecto.codProyecto,
+                nombreProyecto: proyecto.nombreProyecto,
+                descripcionProyecto: proyecto.descripcionProyecto,
+                fechaInicioProyecto: proyecto.fechaInicioProyecto,
+                fechaFinProyecto: proyecto.fechaFinProyecto,
+                estadoProyecto: proyecto.estadoProyecto,
+                lider: {
+                  idUsuario: proyecto.lider.idUsuario,
+                },
+              });
 
-              <TableCell>
-                {proyecto.lider.nombre} {proyecto.lider.apellido}
-              </TableCell>
+              setMostrarFormulario(true);
+            }}
 
-              <TableCell>
-                {proyecto.estadoProyecto ? "Activo" : "Inactivo"}
-              </TableCell>
-
-              <TableCell>
-                <Button
-                  onClick={() => {
-                    setProyectoEditando(proyecto);
-
-                    setNuevoProyecto({
-                      codProyecto: proyecto.codProyecto,
-                      nombreProyecto: proyecto.nombreProyecto,
-                      descripcionProyecto: proyecto.descripcionProyecto,
-                      fechaInicioProyecto: proyecto.fechaInicioProyecto,
-                      fechaFinProyecto: proyecto.fechaFinProyecto,
-                      estadoProyecto: proyecto.estadoProyecto,
-                      lider: {
-                        idUsuario: proyecto.lider.idUsuario,
-                      },
-                    });
-
-                    setMostrarFormulario(true);
-                  }}
-                >
-                  Editar
-                </Button>
-                <Button onClick={() => borrarProyecto(proyecto.idProyecto)}>
-                  Eliminar
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+            onDelete={() =>
+              borrarProyecto(proyecto.idProyecto)
+            }
+          />
+        ))}
+      </div>
     </div>
   );
 }
