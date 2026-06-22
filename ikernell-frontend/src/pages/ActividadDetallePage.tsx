@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { Button } from "../app/components/ui/button";
 
 import { obtenerActividadPorId } from "../services/actividadService";
 
 export default function ActividadDetallePage() {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const [actividad, setActividad] = useState<any>(null);
 
@@ -14,9 +17,7 @@ export default function ActividadDetallePage() {
 
   async function cargarActividad() {
     try {
-      const data = await obtenerActividadPorId(
-        Number(id)
-      );
+      const data = await obtenerActividadPorId(Number(id));
 
       setActividad(data);
     } catch (error) {
@@ -29,81 +30,122 @@ export default function ActividadDetallePage() {
   }
 
   return (
-    <div>
-      <h1>Detalle de Actividad</h1>
+    <div style={{ padding: "20px" }}>
+      <div
+        className="bg-white rounded-xl shadow p-6"
+        style={{ marginBottom: "20px" }}
+      >
+        <h1
+          style={{
+            marginBottom: "5px",
+          }}
+        >
+          {actividad.codActividad}
+        </h1>
 
-      <hr />
+        <h2
+          style={{
+            color: "#475569",
+            fontWeight: "500",
+          }}
+        >
+          {actividad.nombreActividad}
+        </h2>
 
-      <p>
-        <strong>Código:</strong>{" "}
-        {actividad.codActividad}
-      </p>
+        <p
+          style={{
+            marginTop: "15px",
+          }}
+        >
+          {actividad.descripcionActividad}
+        </p>
+      </div>
 
-      <p>
-        <strong>Nombre:</strong>{" "}
-        {actividad.nombreActividad}
-      </p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        <div className="bg-white rounded-xl shadow p-5">
+          <h3>Estado</h3>
 
-      <p>
-        <strong>Descripción:</strong>{" "}
-        {actividad.descripcionActividad}
-      </p>
+          <p>{actividad.estadoActividad}</p>
+        </div>
 
-      <p>
-        <strong>Estado:</strong>{" "}
-        {actividad.estadoActividad}
-      </p>
+        <div className="bg-white rounded-xl shadow p-5">
+          <h3>Inicio</h3>
 
-      <p>
-        <strong>Inicio:</strong>{" "}
-        {actividad.fechaInicioActividad}
-      </p>
+          <p>{actividad.fechaInicioActividad}</p>
+        </div>
 
-      <p>
-        <strong>Fin:</strong>{" "}
-        {actividad.fechaFinActividad}
-      </p>
+        <div className="bg-white rounded-xl shadow p-5">
+          <h3>Fin</h3>
 
-      <p>
-        <strong>Fecha Ejecución:</strong>{" "}
-        {actividad.fechaEjecucionActividad}
-      </p>
+          <p>{actividad.fechaFinActividad}</p>
+        </div>
+      </div>
 
-      <hr />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        <div className="bg-white rounded-xl shadow p-5">
+          <h3>Proyecto</h3>
 
-      <h2>Proyecto</h2>
+          <p>{actividad.etapa?.proyecto?.nombreProyecto}</p>
+        </div>
 
-      <p>
-        {
-          actividad.etapa?.proyecto
-            ?.nombreProyecto
-        }
-      </p>
+        <div className="bg-white rounded-xl shadow p-5">
+          <h3>Etapa</h3>
 
-      <h2>Etapa</h2>
+          <p>{actividad.etapa?.nombreEtapa}</p>
+        </div>
+      </div>
 
-      <p>
-        {actividad.etapa?.nombreEtapa}
-      </p>
+      <div
+        className="bg-white rounded-xl shadow p-5"
+        style={{ marginBottom: "20px" }}
+      >
+        <h3>Desarrollador</h3>
 
-      <h2>Desarrollador</h2>
+        <p>
+          {actividad.desarrollador?.nombre} {actividad.desarrollador?.apellido}
+        </p>
+      </div>
 
-      <p>
-        {actividad.desarrollador?.nombre}{" "}
-        {actividad.desarrollador?.apellido}
-      </p>
+      <div
+        style={{
+          display: "flex",
+          gap: "12px",
+        }}
+      >
+        <Button
+          onClick={() =>
+            navigate(
+              `/dashboard/proyectos/${actividad.etapa?.proyecto?.idProyecto}/error/nuevo`,
+            )
+          }
+        >
+          Registrar Error
+        </Button>
 
-      <hr />
-
-      <button>
-        Registrar Error
-      </button>
-
-      {" "}
-
-      <button>
-        Registrar Interrupción
-      </button>
+        <Button
+          onClick={() =>
+            navigate(
+              `/dashboard/proyectos/${actividad.etapa?.proyecto?.idProyecto}/interrupcion/nueva`,
+            )
+          }
+        >
+          Registrar Interrupción
+        </Button>
+      </div>
     </div>
   );
 }

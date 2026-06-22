@@ -25,12 +25,99 @@ public class UsuarioService {
 
     public Usuario crearUsuario(Usuario usuario) {
 
+        if (usuario.getFechaNacimiento() == null) {
+            throw new RuntimeException(
+                    "La fecha de nacimiento es obligatoria");
+        }
+
+        if (usuario.getFechaNacimiento()
+                .isAfter(java.time.LocalDate.now())) {
+
+            throw new RuntimeException(
+                    "La fecha de nacimiento no puede ser futura");
+        }
+
+        if (usuarioRepository.existsByCorreoElectronico(
+                usuario.getCorreoElectronico())) {
+
+            throw new RuntimeException(
+                    "El correo ya existe");
+        }
+
+        if (usuario.getNombre() == null ||
+                usuario.getNombre().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "El nombre es obligatorio");
+        }
+
+        if (usuario.getApellido() == null ||
+                usuario.getApellido().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "El apellido es obligatorio");
+        }
+
+        if (usuario.getCorreoElectronico() == null ||
+                usuario.getCorreoElectronico().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "El correo es obligatorio");
+        }
+
+        Usuario ultimoUsuario =
+                usuarioRepository.findTopByOrderByIdUsuarioDesc();
+
+        int siguienteNumero = 1;
+
+        if (ultimoUsuario != null) {
+            siguienteNumero =
+                    ultimoUsuario.getIdUsuario() + 1;
+        }
+
+        usuario.setCodUsuario(
+                String.format("USR-%03d", siguienteNumero)
+        );
+
         usuario.setEstado(true);
 
         return usuarioRepository.save(usuario);
     }
 
     public Usuario actualizarUsuario(Usuario usuario) {
+
+        if (usuario.getFechaNacimiento() == null) {
+            throw new RuntimeException(
+                    "La fecha de nacimiento es obligatoria");
+        }
+
+        if (usuario.getFechaNacimiento()
+                .isAfter(java.time.LocalDate.now())) {
+
+            throw new RuntimeException(
+                    "La fecha de nacimiento no puede ser futura");
+        }
+
+        if (usuario.getNombre() == null ||
+                usuario.getNombre().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "El nombre es obligatorio");
+        }
+
+        if (usuario.getApellido() == null ||
+                usuario.getApellido().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "El apellido es obligatorio");
+        }
+
+        if (usuario.getCorreoElectronico() == null ||
+                usuario.getCorreoElectronico().trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "El correo es obligatorio");
+        }
 
         return usuarioRepository.save(usuario);
     }
@@ -45,8 +132,31 @@ public class UsuarioService {
             return null;
         }
 
+        if(usuario.getRol().getNombreRol()
+                .equalsIgnoreCase("Coordinador")) {
+
+            throw new RuntimeException(
+                    "No se puede inhabilitar un coordinador");
+        }
         usuario.setEstado(false);
 
         return usuarioRepository.save(usuario);
     }
+
+    public Usuario habilitarUsuario(Integer id) {
+
+        Usuario usuario =
+                usuarioRepository.findById(id)
+                        .orElse(null);
+
+        if (usuario == null) {
+            return null;
+        }
+
+        usuario.setEstado(true);
+
+        return usuarioRepository.save(usuario);
+    }
 }
+
+

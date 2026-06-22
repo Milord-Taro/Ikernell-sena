@@ -24,6 +24,32 @@ public class ActividadService {
     }
 
     public Actividad guardarActividad(Actividad actividad) {
+
+        if (actividad.getIdActividad() == null) {
+
+            Actividad ultimaActividad =
+                    actividadRepository
+                            .findTopByOrderByIdActividadDesc();
+
+            int siguienteNumero = 1;
+
+            if (ultimaActividad != null) {
+                siguienteNumero =
+                        ultimaActividad.getIdActividad() + 1;
+            }
+
+            actividad.setCodActividad(
+                    String.format(
+                            "ACT-%03d",
+                            siguienteNumero
+                    )
+            );
+
+            actividad.setEstadoActividad(
+                    "Pendiente"
+            );
+        }
+
         return actividadRepository.save(actividad);
     }
 

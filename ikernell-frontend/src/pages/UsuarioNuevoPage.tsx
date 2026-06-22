@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Button } from "../app/components/ui/button";
-import type { Rol } from "../types/Rol";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import type { Profesion } from "../types/Profesion";
+import { Button } from "../app/components/ui/button";
 
+import type { Usuario } from "../types/Usuario";
+import type { Rol } from "../types/Rol";
+import type { Profesion } from "../types/Profesion";
 import type { Especialidad } from "../types/Especialidad";
 
 import { obtenerRoles } from "../services/rolService";
-
 import { obtenerProfesiones } from "../services/profesionService";
-
 import { obtenerEspecialidades } from "../services/especialidadService";
 
-import {
-  obtenerUsuarioPorId,
-  actualizarUsuario,
-} from "../services/usuarioService";
+import { crearUsuario } from "../services/usuarioService";
 
-import type { Usuario } from "../types/Usuario";
-
-export default function UsuarioEditarPage() {
-  const { id } = useParams();
-
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+export default function UsuarioNuevoPage() {
+  const navigate = useNavigate();
 
   const [roles, setRoles] = useState<Rol[]>([]);
 
@@ -33,16 +24,35 @@ export default function UsuarioEditarPage() {
 
   const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
 
-  const navigate = useNavigate();
+  const [usuario, setUsuario] = useState<Usuario>({
+    idUsuario: 0,
+    codUsuario: "",
+    nombre: "",
+    apellido: "",
+    correoElectronico: "",
+    direccion: "",
+    fechaNacimiento: "",
+    tipoIdentificacion: "CC",
+    numeroIdentificacion: "",
+    fotoPerfil: null,
+    contrasena: "",
+    estado: true,
+
+    rol: {
+      idRol: 0,
+      nombreRol: "",
+    },
+
+    profesion: {
+      idProfesion: 0,
+      nombreProfesion: "",
+    },
+
+    especialidad: null,
+  });
 
   useEffect(() => {
     async function cargar() {
-      if (!id) return;
-
-      const data = await obtenerUsuarioPorId(Number(id));
-
-      setUsuario(data);
-
       const rolesData = await obtenerRoles();
 
       setRoles(rolesData);
@@ -57,11 +67,7 @@ export default function UsuarioEditarPage() {
     }
 
     cargar();
-  }, [id]);
-
-  if (!usuario) {
-    return <p>Cargando...</p>;
-  }
+  }, []);
 
   return (
     <div
@@ -76,7 +82,7 @@ export default function UsuarioEditarPage() {
           marginBottom: "24px",
         }}
       >
-        Editar Usuario
+        Nuevo Usuario
       </h1>
       <div
         style={{
@@ -137,6 +143,28 @@ export default function UsuarioEditarPage() {
               setUsuario({
                 ...usuario,
                 correoElectronico: e.target.value,
+              })
+            }
+            style={{
+              width: "100%",
+              padding: "10px",
+              border: "1px solid #dbe2ea",
+              borderRadius: "8px",
+              marginTop: "6px",
+            }}
+          />
+        </div>
+
+        <div>
+          <label>Contraseña Temporal</label>
+
+          <input
+            type="password"
+            value={usuario.contrasena}
+            onChange={(e) =>
+              setUsuario({
+                ...usuario,
+                contrasena: e.target.value,
               })
             }
             style={{
@@ -246,12 +274,26 @@ export default function UsuarioEditarPage() {
 
           <select
             value={usuario.rol.idRol}
-            onChange={(e) =>
+            onChange={(e) => {
+              const idRol = Number(e.target.value);
+
+              if (idRol === 0) {
+                setUsuario({
+                  ...usuario,
+                  rol: {
+                    idRol: 0,
+                    nombreRol: "",
+                  },
+                });
+
+                return;
+              }
+
               setUsuario({
                 ...usuario,
-                rol: roles.find((r) => r.idRol === Number(e.target.value))!,
-              })
-            }
+                rol: roles.find((r) => r.idRol === idRol)!,
+              });
+            }}
             style={{
               width: "100%",
               padding: "10px",
@@ -260,6 +302,8 @@ export default function UsuarioEditarPage() {
               marginTop: "6px",
             }}
           >
+            <option value={0}>Seleccione un rol</option>
+
             {roles.map((rol) => (
               <option key={rol.idRol} value={rol.idRol}>
                 {rol.nombreRol}
@@ -267,19 +311,34 @@ export default function UsuarioEditarPage() {
             ))}
           </select>
         </div>
+
         <div>
           <label>Profesión</label>
 
           <select
             value={usuario.profesion.idProfesion}
-            onChange={(e) =>
+            onChange={(e) => {
+              const idProfesion = Number(e.target.value);
+
+              if (idProfesion === 0) {
+                setUsuario({
+                  ...usuario,
+                  profesion: {
+                    idProfesion: 0,
+                    nombreProfesion: "",
+                  },
+                });
+
+                return;
+              }
+
               setUsuario({
                 ...usuario,
                 profesion: profesiones.find(
-                  (p) => p.idProfesion === Number(e.target.value),
+                  (p) => p.idProfesion === idProfesion,
                 )!,
-              })
-            }
+              });
+            }}
             style={{
               width: "100%",
               padding: "10px",
@@ -288,6 +347,8 @@ export default function UsuarioEditarPage() {
               marginTop: "6px",
             }}
           >
+            <option value={0}>Seleccione una profesión</option>
+
             {profesiones.map((profesion) => (
               <option key={profesion.idProfesion} value={profesion.idProfesion}>
                 {profesion.nombreProfesion}
@@ -366,6 +427,21 @@ export default function UsuarioEditarPage() {
               return;
             }
 
+            if (!usuario.contrasena?.trim()) {
+              toast.error("La contraseña es obligatoria");
+              return;
+            }
+
+            if (usuario.rol.idRol === 0) {
+              toast.error("Seleccione un rol");
+              return;
+            }
+
+            if (usuario.profesion.idProfesion === 0) {
+              toast.error("Seleccione una profesión");
+              return;
+            }
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
             if (!emailRegex.test(usuario.correoElectronico)) {
@@ -383,6 +459,17 @@ export default function UsuarioEditarPage() {
               return;
             }
 
+            const usuarioNuevo = {
+              ...usuario,
+            };
+
+            delete (usuarioNuevo as any).idUsuario;
+
+            if (!usuario.fechaNacimiento) {
+              toast.error("La fecha de nacimiento es obligatoria");
+              return;
+            }
+
             const hoy = new Date();
 
             const fechaNacimiento = new Date(usuario.fechaNacimiento);
@@ -391,19 +478,22 @@ export default function UsuarioEditarPage() {
               toast.error("La fecha de nacimiento no puede ser futura");
               return;
             }
+            try {
+              const creado = await crearUsuario(usuarioNuevo);
 
-            const actualizado = await actualizarUsuario(usuario);
-            toast.success("Usuario actualizado correctamente");
+              toast.success("Usuario creado correctamente");
 
-            setUsuario(actualizado);
-            navigate(`/dashboard/usuarios/${actualizado.idUsuario}`);
+              navigate(`/dashboard/usuarios/${creado.idUsuario}`);
+            } catch (error: any) {
+              toast.error(error.message);
+            }
           }}
         >
-          Guardar cambios
+          Crear usuario
         </Button>
         <Button
           variant="outline"
-          onClick={() => navigate(`/dashboard/usuarios/${id}`)}
+          onClick={() => navigate(`/dashboard/usuarios/`)}
         >
           Cancelar
         </Button>

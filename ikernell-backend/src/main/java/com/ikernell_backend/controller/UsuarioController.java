@@ -77,4 +77,12 @@ public class UsuarioController {
         return usuarioService
                 .inhabilitarUsuario(id);
     }
+
+    @PutMapping("/api/usuarios/{id}/habilitar")
+    public Usuario habilitarUsuario(
+            @PathVariable Integer id) {
+
+        return usuarioService
+                .habilitarUsuario(id);
+    }
 }

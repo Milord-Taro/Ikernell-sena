@@ -1,5 +1,4 @@
 export interface Usuario {
-
   idUsuario: number;
 
   codUsuario: string;
@@ -19,6 +18,8 @@ export interface Usuario {
   numeroIdentificacion: string;
 
   fotoPerfil: string | null;
+
+  contrasena?: string;
 
   estado: boolean;
 
