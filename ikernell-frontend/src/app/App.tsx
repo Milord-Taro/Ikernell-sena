@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "sonner";
 
 import { AuthModal } from "./components/AuthModal";
 
@@ -25,6 +26,9 @@ import ProyectoInterrupcionesPage from "../pages/ProyectoInterrupcionesPage";
 import PerfilPage from "../pages/PerfilPage";
 import UsuarioDetallePage from "../pages/UsuarioDetallePage";
 import UsuarioEditarPage from "../pages/UsuarioEditarPage";
+import UsuarioNuevoPage from "../pages/UsuarioNuevoPage";
+import ActividadNuevaPage from "../pages/ActividadNuevaPage";
+import ActividadEditarPage from "../pages/ActividadEditarPage";
 
 export default function App() {
   const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
@@ -190,6 +194,24 @@ export default function App() {
           />
 
           <Route
+            path="/dashboard/actividades/nueva"
+            element={
+              <DashboardLayout>
+                <ActividadNuevaPage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/dashboard/actividades/:id/editar"
+            element={
+              <DashboardLayout>
+                <ActividadEditarPage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
             path="/dashboard/etapas/:id"
             element={
               <DashboardLayout>
@@ -207,7 +229,24 @@ export default function App() {
             }
           />
 
+          <Route
+            path="/dashboard/usuarios/nuevo"
+            element={
+              <DashboardLayout>
+                <UsuarioNuevoPage />
+              </DashboardLayout>
+            }
+          />
 
+          <Route
+            path="*"
+            element={
+              <div style={{ padding: "40px" }}>
+                <h1>404</h1>
+                <p>Página no encontrada</p>
+              </div>
+            }
+          />
         </Routes>
       </main>
 
@@ -218,6 +257,7 @@ export default function App() {
           onSwitchMode={setAuthMode}
         />
       )}
+      <Toaster richColors position="top-right" />
     </div>
   );
 }

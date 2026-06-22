@@ -56,7 +56,6 @@ public class ActividadController {
             return null;
         }
 
-        actividad.setCodActividad(actividadActualizada.getCodActividad());
         actividad.setNombreActividad(actividadActualizada.getNombreActividad());
         actividad.setDescripcionActividad(actividadActualizada.getDescripcionActividad());
         actividad.setFechaInicioActividad(actividadActualizada.getFechaInicioActividad());

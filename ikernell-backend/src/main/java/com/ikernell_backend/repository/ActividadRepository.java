@@ -12,4 +12,6 @@ public interface ActividadRepository
 
     List<Actividad> findByEtapaIdEtapa(
             Integer idEtapa);
+
+    Actividad findTopByOrderByIdActividadDesc();
 }
