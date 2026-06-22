@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import ProjectCard from "../app/components/dashboard/ProjectCard";
+import ProyectoModal from "../app/components/dashboard/ProyectoModal";
+import { Button } from "../app/components/ui/button";
 
 import {
   obtenerProyectos,
@@ -9,17 +10,6 @@ import {
   actualizarProyecto,
 } from "../services/proyectoService";
 import type { Proyecto } from "../types/Proyecto";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../app/components/ui/table";
-
-import { Button } from "../app/components/ui/button";
 
 export default function ProyectosPage() {
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
@@ -114,81 +104,47 @@ export default function ProyectosPage() {
     <div style={{ padding: "20px" }}>
       <h1>Proyectos</h1>
 
-      <Button onClick={() => setMostrarFormulario(true)}>Nuevo Proyecto</Button>
+      <Button
+        onClick={() => {
 
-      {mostrarFormulario && (
-        <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-          <input
-            type="text"
-            placeholder="Código"
-            value={nuevoProyecto.codProyecto}
-            onChange={(e) =>
-              setNuevoProyecto({
-                ...nuevoProyecto,
-                codProyecto: e.target.value,
-              })
-            }
-          />
+          setProyectoEditando(null);
 
-          <br />
-          <br />
+          setNuevoProyecto({
+            codProyecto: "",
+            nombreProyecto: "",
+            descripcionProyecto: "",
+            fechaInicioProyecto: "",
+            fechaFinProyecto: "",
+            estadoProyecto: true,
 
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={nuevoProyecto.nombreProyecto}
-            onChange={(e) =>
-              setNuevoProyecto({
-                ...nuevoProyecto,
-                nombreProyecto: e.target.value,
-              })
-            }
-          />
+            lider: {
+              idUsuario: 2,
+            },
+          });
 
-          <br />
-          <br />
+          setMostrarFormulario(true);
+        }}
+      >
+        Nuevo Proyecto
+      </Button>
 
-          <textarea
-            placeholder="Descripción"
-            value={nuevoProyecto.descripcionProyecto}
-            onChange={(e) =>
-              setNuevoProyecto({
-                ...nuevoProyecto,
-                descripcionProyecto: e.target.value,
-              })
-            }
-          />
-
-          <input
-            type="date"
-            value={nuevoProyecto.fechaInicioProyecto}
-            onChange={(e) =>
-              setNuevoProyecto({
-                ...nuevoProyecto,
-                fechaInicioProyecto: e.target.value,
-              })
-            }
-          />
-
-          <br />
-          <br />
-
-          <input
-            type="date"
-            value={nuevoProyecto.fechaFinProyecto}
-            onChange={(e) =>
-              setNuevoProyecto({
-                ...nuevoProyecto,
-                fechaFinProyecto: e.target.value,
-              })
-            }
-          />
-
-          <Button onClick={proyectoEditando ? guardarCambios : guardarProyecto}>
-            {proyectoEditando ? "Actualizar" : "Guardar"}
-          </Button>
-        </div>
-      )}
+      <ProyectoModal
+        open={mostrarFormulario}
+        onClose={() => {
+          setMostrarFormulario(false);
+          setProyectoEditando(null);
+        }}
+        proyecto={nuevoProyecto}
+        setProyecto={setNuevoProyecto}
+        onGuardar={
+          proyectoEditando
+            ? guardarCambios
+            : guardarProyecto
+        }
+        editando={
+          proyectoEditando !== null
+        }
+      />
 
       <div
         style={{

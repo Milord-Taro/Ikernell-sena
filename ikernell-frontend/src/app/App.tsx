@@ -23,6 +23,8 @@ import RegistroInterrupcionNuevoPage from "../pages/RegistroInterrupcionNuevoPag
 import ProyectoErroresPage from "../pages/ProyectoErroresPage";
 import ProyectoInterrupcionesPage from "../pages/ProyectoInterrupcionesPage";
 import PerfilPage from "../pages/PerfilPage";
+import UsuarioDetallePage from "../pages/UsuarioDetallePage";
+import UsuarioEditarPage from "../pages/UsuarioEditarPage";
 
 export default function App() {
   const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
@@ -111,6 +113,24 @@ export default function App() {
             element={
               <DashboardLayout>
                 <UsuariosPage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/dashboard/usuarios/:id"
+            element={
+              <DashboardLayout>
+                <UsuarioDetallePage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/dashboard/usuarios/:id/editar"
+            element={
+              <DashboardLayout>
+                <UsuarioEditarPage />
               </DashboardLayout>
             }
           />

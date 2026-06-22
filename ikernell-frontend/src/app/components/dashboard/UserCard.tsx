@@ -1,28 +1,27 @@
+import { User, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { FolderKanban, User, ArrowRight } from "lucide-react";
 
 interface Props {
     id: number;
     codigo: string;
     nombre: string;
-    lider: string;
+    correo: string;
+    rol: string;
+    profesion: string;
     activo: boolean;
-    descripcion: string;
 
-    onEdit: () => void;
-    onDelete: () => void;
+    onInhabilitar: () => void;
 }
 
-
-export default function ProjectCard({
+export default function UserCard({
     id,
     codigo,
     nombre,
-    lider,
+    correo,
+    rol,
+    profesion,
     activo,
-    descripcion,
-    onEdit,
-    onDelete,
+    onInhabilitar,
 }: Props) {
     return (
         <div className="dashboard-card">
@@ -33,7 +32,7 @@ export default function ProjectCard({
                     marginBottom: "16px",
                 }}
             >
-                <FolderKanban
+                <User
                     size={28}
                     color="#4338ca"
                 />
@@ -51,7 +50,9 @@ export default function ProjectCard({
                             : "#991b1b",
                     }}
                 >
-                    {activo ? "Activo" : "Inactivo"}
+                    {activo
+                        ? "Activo"
+                        : "Inactivo"}
                 </span>
             </div>
 
@@ -64,106 +65,85 @@ export default function ProjectCard({
                 {codigo}
             </div>
 
-            <h3
-                style={{
-                    marginTop: "8px",
-                    color: "#0f172a",
-                }}
-            >
-                {nombre}
-            </h3>
+            <h3>{nombre}</h3>
 
             <p
                 style={{
                     color: "#64748b",
                     fontSize: "14px",
-                    marginTop: "10px",
-                    minHeight: "42px",
                 }}
             >
-                {descripcion}
+                {correo}
             </p>
 
             <div
                 style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
                     marginTop: "10px",
                     color: "#64748b",
                 }}
             >
-                Lider:
-                <User size={16} />
-                {lider}
+                {rol}
             </div>
+
+            <div
+                style={{
+                    marginTop: "4px",
+                    color: "#94a3b8",
+                    fontSize: "14px",
+                }}
+            >
+                {profesion}
+            </div>
+
             <div
                 style={{
                     display: "flex",
                     gap: "10px",
-                    marginTop: "10px",
+                    marginTop: "16px",
                 }}
             >
-                <button
-                    className="project-action-button"
-                    onClick={onEdit}
+                <Link
+                    to={`/dashboard/usuarios/${id}`}
                     style={{
                         flex: 1,
-                        border: "none",
-                        borderRadius: "10px",
-                        padding: "10px",
-
-                        background: "#eef2ff",
-                        color: "#4338ca",
-
-                        cursor: "pointer",
-                        fontWeight: 600,
+                        textDecoration: "none",
                     }}
                 >
-                    Editar
-                </button>
+                    <button
+                        className="project-action-button"
+                        style={{
+                            width: "100%",
+                            border: "none",
+                            borderRadius: "10px",
+                            padding: "10px",
+                            background: "#eef2ff",
+                            color: "#4338ca",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                        }}
+                    >
+                        Ver Perfil
+                    </button>
+                </Link>
 
                 <button
                     className="project-action-button"
-                    onClick={onDelete}
+                    onClick={onInhabilitar}
                     style={{
                         flex: 1,
                         border: "none",
                         borderRadius: "10px",
                         padding: "10px",
-
                         background: "#fee2e2",
                         color: "#dc2626",
-
                         cursor: "pointer",
                         fontWeight: 600,
                     }}
                 >
-                    Eliminar
+                    Inhabilitar
                 </button>
             </div>
-            <Link
-                className="project-action-button"
-                to={`/dashboard/proyectos/${id}`}
-                style={{
-                    marginTop: "12px",
 
-                    display: "flex",
-                    justifyContent: "flex-end",
-
-                    alignItems: "center",
-                    gap: "6px",
-
-                    color: "#4338ca",
-
-                    textDecoration: "none",
-
-                    fontWeight: "600",
-                }}
-            >
-                Ver proyecto
-                <ArrowRight size={16} />
-            </Link>
         </div>
     );
 }

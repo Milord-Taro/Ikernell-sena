@@ -1,5 +1,8 @@
 .dashboard-card {
-    transition: all 0.2s ease;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
 }
 
 .dashboard-clickable-card {
@@ -118,4 +121,12 @@
 .sidebar-user-button:hover {
     background: rgba(79, 70, 229, 0.08);
     color: #4338ca;
+}
+
+.project-action-button {
+    transition: all 0.2s ease;
+}
+
+.project-action-button:hover {
+    transform: translateY(-2px);
 }
