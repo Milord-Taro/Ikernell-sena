@@ -1,27 +1,16 @@
 import { useEffect, useState } from "react";
 
 import type { Usuario }
-from "../types/Usuario";
+  from "../types/Usuario";
 
 import {
   obtenerUsuarios,
   inhabilitarUsuario
 }
-from "../services/usuarioService";
+  from "../services/usuarioService";
 
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../app/components/ui/table";
-
-import { Button }
-from "../app/components/ui/button";
-
+import UserCard
+  from "../app/components/dashboard/UserCard";
 
 export default function UsuariosPage() {
 
@@ -44,96 +33,48 @@ export default function UsuariosPage() {
   }, []);
 
   return (
-  <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px" }}>
 
-    <h1>Usuarios</h1>
+      <h1>Usuarios</h1>
 
-    <Table>
-
-      <TableHeader>
-
-        <TableRow>
-
-          <TableHead>Código</TableHead>
-
-          <TableHead>Nombre</TableHead>
-
-          <TableHead>Correo</TableHead>
-
-          <TableHead>Rol</TableHead>
-
-          <TableHead>Estado</TableHead>
-
-          <TableHead>Acciones</TableHead>
-
-        </TableRow>
-
-      </TableHeader>
-
-      <TableBody>
-
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fill, minmax(320px, 1fr))",
+          gap: "20px",
+          marginTop: "24px",
+        }}
+      >
         {usuarios.map((usuario) => (
-
-          <TableRow
+          <UserCard
             key={usuario.idUsuario}
-          >
+            id={usuario.idUsuario}
+            codigo={usuario.codUsuario}
+            nombre={`${usuario.nombre} ${usuario.apellido}`}
+            correo={usuario.correoElectronico}
+            rol={usuario.rol.nombreRol}
+            profesion={
+              usuario.profesion.nombreProfesion
+            }
+            activo={usuario.estado}
+            onInhabilitar={async () => {
+              const actualizado =
+                await inhabilitarUsuario(
+                  usuario.idUsuario
+                );
 
-            <TableCell>
-              {usuario.codUsuario}
-            </TableCell>
-
-            <TableCell>
-              {usuario.nombre} {usuario.apellido}
-            </TableCell>
-
-            <TableCell>
-              {usuario.correoElectronico}
-            </TableCell>
-
-            <TableCell>
-              {usuario.rol.nombreRol}
-            </TableCell>
-
-            <TableCell>
-              {usuario.estado
-                ? "Activo"
-                : "Inactivo"}
-            </TableCell>
-
-            <TableCell>
-
-              <Button
-                onClick={async () => {
-
-                  const actualizado =
-                    await inhabilitarUsuario(
-                      usuario.idUsuario
-                    );
-
-                  setUsuarios(
-                    usuarios.map((u) =>
-                      u.idUsuario ===
-                      usuario.idUsuario
-                        ? actualizado
-                        : u
-                    )
-                  );
-
-                }}
-              >
-                Inhabilitar
-              </Button>
-
-            </TableCell>
-
-          </TableRow>
-
+              setUsuarios(
+                usuarios.map((u) =>
+                  u.idUsuario === usuario.idUsuario
+                    ? actualizado
+                    : u
+                )
+              );
+            }}
+          />
         ))}
-
-      </TableBody>
-
-    </Table>
-
-  </div>
-);
+      </div>
+    </div>
+  );
 }

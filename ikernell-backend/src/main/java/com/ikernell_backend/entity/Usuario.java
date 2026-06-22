@@ -2,6 +2,7 @@ package com.ikernell_backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "usuario")
@@ -36,6 +37,7 @@ public class Usuario {
     @Column(name = "direccion")
     private String direccion;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "contrasena")
     private String contrasena;
 

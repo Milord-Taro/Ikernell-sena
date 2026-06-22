@@ -10,6 +10,16 @@ export interface Usuario {
 
   correoElectronico: string;
 
+  direccion: string;
+
+  fechaNacimiento: string;
+
+  tipoIdentificacion: string;
+
+  numeroIdentificacion: string;
+
+  fotoPerfil: string | null;
+
   estado: boolean;
 
   rol: {

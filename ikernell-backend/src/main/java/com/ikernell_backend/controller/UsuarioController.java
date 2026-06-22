@@ -59,7 +59,8 @@ public class UsuarioController {
         usuario.setNumeroIdentificacion(usuarioActualizado.getNumeroIdentificacion());
         usuario.setCorreoElectronico(usuarioActualizado.getCorreoElectronico());
         usuario.setDireccion(usuarioActualizado.getDireccion());
-        usuario.setContrasena(usuarioActualizado.getContrasena());
+        // usuario.setContrasena(usuarioActualizado.getContrasena());
+        usuario.setEstado(usuarioActualizado.getEstado());
         usuario.setFotoPerfil(usuarioActualizado.getFotoPerfil());
         usuario.setRol(usuarioActualizado.getRol());
         usuario.setProfesion(usuarioActualizado.getProfesion());
