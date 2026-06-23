@@ -17,6 +17,7 @@ interface Props {
 
   etapas: any[];
   usuarios: any[];
+  error: string;
 }
 
 export default function ActividadModal({
@@ -28,6 +29,7 @@ export default function ActividadModal({
   editando,
   etapas,
   usuarios,
+  error,
 }: Props) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -95,7 +97,14 @@ export default function ActividadModal({
                 })
               }
             />
+          </div>
 
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+            }}
+          >
             <select
               value={actividad.etapa.idEtapa}
               onChange={(e) =>
@@ -106,14 +115,13 @@ export default function ActividadModal({
                   },
                 })
               }
-              style={{
-                padding: "10px",
-                border: "1px solid #dbe2ea",
-                borderRadius: "8px",
-              }}
+              className="w-full p-2 border rounded-md"
             >
+              <option value={0}>Seleccionar etapa</option>
+
               {etapas.map((etapa) => (
                 <option key={etapa.idEtapa} value={etapa.idEtapa}>
+                  [{etapa.codEtapa}] {etapa.proyecto?.nombreProyecto} -{" "}
                   {etapa.nombreEtapa}
                 </option>
               ))}
@@ -129,19 +137,33 @@ export default function ActividadModal({
                   },
                 })
               }
-              style={{
-                padding: "10px",
-                border: "1px solid #dbe2ea",
-                borderRadius: "8px",
-              }}
+              className="w-full p-2 border rounded-md"
             >
-              {usuarios.map((usuario) => (
-                <option key={usuario.idUsuario} value={usuario.idUsuario}>
-                  {usuario.nombre} {usuario.apellido}
-                </option>
-              ))}
+              <option value={0}>Seleccionar desarrollador</option>
+
+              {usuarios
+                .filter((u) => u.rol?.nombreRol === "Desarrollador")
+                .map((usuario) => (
+                  <option key={usuario.idUsuario} value={usuario.idUsuario}>
+                    {usuario.nombre} {usuario.apellido}
+                  </option>
+                ))}
             </select>
           </div>
+
+          {error && (
+            <div
+              className="
+      bg-red-100
+      text-red-700
+      p-3
+      rounded-md
+      text-sm
+    "
+            >
+              {error}
+            </div>
+          )}
 
           <div
             style={{

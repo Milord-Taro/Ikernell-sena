@@ -157,6 +157,16 @@ public class UsuarioService {
 
         return usuarioRepository.save(usuario);
     }
+
+    public Usuario login(
+            String correo,
+            String contrasena) {
+
+        return usuarioRepository
+                .findByCorreoElectronicoAndContrasena(
+                        correo,
+                        contrasena);
+    }
 }
 
 

@@ -12,4 +12,8 @@ public interface UsuarioRepository
 
     boolean existsByCorreoElectronico(
             String correoElectronico);
+
+    Usuario findByCorreoElectronicoAndContrasena(
+            String correoElectronico,
+            String contrasena);
 }

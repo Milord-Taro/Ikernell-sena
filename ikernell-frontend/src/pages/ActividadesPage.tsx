@@ -33,6 +33,7 @@ export default function ActividadesPage() {
   );
   const [etapas, setEtapas] = useState<any[]>([]);
   const [usuarios, setUsuarios] = useState<any[]>([]);
+  const [errorFormulario, setErrorFormulario] = useState("");
 
   const [nuevaActividad, setNuevaActividad] = useState({
     codActividad: "",
@@ -43,11 +44,11 @@ export default function ActividadesPage() {
     estadoActividad: "Pendiente",
 
     etapa: {
-      idEtapa: 1,
+      idEtapa: 0,
     },
 
     desarrollador: {
-      idUsuario: 1,
+      idUsuario: 0,
     },
   });
   useEffect(() => {
@@ -67,8 +68,9 @@ export default function ActividadesPage() {
       setEtapas(etapasData);
 
       setUsuarios(usuariosData);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      setErrorFormulario(error.message || "Error al guardar la actividad");
     }
   }
 
@@ -85,30 +87,134 @@ export default function ActividadesPage() {
   }
 
   async function guardarActividad() {
-    try {
-      const creada = await crearActividad(nuevaActividad);
+    setErrorFormulario("");
 
-      setActividades([...actividades, creada]);
+    if (!nuevaActividad.nombreActividad.trim()) {
+      setErrorFormulario("El nombre es obligatorio");
+      return;
+    }
+
+    if (nuevaActividad.nombreActividad.trim().length < 5) {
+      setErrorFormulario("El nombre debe tener mínimo 5 caracteres");
+      return;
+    }
+
+    if (!nuevaActividad.descripcionActividad.trim()) {
+      setErrorFormulario("La descripción es obligatoria");
+      return;
+    }
+
+    if (nuevaActividad.descripcionActividad.trim().length < 10) {
+      setErrorFormulario("La descripción debe tener mínimo 10 caracteres");
+      return;
+    }
+
+    if (!nuevaActividad.fechaInicioActividad) {
+      setErrorFormulario("Seleccione una fecha de inicio");
+      return;
+    }
+
+    if (!nuevaActividad.fechaFinActividad) {
+      setErrorFormulario("Seleccione una fecha de finalización");
+      return;
+    }
+
+    if (
+      nuevaActividad.fechaFinActividad < nuevaActividad.fechaInicioActividad
+    ) {
+      setErrorFormulario("La fecha fin no puede ser menor que la fecha inicio");
+      return;
+    }
+
+    if (nuevaActividad.etapa.idEtapa === 0) {
+      setErrorFormulario("Seleccione una etapa");
+      return;
+    }
+
+    if (nuevaActividad.desarrollador.idUsuario === 0) {
+      setErrorFormulario("Seleccione un desarrollador");
+      return;
+    }
+
+    try {
+      await crearActividad(nuevaActividad);
+
+      await cargarActividades();
+
+      setNuevaActividad({
+        codActividad: "",
+        nombreActividad: "",
+        descripcionActividad: "",
+        fechaInicioActividad: "",
+        fechaFinActividad: "",
+        estadoActividad: "Pendiente",
+        etapa: {
+          idEtapa: 0,
+        },
+        desarrollador: {
+          idUsuario: 0,
+        },
+      });
 
       setMostrarFormulario(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      setErrorFormulario(error.message || "Error al guardar la actividad");
     }
   }
 
   async function guardarCambios() {
+    setErrorFormulario("");
+
     if (!actividadEditando) {
       return;
     }
-    const actualizada = await actualizarActividad(
-      actividadEditando.idActividad,
-      nuevaActividad,
-    );
 
-    console.log("RESPUESTA PUT");
-    console.log(actualizada);
+    if (!nuevaActividad.nombreActividad.trim()) {
+      setErrorFormulario("El nombre es obligatorio");
+      return;
+    }
 
-    console.log(nuevaActividad);
+    if (nuevaActividad.nombreActividad.trim().length < 5) {
+      setErrorFormulario("El nombre debe tener mínimo 5 caracteres");
+      return;
+    }
+
+    if (!nuevaActividad.descripcionActividad.trim()) {
+      setErrorFormulario("La descripción es obligatoria");
+      return;
+    }
+
+    if (nuevaActividad.descripcionActividad.trim().length < 10) {
+      setErrorFormulario("La descripción debe tener mínimo 10 caracteres");
+      return;
+    }
+
+    if (!nuevaActividad.fechaInicioActividad) {
+      setErrorFormulario("Seleccione una fecha de inicio");
+      return;
+    }
+
+    if (!nuevaActividad.fechaFinActividad) {
+      setErrorFormulario("Seleccione una fecha de finalización");
+      return;
+    }
+
+    if (
+      nuevaActividad.fechaFinActividad < nuevaActividad.fechaInicioActividad
+    ) {
+      setErrorFormulario("La fecha fin no puede ser menor que la fecha inicio");
+      return;
+    }
+
+    if (nuevaActividad.etapa.idEtapa === 0) {
+      setErrorFormulario("Seleccione una etapa");
+      return;
+    }
+    if (nuevaActividad.desarrollador.idUsuario === 0) {
+      setErrorFormulario("Seleccione un desarrollador");
+      return;
+    }
 
     try {
       const actualizada = await actualizarActividad(
@@ -116,13 +222,15 @@ export default function ActividadesPage() {
         nuevaActividad,
       );
 
+      console.log(actualizada);
+
       await cargarActividades();
 
       setActividadEditando(null);
-
       setMostrarFormulario(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      setErrorFormulario(error.message || "Error al guardar la actividad");
     }
   }
 
@@ -148,11 +256,11 @@ export default function ActividadesPage() {
             estadoActividad: "Pendiente",
 
             etapa: {
-              idEtapa: 1,
+              idEtapa: 0,
             },
 
             desarrollador: {
-              idUsuario: 1,
+              idUsuario: 0,
             },
           });
 
@@ -177,29 +285,22 @@ export default function ActividadesPage() {
         }}
       />
 
-      <div className="bg-white rounded-xl shadow p-4">
-        <Table
-          border={1}
-          cellPadding={10}
-          style={{
-            width: "100%",
-            marginTop: "20px",
-          }}
-        >
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Actividad</th>
-              <th>Desarrollador</th>
-              <th>Etapa</th>
-              <th>Estado</th>
-              <th>Inicio</th>
-              <th>Fin</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
+      <div className="bg-white rounded-xl shadow p-6 w-full">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Código</TableHead>
+              <TableHead>Actividad</TableHead>
+              <TableHead>Desarrollador</TableHead>
+              <TableHead>Proyecto - Etapa</TableHead>
+              <TableHead className="text-center">Estado</TableHead>
+              <TableHead className="text-center">Inicio</TableHead>
+              <TableHead className="text-center">Fin</TableHead>
+              <TableHead className="text-center">Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
 
-          <tbody>
+          <TableBody>
             {actividadesFiltradas.length === 0 ? (
               <tr>
                 <td
@@ -214,16 +315,16 @@ export default function ActividadesPage() {
               </tr>
             ) : (
               actividadesFiltradas.map((actividad) => (
-                <tr key={actividad.idActividad}>
-                  <td>{actividad.codActividad}</td>
+                <TableRow key={actividad.idActividad}>
+                  <TableCell>{actividad.codActividad}</TableCell>
 
-                  <td>
+                  <TableCell className="min-w-[260px]">
                     <Link
                       to={`/dashboard/actividades/${actividad.idActividad}`}
                     >
                       {actividad.nombreActividad}
                     </Link>
-                  </td>
+                  </TableCell>
 
                   <td>
                     {actividad.desarrollador
@@ -231,9 +332,19 @@ export default function ActividadesPage() {
                       : "Sin asignar"}
                   </td>
 
-                  <td>{actividad.etapa?.nombreEtapa}</td>
+                  <TableCell className="min-w-[260px]">
+                    <div className="flex flex-col">
+                      <span className="font-medium">
+                        {actividad.etapa?.proyecto?.nombreProyecto}
+                      </span>
 
-                  <td>
+                      <span className="text-sm text-gray-500">
+                        {actividad.etapa?.nombreEtapa}
+                      </span>
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="text-center">
                     <span
                       style={{
                         padding: "4px 10px",
@@ -251,14 +362,18 @@ export default function ActividadesPage() {
                     >
                       {actividad.estadoActividad}
                     </span>
-                  </td>
+                  </TableCell>
 
-                  <td>{actividad.fechaInicioActividad}</td>
+                  <TableCell className="text-center">
+                    {actividad.fechaInicioActividad}
+                  </TableCell>
 
-                  <td>{actividad.fechaFinActividad}</td>
+                  <TableCell className="text-center">
+                    {actividad.fechaFinActividad}
+                  </TableCell>
 
                   <TableCell>
-                    <div className="flex gap-2">
+                    <div className="flex justify-center gap-2">
                       <Button
                         size="sm"
                         onClick={() =>
@@ -326,10 +441,10 @@ export default function ActividadesPage() {
                       </Button>
                     </div>
                   </TableCell>
-                </tr>
+                </TableRow>
               ))
             )}
-          </tbody>
+          </TableBody>
         </Table>
       </div>
 
@@ -345,6 +460,7 @@ export default function ActividadesPage() {
         editando={actividadEditando !== null}
         etapas={etapas}
         usuarios={usuarios}
+        error={errorFormulario}
       />
     </div>
   );

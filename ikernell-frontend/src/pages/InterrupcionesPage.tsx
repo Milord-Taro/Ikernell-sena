@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import type { Interrupcion } from "../types/Interrupcion";
 
 import {
@@ -41,6 +41,8 @@ export default function InterrupcionesPage() {
     cargar();
   }, []);
 
+  const navigate = useNavigate();
+
   const interrupcionesFiltradas = interrupciones.filter(
     (i) =>
       i.codInterrupcion.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -76,64 +78,75 @@ export default function InterrupcionesPage() {
           borderRadius: "8px",
         }}
       />
+      <div className="bg-white rounded-xl shadow p-6 w-full">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Código</TableHead>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Código</TableHead>
+              <TableHead>Tipo</TableHead>
 
-            <TableHead>Tipo</TableHead>
+              <TableHead>Desarrollador</TableHead>
 
-            <TableHead>Desarrollador</TableHead>
+              <TableHead>Duración</TableHead>
 
-            <TableHead>Duración</TableHead>
+              <TableHead>Etapa</TableHead>
 
-            <TableHead>Etapa</TableHead>
-
-            <TableHead>Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {interrupcionesFiltradas.map((interrupcion) => (
-            <TableRow key={interrupcion.idInterrupcion}>
-              <TableCell>{interrupcion.codInterrupcion}</TableCell>
-
-              <TableCell>
-                {interrupcion.tipoInterrupcion.nombreTipoInterrupcion}
-              </TableCell>
-
-              <TableCell>
-                {interrupcion.desarrollador.nombre}{" "}
-                {interrupcion.desarrollador.apellido}
-              </TableCell>
-
-              <TableCell>
-                {interrupcion.duracionInterrupcion}
-                {" min"}
-              </TableCell>
-
-              <TableCell>{interrupcion.etapa.nombreEtapa}</TableCell>
-
-              <TableCell>
-                <Button
-                  onClick={async () => {
-                    await eliminarInterrupcion(interrupcion.idInterrupcion);
-
-                    setInterrupciones(
-                      interrupciones.filter(
-                        (i) => i.idInterrupcion !== interrupcion.idInterrupcion,
-                      ),
-                    );
-                  }}
-                >
-                  Eliminar
-                </Button>
-              </TableCell>
+              <TableHead>Acciones</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {interrupcionesFiltradas.map((interrupcion) => (
+              <TableRow key={interrupcion.idInterrupcion}>
+                <TableCell>{interrupcion.codInterrupcion}</TableCell>
+
+                <TableCell>
+                  {interrupcion.tipoInterrupcion.nombreTipoInterrupcion}
+                </TableCell>
+
+                <TableCell>
+                  {interrupcion.desarrollador.nombre}{" "}
+                  {interrupcion.desarrollador.apellido}
+                </TableCell>
+
+                <TableCell>
+                  {interrupcion.duracionInterrupcion}
+                  {" min"}
+                </TableCell>
+
+                <TableCell>{interrupcion.etapa.nombreEtapa}</TableCell>
+
+                <TableCell>
+                  <Button
+                    onClick={() =>
+                      navigate(
+                        `/dashboard/interrupciones/${interrupcion.idInterrupcion}/editar`,
+                      )
+                    }
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      await eliminarInterrupcion(interrupcion.idInterrupcion);
+
+                      setInterrupciones(
+                        interrupciones.filter(
+                          (i) =>
+                            i.idInterrupcion !== interrupcion.idInterrupcion,
+                        ),
+                      );
+                    }}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

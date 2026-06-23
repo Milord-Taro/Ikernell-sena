@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.ikernell_backend.dto.LoginRequest;
 
 
 import java.util.List;
@@ -84,5 +85,14 @@ public class UsuarioController {
 
         return usuarioService
                 .habilitarUsuario(id);
+    }
+
+    @PostMapping("/api/auth/login")
+    public Usuario login(
+            @RequestBody LoginRequest request) {
+
+        return usuarioService.login(
+                request.getCorreo(),
+                request.getContrasena());
     }
 }

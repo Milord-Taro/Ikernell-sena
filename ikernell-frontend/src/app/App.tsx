@@ -27,8 +27,8 @@ import PerfilPage from "../pages/PerfilPage";
 import UsuarioDetallePage from "../pages/UsuarioDetallePage";
 import UsuarioEditarPage from "../pages/UsuarioEditarPage";
 import UsuarioNuevoPage from "../pages/UsuarioNuevoPage";
-import ActividadNuevaPage from "../pages/ActividadNuevaPage";
-import ActividadEditarPage from "../pages/ActividadEditarPage";
+import RegistroErrorEditarPage from "../pages/RegistroErrorEditarPage";
+import RegistroInterrupcionEditarPage from "../pages/RegistroInterrupcionEditarPage";
 
 export default function App() {
   const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
@@ -149,10 +149,28 @@ export default function App() {
           />
 
           <Route
+            path="/dashboard/errores/:id/editar"
+            element={
+              <DashboardLayout>
+                <RegistroErrorEditarPage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
             path="/dashboard/interrupciones"
             element={
               <DashboardLayout>
                 <InterrupcionesPage />
+              </DashboardLayout>
+            }
+          />
+
+          <Route
+            path="/dashboard/interrupciones/:id/editar"
+            element={
+              <DashboardLayout>
+                <RegistroInterrupcionEditarPage />
               </DashboardLayout>
             }
           />
@@ -189,24 +207,6 @@ export default function App() {
             element={
               <DashboardLayout>
                 <ActividadDetallePage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/actividades/nueva"
-            element={
-              <DashboardLayout>
-                <ActividadNuevaPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/actividades/:id/editar"
-            element={
-              <DashboardLayout>
-                <ActividadEditarPage />
               </DashboardLayout>
             }
           />
