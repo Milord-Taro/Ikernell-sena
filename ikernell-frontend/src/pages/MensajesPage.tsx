@@ -167,22 +167,26 @@ export default function MensajesPage() {
                   </TableCell>
 
                   <TableCell>
-                    <Button
-                      onClick={() => setMensajeSeleccionado(mensaje.idMensaje)}
-                    >
-                      Ver
-                    </Button>
-
-                    <Button
-                      variant="destructive"
-                      onClick={() => {
-                        if (confirm("¿Deseas eliminar este mensaje?")) {
-                          borrarMensaje(mensaje.idMensaje);
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() =>
+                          setMensajeSeleccionado(mensaje.idMensaje)
                         }
-                      }}
-                    >
-                      Eliminar
-                    </Button>
+                      >
+                        Ver
+                      </Button>
+
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          if (confirm("¿Deseas eliminar este mensaje?")) {
+                            borrarMensaje(mensaje.idMensaje);
+                          }
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Clock } from "lucide-react";
+import { Bug } from "lucide-react";
 
 import { obtenerEtapas } from "../services/etapaService";
-import { obtenerTiposInterrupcion } from "../services/tipoInterrupcionService";
-import { crearInterrupcion } from "../services/interrupcionService";
+import { obtenerTiposError } from "../services/tipoErrorService";
+import {
+  obtenerErrorPorId,
+  actualizarRegistroError,
+} from "../services/registroErrorService";
+
 import { obtenerIdUsuario } from "../utils/auth";
 
 import { Card, CardContent } from "../app/components/ui/card";
@@ -21,68 +25,84 @@ import {
   SelectValue,
 } from "../app/components/ui/select";
 
-export default function RegistroInterrupcionNuevoPage() {
+export default function RegistroErrorEditarPage() {
   const { id } = useParams();
+  const idError = Number(id);
 
   const navigate = useNavigate();
 
   const [etapas, setEtapas] = useState<any[]>([]);
   const [nombreProyecto, setNombreProyecto] = useState("");
-  const [tiposInterrupcion, setTiposInterrupcion] = useState<any[]>([]);
+  const [idDesarrollador, setIdDesarrollador] = useState<number | null>(null);
+  const [tiposError, setTiposError] = useState<any[]>([]);
   const [errorFormulario, setErrorFormulario] = useState("");
 
   const [formulario, setFormulario] = useState({
-    codInterrupcion: "",
-    descripcionInterrupcion: "",
-    duracionInterrupcion: "",
-    idTipoInterrupcion: "",
+    codError: "",
+    descripcionError: "",
+    comentarioError: "",
+    idTipoError: "",
     idEtapa: "",
   });
 
   useEffect(() => {
     async function cargarDatos() {
       try {
+        const error = await obtenerErrorPorId(idError);
+
+        setFormulario({
+          codError: error.codError,
+          descripcionError: error.descripcionError,
+          comentarioError: error.comentarioError,
+
+          idTipoError: String(error.tipoError.idTipoError),
+
+          idEtapa: String(error.etapa.idEtapa),
+        });
+
+        setIdDesarrollador(error.desarrollador.idUsuario);
+
         const etapasData = await obtenerEtapas();
 
-        const etapasProyecto = etapasData.filter(
-          (etapa) => etapa.proyecto.idProyecto === Number(id),
+        setEtapas(etapasData);
+
+        const tipos = await obtenerTiposError();
+
+        const etapaActual = etapasData.find(
+          (e) => e.idEtapa === error.etapa.idEtapa,
         );
 
-        setEtapas(etapasProyecto);
-
-        const tipos = await obtenerTiposInterrupcion();
-
-        if (etapasProyecto.length > 0) {
-          setNombreProyecto(etapasProyecto[0].proyecto.nombreProyecto);
+        if (etapaActual) {
+          setNombreProyecto(etapaActual.proyecto.nombreProyecto);
         }
 
-        setTiposInterrupcion(tipos);
+        setTiposError(tipos);
       } catch (error) {
         console.error(error);
       }
     }
 
     cargarDatos();
-  }, [id]);
+  }, [idError]);
 
   function validarFormulario(): boolean {
-    if (!formulario.codInterrupcion.trim()) {
+    if (!formulario.codError.trim()) {
       setErrorFormulario("Debe ingresar un código");
       return false;
     }
 
-    if (formulario.codInterrupcion.trim().length < 3) {
+    if (formulario.codError.trim().length < 3) {
       setErrorFormulario("El código debe tener mínimo 3 caracteres");
       return false;
     }
 
-    if (formulario.codInterrupcion.trim().length > 10) {
+    if (formulario.codError.trim().length > 10) {
       setErrorFormulario("El código no puede superar 10 caracteres");
       return false;
     }
 
-    if (!formulario.idTipoInterrupcion) {
-      setErrorFormulario("Debe seleccionar un tipo de interrupción");
+    if (!formulario.idTipoError) {
+      setErrorFormulario("Debe seleccionar un tipo de error");
       return false;
     }
 
@@ -91,70 +111,70 @@ export default function RegistroInterrupcionNuevoPage() {
       return false;
     }
 
-    if (!formulario.descripcionInterrupcion.trim()) {
+    if (!formulario.descripcionError.trim()) {
       setErrorFormulario("Debe ingresar una descripción");
       return false;
     }
 
-    if (formulario.descripcionInterrupcion.trim().length < 10) {
+    if (formulario.descripcionError.trim().length < 10) {
       setErrorFormulario("La descripción debe tener mínimo 10 caracteres");
       return false;
     }
 
-    if (formulario.descripcionInterrupcion.trim().length > 500) {
+    if (formulario.descripcionError.trim().length > 500) {
       setErrorFormulario("La descripción no puede superar 500 caracteres");
       return false;
     }
 
-    if (
-      Number(formulario.duracionInterrupcion) <= 0 ||
-      Number(formulario.duracionInterrupcion) > 1440
-    ) {
-      setErrorFormulario("La duración debe estar entre 1 y 1440 minutos");
-
+    if (formulario.comentarioError.trim().length > 500) {
+      setErrorFormulario("El comentario no puede superar 500 caracteres");
       return false;
     }
+
+    setErrorFormulario("");
 
     return true;
   }
 
-  async function guardar() {
+  async function actualizar() {
     if (!validarFormulario()) {
       return;
     }
-
+    if (!idDesarrollador) {
+      toast.error("No se pudo obtener el desarrollador original");
+      return;
+    }
     try {
-      await crearInterrupcion({
-        codInterrupcion: formulario.codInterrupcion,
-        descripcionInterrupcion: formulario.descripcionInterrupcion,
+      await actualizarRegistroError(idError, {
+        codError: formulario.codError,
 
-        tipoInterrupcion: {
-          idTipoInterrupcion: Number(formulario.idTipoInterrupcion),
+        descripcionError: formulario.descripcionError,
+
+        comentarioError: formulario.comentarioError,
+
+        estadoError: "Abierto",
+
+        tipoError: {
+          idTipoError: Number(formulario.idTipoError),
         },
 
         etapa: {
           idEtapa: Number(formulario.idEtapa),
         },
 
-        duracionInterrupcion: Number(formulario.duracionInterrupcion),
-
-        fechaInterrupcion: new Date().toISOString().split("T")[0],
-
         desarrollador: {
           idUsuario: obtenerIdUsuario(),
         },
       });
 
-      toast.success("Interrupcińn registrada correctamente");
+      toast.success("Error actualizado correctamente");
 
-      navigate(`/dashboard/proyectos/${id}`);
+      navigate("/dashboard/errores");
     } catch (error) {
       console.error(error);
 
-      toast.error("No se pudo registrar la interrupción");
+      toast.error("No se pudo actualizar el error");
     }
-    setErrorFormulario("");
-    return true;
   }
 
   return (
@@ -173,11 +193,11 @@ export default function RegistroInterrupcionNuevoPage() {
               justify-center
             "
             >
-              <Clock className="h-8 w-8 text-primary" />
+              <Bug className="h-8 w-8 text-primary" />
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold">Registrar Interrupción</h1>
+              <h1 className="text-3xl font-bold">Editar Error</h1>
 
               <p className="text-sm">
                 Proyecto:
@@ -185,8 +205,7 @@ export default function RegistroInterrupcionNuevoPage() {
               </p>
 
               <p className="text-muted-foreground">
-                Complete la información para registrar una nueva interrupcion en
-                el proyecto.
+                Modifique la información del error registrado.
               </p>
             </div>
           </div>
@@ -197,12 +216,12 @@ export default function RegistroInterrupcionNuevoPage() {
             </label>
 
             <Input
-              value={formulario.codInterrupcion}
-              placeholder="Ej: INT-001"
+              value={formulario.codError}
+              placeholder="Ej: ERR-001"
               onChange={(e) =>
                 setFormulario({
                   ...formulario,
-                  codInterrupcion: e.target.value,
+                  codError: e.target.value,
                 })
               }
             />
@@ -212,53 +231,33 @@ export default function RegistroInterrupcionNuevoPage() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium">
-                Tipo de Interrupción <span className="text-red-500">*</span>
+                Tipo de Error <span className="text-red-500">*</span>
               </label>
 
               <Select
-                value={formulario.idTipoInterrupcion}
+                value={formulario.idTipoError}
                 onValueChange={(value) =>
                   setFormulario({
                     ...formulario,
-                    idTipoInterrupcion: value,
+                    idTipoError: value,
                   })
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un tipo de interrupción" />
+                  <SelectValue placeholder="Seleccione un tipo de error" />
                 </SelectTrigger>
 
                 <SelectContent>
-                  {tiposInterrupcion.map((tipo) => (
+                  {tiposError.map((tipo) => (
                     <SelectItem
-                      key={tipo.idTipoInterrupcion}
-                      value={String(tipo.idTipoInterrupcion)}
+                      key={tipo.idTipoError}
+                      value={String(tipo.idTipoError)}
                     >
-                      {tipo.nombreTipoInterrupcion}
+                      {tipo.nombreTipo}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
-                Duración (minutos)
-                <span className="text-red-500">*</span>
-              </label>
-
-              <Input
-                type="number"
-                min="1"
-                max="1440"
-                value={formulario.duracionInterrupcion}
-                onChange={(e) =>
-                  setFormulario({
-                    ...formulario,
-                    duracionInterrupcion: e.target.value,
-                  })
-                }
-              />
             </div>
 
             <div className="space-y-2">
@@ -276,7 +275,7 @@ export default function RegistroInterrupcionNuevoPage() {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un tipo de interrupción" />
+                  <SelectValue placeholder="Seleccione una etapa" />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -300,12 +299,12 @@ export default function RegistroInterrupcionNuevoPage() {
             </label>
             <Textarea
               className="min-h-[140px]"
-              placeholder="Describa la interrupción..."
-              value={formulario.descripcionInterrupcion}
+              placeholder="Describa el error encontrado..."
+              value={formulario.descripcionError}
               onChange={(e) =>
                 setFormulario({
                   ...formulario,
-                  descripcionInterrupcion: e.target.value,
+                  descripcionError: e.target.value,
                 })
               }
             />
@@ -313,10 +312,34 @@ export default function RegistroInterrupcionNuevoPage() {
             <div className="flex justify-between text-sm text-muted-foreground">
               <span>Mínimo 10 y máximo 500 caracteres.</span>
 
-              <span>{formulario.descripcionInterrupcion.length}/500</span>
+              <span>{formulario.descripcionError.length}/500</span>
             </div>
           </div>
 
+          {/* Comentario */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Comentario <span className="text-red-500">*</span>
+            </label>
+
+            <Textarea
+              className="min-h-[120px]"
+              placeholder="Agregue comentarios adicionales..."
+              value={formulario.comentarioError}
+              onChange={(e) =>
+                setFormulario({
+                  ...formulario,
+                  comentarioError: e.target.value,
+                })
+              }
+            />
+
+            <div className="flex justify-between text-sm text-muted-foreground">
+              <span>Máximo 500 caracteres.</span>
+
+              <span>{formulario.comentarioError.length}/500</span>
+            </div>
+          </div>
           {errorFormulario && (
             <div
               className="
@@ -339,12 +362,12 @@ export default function RegistroInterrupcionNuevoPage() {
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button
               variant="outline"
-              onClick={() => navigate(`/dashboard/proyectos/${id}`)}
+              onClick={() => navigate("/dashboard/errores")}
             >
               Cancelar
             </Button>
 
-            <Button onClick={guardar}>Guardar Interrupción</Button>
+            <Button onClick={actualizar}>Actualizar Error</Button>
           </div>
         </CardContent>
       </Card>

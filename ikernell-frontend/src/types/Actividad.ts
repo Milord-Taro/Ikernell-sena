@@ -19,5 +19,10 @@ export interface Actividad {
   etapa: {
     idEtapa: number;
     nombreEtapa: string;
+
+    proyecto?: {
+      idProyecto: number;
+      nombreProyecto: string;
+    };
   };
 }

@@ -5,7 +5,12 @@ import { Clock } from "lucide-react";
 
 import { obtenerEtapas } from "../services/etapaService";
 import { obtenerTiposInterrupcion } from "../services/tipoInterrupcionService";
-import { crearInterrupcion } from "../services/interrupcionService";
+
+import {
+  obtenerInterrupcionPorId,
+  actualizarInterrupcion,
+} from "../services/interrupcionService";
+
 import { obtenerIdUsuario } from "../utils/auth";
 
 import { Card, CardContent } from "../app/components/ui/card";
@@ -21,13 +26,15 @@ import {
   SelectValue,
 } from "../app/components/ui/select";
 
-export default function RegistroInterrupcionNuevoPage() {
+export default function RegistroInterrupcionEditarPage() {
   const { id } = useParams();
+  const idInterrupcion = Number(id);
 
   const navigate = useNavigate();
 
   const [etapas, setEtapas] = useState<any[]>([]);
   const [nombreProyecto, setNombreProyecto] = useState("");
+  const [idDesarrollador, setIdDesarrollador] = useState<number | null>(null);
   const [tiposInterrupcion, setTiposInterrupcion] = useState<any[]>([]);
   const [errorFormulario, setErrorFormulario] = useState("");
 
@@ -42,18 +49,36 @@ export default function RegistroInterrupcionNuevoPage() {
   useEffect(() => {
     async function cargarDatos() {
       try {
+        const interrupcion = await obtenerInterrupcionPorId(idInterrupcion);
+
+        setFormulario({
+          codInterrupcion: interrupcion.codInterrupcion,
+
+          descripcionInterrupcion: interrupcion.descripcionInterrupcion,
+
+          duracionInterrupcion: String(interrupcion.duracionInterrupcion),
+
+          idTipoInterrupcion: String(
+            interrupcion.tipoInterrupcion.idTipoInterrupcion,
+          ),
+
+          idEtapa: String(interrupcion.etapa.idEtapa),
+        });
+
+        setIdDesarrollador(interrupcion.desarrollador.idUsuario);
+
         const etapasData = await obtenerEtapas();
 
-        const etapasProyecto = etapasData.filter(
-          (etapa) => etapa.proyecto.idProyecto === Number(id),
-        );
-
-        setEtapas(etapasProyecto);
+        setEtapas(etapasData);
 
         const tipos = await obtenerTiposInterrupcion();
 
-        if (etapasProyecto.length > 0) {
-          setNombreProyecto(etapasProyecto[0].proyecto.nombreProyecto);
+        const etapaActual = etapasData.find(
+          (e) => e.idEtapa === interrupcion.etapa.idEtapa,
+        );
+
+        if (etapaActual) {
+          setNombreProyecto(etapaActual.proyecto.nombreProyecto);
         }
 
         setTiposInterrupcion(tipos);
@@ -63,7 +88,7 @@ export default function RegistroInterrupcionNuevoPage() {
     }
 
     cargarDatos();
-  }, [id]);
+  }, [idInterrupcion]);
 
   function validarFormulario(): boolean {
     if (!formulario.codInterrupcion.trim()) {
@@ -82,7 +107,7 @@ export default function RegistroInterrupcionNuevoPage() {
     }
 
     if (!formulario.idTipoInterrupcion) {
-      setErrorFormulario("Debe seleccionar un tipo de interrupción");
+      setErrorFormulario("Debe seleccionar un tipo de error");
       return false;
     }
 
@@ -115,18 +140,28 @@ export default function RegistroInterrupcionNuevoPage() {
       return false;
     }
 
+    setErrorFormulario("");
+
     return true;
   }
 
-  async function guardar() {
+  async function actualizar() {
     if (!validarFormulario()) {
       return;
     }
-
+    if (!idDesarrollador) {
+      toast.error("No se pudo obtener el desarrollador original");
+      return;
+    }
     try {
-      await crearInterrupcion({
+      await actualizarInterrupcion(idInterrupcion, {
         codInterrupcion: formulario.codInterrupcion,
+
         descripcionInterrupcion: formulario.descripcionInterrupcion,
+
+        duracionInterrupcion: Number(formulario.duracionInterrupcion),
+
+        fechaInterrupcion: new Date().toISOString().split("T")[0],
 
         tipoInterrupcion: {
           idTipoInterrupcion: Number(formulario.idTipoInterrupcion),
@@ -136,25 +171,19 @@ export default function RegistroInterrupcionNuevoPage() {
           idEtapa: Number(formulario.idEtapa),
         },
 
-        duracionInterrupcion: Number(formulario.duracionInterrupcion),
-
-        fechaInterrupcion: new Date().toISOString().split("T")[0],
-
         desarrollador: {
           idUsuario: obtenerIdUsuario(),
         },
       });
 
-      toast.success("Interrupcińn registrada correctamente");
+      toast.success("Interrupción actualizada correctamente");
 
-      navigate(`/dashboard/proyectos/${id}`);
+      navigate("/dashboard/interrupciones");
     } catch (error) {
       console.error(error);
 
-      toast.error("No se pudo registrar la interrupción");
+      toast.error("No se pudo actualizar la interrupción");
     }
-    setErrorFormulario("");
-    return true;
   }
 
   return (
@@ -177,7 +206,7 @@ export default function RegistroInterrupcionNuevoPage() {
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold">Registrar Interrupción</h1>
+              <h1 className="text-3xl font-bold">Editar Interrupción</h1>
 
               <p className="text-sm">
                 Proyecto:
@@ -185,8 +214,7 @@ export default function RegistroInterrupcionNuevoPage() {
               </p>
 
               <p className="text-muted-foreground">
-                Complete la información para registrar una nueva interrupcion en
-                el proyecto.
+                Modifique la información de la interrupción registrada.
               </p>
             </div>
           </div>
@@ -208,7 +236,7 @@ export default function RegistroInterrupcionNuevoPage() {
             />
           </div>
 
-          {/* Tipo Error + Etapa */}
+          {/* Tipo Interrupción + Etapa */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium">
@@ -225,7 +253,7 @@ export default function RegistroInterrupcionNuevoPage() {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un tipo de interrupción" />
+                  <SelectValue placeholder="Seleccione un tipo de error" />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -243,26 +271,6 @@ export default function RegistroInterrupcionNuevoPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium">
-                Duración (minutos)
-                <span className="text-red-500">*</span>
-              </label>
-
-              <Input
-                type="number"
-                min="1"
-                max="1440"
-                value={formulario.duracionInterrupcion}
-                onChange={(e) =>
-                  setFormulario({
-                    ...formulario,
-                    duracionInterrupcion: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
                 Etapa <span className="text-red-500">*</span>
               </label>
 
@@ -276,7 +284,7 @@ export default function RegistroInterrupcionNuevoPage() {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Seleccione un tipo de interrupción" />
+                  <SelectValue placeholder="Seleccione una etapa" />
                 </SelectTrigger>
 
                 <SelectContent>
@@ -293,6 +301,26 @@ export default function RegistroInterrupcionNuevoPage() {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Duración (minutos)
+              <span className="text-red-500">*</span>
+            </label>
+
+            <Input
+              type="number"
+              min="1"
+              max="1440"
+              value={formulario.duracionInterrupcion}
+              onChange={(e) =>
+                setFormulario({
+                  ...formulario,
+                  duracionInterrupcion: e.target.value,
+                })
+              }
+            />
+          </div>
+
           {/* Descripción */}
           <div className="space-y-2">
             <label className="text-sm font-medium">
@@ -300,7 +328,7 @@ export default function RegistroInterrupcionNuevoPage() {
             </label>
             <Textarea
               className="min-h-[140px]"
-              placeholder="Describa la interrupción..."
+              placeholder="Describa la interrupciónencontrado..."
               value={formulario.descripcionInterrupcion}
               onChange={(e) =>
                 setFormulario({
@@ -339,12 +367,12 @@ export default function RegistroInterrupcionNuevoPage() {
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button
               variant="outline"
-              onClick={() => navigate(`/dashboard/proyectos/${id}`)}
+              onClick={() => navigate("/dashboard/interrupciones")}
             >
               Cancelar
             </Button>
 
-            <Button onClick={guardar}>Guardar Interrupción</Button>
+            <Button onClick={actualizar}>Actualizar Interrupción</Button>
           </div>
         </CardContent>
       </Card>
