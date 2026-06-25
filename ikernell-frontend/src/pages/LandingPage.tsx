@@ -9,18 +9,16 @@ import { FAQ } from "../app/components/FAQ";
 import { LinksInteres } from "../app/components/LinksInteres";
 import { Contact } from "../app/components/Contact";
 import { Navbar } from "../app/components/Navbar";
+import { Footer } from "../app/components/Footer";
 
 import { AuthModal } from "../app/components/AuthModal";
 
 export default function LandingPage() {
-
   const [mostrarLogin, setMostrarLogin] = useState(false);
 
   return (
     <>
-      <Navbar
-        onSignIn={() => setMostrarLogin(true)}
-      />
+      <Navbar onSignIn={() => setMostrarLogin(true)} />
 
       <Hero
         onGetStarted={() =>
@@ -37,12 +35,9 @@ export default function LandingPage() {
       <LinksInteres />
       <FAQ />
       <Contact />
-
-      {mostrarLogin && (
-        <AuthModal
-          onClose={() => setMostrarLogin(false)}
-        />
-      )}
+      <Footer />
+      
+      {mostrarLogin && <AuthModal onClose={() => setMostrarLogin(false)} />}
     </>
   );
 }

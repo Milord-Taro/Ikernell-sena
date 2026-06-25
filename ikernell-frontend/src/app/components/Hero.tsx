@@ -1,4 +1,11 @@
-import { ArrowRight, Play, CheckCircle2, Users, Star, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  Play,
+  CheckCircle2,
+  Users,
+  Star,
+  TrendingUp,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
@@ -7,15 +14,15 @@ interface HeroProps {
 }
 
 const stats = [
-  { icon: Users, value: "500+", label: "Empresas activas" },
+  { icon: Users, value: "50+", label: "Empresas satisfechas" },
   { icon: TrendingUp, value: "98%", label: "Satisfacción" },
   { icon: Star, value: "4.9/5", label: "Valoración" },
 ];
 
 const features = [
-  "Gestión de proyectos en tiempo real",
-  "Colaboración de equipos distribuidos",
-  "Reportes e inteligencia de negocios",
+  "Desarrollo de software personalizado",
+  "Consultoría y transformación digital",
+  "Equipos especializados en desarrollo",
 ];
 
 export function Hero({ onGetStarted }: HeroProps) {
@@ -25,7 +32,8 @@ export function Hero({ onGetStarted }: HeroProps) {
       className="relative min-h-screen flex items-center overflow-hidden pt-16"
       aria-label="Sección principal"
       style={{
-        background: "linear-gradient(135deg, #f8faff 0%, #eef2ff 50%, #e0f2fe 100%)",
+        background:
+          "linear-gradient(135deg, #f8faff 0%, #eef2ff 50%, #e0f2fe 100%)",
       }}
     >
       {/* Decorative blobs */}
@@ -40,22 +48,36 @@ export function Hero({ onGetStarted }: HeroProps) {
         aria-hidden="true"
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-15 w-full">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left content */}
-          <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border"
-              style={{ background: "#eef2ff", color: "#4338ca", borderColor: "#c7d2fe" }}>
-              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: "#4338ca" }} />
-              Gestión de Software Empresarial
+          <div className="space-y-5">
+            <div
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border"
+              style={{
+                background: "#eef2ff",
+                color: "#4338ca",
+                borderColor: "#c7d2fe",
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ background: "#4338ca" }}
+              />
+              Desarrollo de Software a la Medida
             </div>
 
             <div className="space-y-4">
               <h1
                 className="leading-tight"
-                style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, color: "#0f172a", lineHeight: 1.15 }}
+                style={{
+                  fontSize: "clamp(2rem, 5vw, 3.5 rem)",
+                  fontWeight: 700,
+                  color: "#0f172a",
+                  lineHeight: 1.5,
+                }}
               >
-                Impulsa tus{" "}
+                Desarrollamos{" "}
                 <span
                   style={{
                     background: "linear-gradient(135deg, #4338ca, #0ea5e9)",
@@ -64,13 +86,16 @@ export function Hero({ onGetStarted }: HeroProps) {
                     backgroundClip: "text",
                   }}
                 >
-                  proyectos de software
+                  soluciones de software
                 </span>{" "}
-                al siguiente nivel
+                que impulsan el crecimiento de tu empresa
               </h1>
               <p className="text-lg text-slate-600 leading-relaxed max-w-lg">
-                IKernell Soluciones Software ofrece herramientas avanzadas para gestionar proyectos,
-                equipos y entregas con eficiencia, claridad y resultados medibles.
+                En IKernell Soluciones Software diseñamos, desarrollamos e
+                implementamos soluciones de software personalizadas para
+                empresas que buscan optimizar procesos, mejorar su productividad
+                y acelerar su transformación digital mediante tecnología de
+                calidad.
               </p>
             </div>
 
@@ -78,7 +103,10 @@ export function Hero({ onGetStarted }: HeroProps) {
             <ul className="space-y-3" aria-label="Características principales">
               {features.map((f) => (
                 <li key={f} className="flex items-center gap-3 text-slate-700">
-                  <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: "#0d9488" }} />
+                  <CheckCircle2
+                    className="w-5 h-5 flex-shrink-0"
+                    style={{ color: "#0d9488" }}
+                  />
                   <span>{f}</span>
                 </li>
               ))}
@@ -90,8 +118,12 @@ export function Hero({ onGetStarted }: HeroProps) {
                 onClick={onGetStarted}
                 size="lg"
                 className="text-white shadow-xl gap-2 group hover:shadow-indigo-300/50 transition-all duration-300"
-                style={{ background: "linear-gradient(135deg, #4338ca, #0ea5e9)", paddingLeft: "1.75rem", paddingRight: "1.75rem" }}
-                aria-label="Comenzar ahora - registrarse"
+                style={{
+                  background: "linear-gradient(135deg, #4338ca, #0ea5e9)",
+                  paddingLeft: "1.75rem",
+                  paddingRight: "1.75rem",
+                }}
+                aria-label="Contáctanos - registrarse"
               >
                 Comenzar Ahora
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -100,11 +132,15 @@ export function Hero({ onGetStarted }: HeroProps) {
                 variant="outline"
                 size="lg"
                 className="border-indigo-200 text-indigo-700 hover:bg-indigo-50 gap-2"
-                onClick={() => document.querySelector("#servicios")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() =>
+                  document
+                    .querySelector("#servicios")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
                 aria-label="Ver demostración de servicios"
               >
                 <Play className="w-4 h-4" />
-                Ver Servicios
+                Nuestro Portafolio
               </Button>
             </div>
 
@@ -112,7 +148,10 @@ export function Hero({ onGetStarted }: HeroProps) {
             <div className="flex flex-wrap gap-8 pt-4 border-t border-indigo-100">
               {stats.map(({ icon: Icon, value, label }) => (
                 <div key={label} className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: "#eef2ff" }}>
+                  <div
+                    className="w-9 h-9 rounded-lg flex items-center justify-center"
+                    style={{ background: "#eef2ff" }}
+                  >
                     <Icon className="w-4 h-4" style={{ color: "#4338ca" }} />
                   </div>
                   <div>
@@ -128,7 +167,9 @@ export function Hero({ onGetStarted }: HeroProps) {
           <div className="relative hidden lg:block">
             <div
               className="absolute inset-0 rounded-3xl rotate-3 opacity-30"
-              style={{ background: "linear-gradient(135deg, #4338ca, #0ea5e9)" }}
+              style={{
+                background: "linear-gradient(135deg, #4338ca, #0ea5e9)",
+              }}
               aria-hidden="true"
             />
             <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-indigo-900/20">
@@ -139,7 +180,10 @@ export function Hero({ onGetStarted }: HeroProps) {
               />
               <div
                 className="absolute inset-0"
-                style={{ background: "linear-gradient(to top, rgba(67,56,202,0.3), transparent)" }}
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(67,56,202,0.3), transparent)",
+                }}
                 aria-hidden="true"
               />
             </div>
@@ -150,11 +194,17 @@ export function Hero({ onGetStarted }: HeroProps) {
               aria-label="Estadística: proyectos completados"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "#d1fae5" }}>
-                  <CheckCircle2 className="w-5 h-5" style={{ color: "#059669" }} />
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center"
+                  style={{ background: "#d1fae5" }}
+                >
+                  <CheckCircle2
+                    className="w-5 h-5"
+                    style={{ color: "#059669" }}
+                  />
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900">1,200+</p>
+                  <p className="font-semibold text-slate-900">100+</p>
                   <p className="text-xs text-slate-500">Proyectos entregados</p>
                 </div>
               </div>
@@ -167,12 +217,18 @@ export function Hero({ onGetStarted }: HeroProps) {
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-2">
                   {["#818cf8", "#0ea5e9", "#34d399"].map((c, i) => (
-                    <div key={i} className="w-7 h-7 rounded-full border-2 border-white" style={{ background: c }} />
+                    <div
+                      key={i}
+                      className="w-7 h-7 rounded-full border-2 border-white"
+                      style={{ background: c }}
+                    />
                   ))}
                 </div>
                 <div>
-                  <p className="font-semibold text-slate-900 text-sm">+5,000</p>
-                  <p className="text-xs text-slate-500">Usuarios activos</p>
+                  <p className="font-semibold text-slate-900 text-sm">+50</p>
+                  <p className="text-xs text-slate-500">
+                    Desarrolladores activos
+                  </p>
                 </div>
               </div>
             </div>
@@ -182,8 +238,16 @@ export function Hero({ onGetStarted }: HeroProps) {
 
       {/* Wave divider */}
       <div className="absolute bottom-0 left-0 right-0" aria-hidden="true">
-        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="white" />
+        <svg
+          viewBox="0 0 1440 80"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full"
+        >
+          <path
+            d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z"
+            fill="white"
+          />
         </svg>
       </div>
     </section>

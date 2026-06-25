@@ -3,39 +3,33 @@ import { ChevronDown, HelpCircle } from "lucide-react";
 
 const faqs = [
   {
-    question: "¿Qué es IKernell Soluciones Software?",
+    question: "¿Qué hace IKernell Soluciones Software?",
     answer:
-      "IKernell es una plataforma integral de gestión de proyectos de software diseñada para equipos ágiles y organizaciones que buscan mejorar su capacidad de entrega, visibilidad y control sobre sus proyectos tecnológicos. Ofrecemos herramientas de planificación, seguimiento, colaboración y analítica en una sola solución.",
+      "Somos una empresa dedicada al análisis, diseño, desarrollo e implementación de soluciones de software para organizaciones que desean optimizar sus procesos mediante tecnología.",
   },
   {
-    question: "¿Cuántos usuarios pueden usar la plataforma simultáneamente?",
+    question: "¿Qué tipo de proyectos desarrollan?",
     answer:
-      "Nuestra arquitectura cloud está diseñada para soportar desde equipos de 3 personas hasta organizaciones con miles de usuarios concurrentes. Los planes se adaptan al tamaño de tu equipo: Starter (hasta 10 usuarios), Business (hasta 100 usuarios) y Enterprise (usuarios ilimitados con SLA garantizado).",
+      "Aplicaciones web: * Sistemas empresariales * Automatización * Software personalizado * Integraciones",
   },
   {
-    question: "¿Ofrecen integración con herramientas que ya usamos?",
+    question: "¿Trabajan con empresas de cualquier tamaño?",
     answer:
-      "Sí. IKernell se integra nativamente con más de 50 herramientas: GitHub, GitLab, Bitbucket, Slack, Microsoft Teams, Google Workspace, Jira, Confluence, Figma, Salesforce y muchas más. También disponemos de una API REST y webhooks para integraciones personalizadas.",
+      "Sí. Desde pequeñas empresas hasta organizaciones que requieren soluciones a gran escala.",
   },
   {
-    question: "¿Mis datos están seguros en la plataforma?",
+    question: "¿Qué tecnologías utilizan?",
     answer:
-      "La seguridad es nuestra prioridad. Implementamos cifrado AES-256 en reposo y TLS 1.3 en tránsito. Cumplimos con ISO/IEC 27001, SOC 2 Tipo II, GDPR y la Ley 1581 de 2012 de protección de datos de Colombia. Realizamos auditorías de seguridad trimestrales y tenemos un programa de bug bounty activo.",
+      "* Java * Spring Boot * React * PostgreSQL * APIs REST * Git * Docker",
   },
   {
-    question: "¿Existe un período de prueba gratuito?",
-    answer:
-      "Sí, ofrecemos 30 días de prueba gratuita con acceso completo a todas las funcionalidades del plan Business, sin necesidad de tarjeta de crédito. Al finalizar el período puedes elegir el plan que mejor se adapte a tu equipo o continuar con el plan gratuito con funcionalidades básicas.",
+    question: "¿Cómo puedo solicitar una cotización?",
+    answer: "Mediante el formulario de contacto del sitio.",
   },
   {
-    question: "¿Qué tipo de soporte ofrecen?",
+    question: "¿El acceso al sistema es público?",
     answer:
-      "Todos los planes incluyen soporte por chat y correo electrónico. El plan Business agrega soporte prioritario con tiempo de respuesta de 4 horas y sesiones de onboarding. El plan Enterprise incluye un gerente de éxito del cliente dedicado, soporte 24/7, SLA de 99.99% y capacitaciones in-house a solicitud.",
-  },
-  {
-    question: "¿Puedo migrar mis proyectos desde otra herramienta?",
-    answer:
-      "Absolutamente. Contamos con importadores nativos para Jira, Trello, Asana, Monday.com y ClickUp. Nuestro equipo de onboarding te acompañará en todo el proceso de migración sin costo adicional para los planes Business y Enterprise, garantizando la integridad de todos tus datos.",
+      "No. El acceso al sistema interno está restringido únicamente para los trabajadores autorizados de IKernell mediante autenticación. Esto está alineado con el caso de estudio, donde los interesados solo visualizan la información pública de la empresa y los trabajadores acceden a funcionalidades internas.",
   },
 ];
 
@@ -46,7 +40,9 @@ export function FAQ() {
     <section
       id="faq"
       className="py-24"
-      style={{ background: "linear-gradient(180deg, #f8faff 0%, #eef2ff 100%)" }}
+      style={{
+        background: "linear-gradient(180deg, #f8faff 0%, #eef2ff 100%)",
+      }}
       aria-label="Preguntas frecuentes"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,17 +58,20 @@ export function FAQ() {
             className="text-slate-900"
             style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 700 }}
           >
-            Resolvemos tus{" "}
-            <span style={{ color: "#4338ca" }}>dudas</span>
+            Resolvemos tus <span style={{ color: "#4338ca" }}>dudas</span>
           </h2>
           <p className="text-slate-600 text-lg">
-            Encuentra respuestas a las preguntas más comunes sobre nuestra plataforma,
-            planes y soporte.
+            Encuentra respuestas a las preguntas más comunes sobre nuestra
+            plataforma, planes y soporte.
           </p>
         </div>
 
         {/* FAQ list */}
-        <div className="space-y-3" role="list" aria-label="Lista de preguntas frecuentes">
+        <div
+          className="space-y-3"
+          role="list"
+          aria-label="Lista de preguntas frecuentes"
+        >
           {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
@@ -81,7 +80,9 @@ export function FAQ() {
                 className="bg-white rounded-2xl border overflow-hidden transition-all duration-200"
                 style={{
                   borderColor: isOpen ? "#a5b4fc" : "#e2e8f0",
-                  boxShadow: isOpen ? "0 4px 24px rgba(67,56,202,0.08)" : "none",
+                  boxShadow: isOpen
+                    ? "0 4px 24px rgba(67,56,202,0.08)"
+                    : "none",
                 }}
                 role="listitem"
               >
@@ -137,7 +138,9 @@ export function FAQ() {
               href="#contacto"
               onClick={(e) => {
                 e.preventDefault();
-                document.querySelector("#contacto")?.scrollIntoView({ behavior: "smooth" });
+                document
+                  .querySelector("#contacto")
+                  ?.scrollIntoView({ behavior: "smooth" });
               }}
               className="font-medium underline underline-offset-2"
               style={{ color: "#4338ca" }}

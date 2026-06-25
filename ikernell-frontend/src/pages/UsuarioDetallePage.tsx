@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "../app/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { obtenerRolUsuario } from "../utils/auth";
 
 import {
   AlertDialog,
@@ -26,9 +27,10 @@ import type { Usuario } from "../types/Usuario";
 export default function UsuarioDetallePage() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const rol = obtenerRolUsuario();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
 
+  console.log("ENTRÉ A UsuarioDetallePage");
   useEffect(() => {
     async function cargar() {
       if (!id) return;
@@ -135,13 +137,15 @@ export default function UsuarioDetallePage() {
               gap: "10px",
             }}
           >
-            <Button
-              onClick={() =>
-                navigate(`/dashboard/usuarios/${usuario.idUsuario}/editar`)
-              }
-            >
-              Editar
-            </Button>
+            {rol === "Coordinador" && (
+              <Button
+                onClick={() =>
+                  navigate(`/dashboard/usuarios/${usuario.idUsuario}/editar`)
+                }
+              >
+                Editar
+              </Button>
+            )}
 
             {usuario.estado && (
               <AlertDialog>
