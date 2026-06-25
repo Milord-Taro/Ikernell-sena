@@ -30,7 +30,6 @@ import RegistroErrorEditarPage from "../pages/RegistroErrorEditarPage";
 import RegistroInterrupcionEditarPage from "../pages/RegistroInterrupcionEditarPage";
 
 export default function App() {
-
   function proteger(componente: React.ReactNode) {
     return (
       <ProtectedRoute>
@@ -45,10 +44,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
 
-          <Route
-            path="/dashboard"
-            element={proteger(<DashboardHomePage />)}
-          />
+          <Route path="/dashboard" element={proteger(<DashboardHomePage />)} />
 
           <Route
             path="/dashboard/proyectos"
@@ -87,35 +83,38 @@ export default function App() {
 
           <Route
             path="/dashboard/usuarios"
-            element={
-              proteger(
-                <RoleRoute roles={["Coordinador"]}>
-                  <UsuariosPage />
-                </RoleRoute>
-              )
-            }
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <UsuariosPage />
+              </RoleRoute>,
+            )}
+          />
+
+          <Route
+            path="/dashboard/usuarios/:id"
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <UsuarioDetallePage />
+              </RoleRoute>,
+            )}
           />
 
           <Route
             path="/dashboard/usuarios/nuevo"
-            element={
-              proteger(
-                <RoleRoute roles={["Coordinador"]}>
-                  <UsuarioNuevoPage />
-                </RoleRoute>
-              )
-            }
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <UsuarioNuevoPage />
+              </RoleRoute>,
+            )}
           />
 
           <Route
             path="/dashboard/usuarios/:id/editar"
-            element={
-              proteger(
-                <RoleRoute roles={["Coordinador"]}>
-                  <UsuarioEditarPage />
-                </RoleRoute>
-              )
-            }
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <UsuarioEditarPage />
+              </RoleRoute>,
+            )}
           />
 
           <Route
@@ -140,24 +139,20 @@ export default function App() {
 
           <Route
             path="/dashboard/tipoerrores"
-            element={
-              proteger(
-                <RoleRoute roles={["Coordinador"]}>
-                  <TipoErrorPage />
-                </RoleRoute>
-              )
-            }
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <TipoErrorPage />
+              </RoleRoute>,
+            )}
           />
 
           <Route
             path="/dashboard/tipointerrupciones"
-            element={
-              proteger(
-                <RoleRoute roles={["Coordinador"]}>
-                  <TipoInterrupcionPage />
-                </RoleRoute>
-              )
-            }
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <TipoInterrupcionPage />
+              </RoleRoute>,
+            )}
           />
 
           <Route
@@ -175,10 +170,7 @@ export default function App() {
             element={proteger(<EtapaDetallePage />)}
           />
 
-          <Route
-            path="/dashboard/perfil"
-            element={proteger(<PerfilPage />)}
-          />
+          <Route path="/dashboard/perfil" element={proteger(<PerfilPage />)} />
 
           <Route
             path="/dashboard/usuarios/nuevo"
