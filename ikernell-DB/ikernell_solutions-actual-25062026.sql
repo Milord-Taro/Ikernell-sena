@@ -2,14 +2,15 @@
 -- PostgreSQL database dump
 --
 
-\restrict aS8v8SUSa4mooM61qDnaVF5Hx6TEiad9nLgxZbtLvCS7mmjqeAnLCJEhDG3PV7V
+\restrict OurxvxLs8wbX515GoZb2m3fLka1orFbMA9YmZAdGdGbaxFRugCB4cgIlD5xh6dL
 
--- Dumped from database version 14.22 (Ubuntu 14.22-0ubuntu0.22.04.1)
--- Dumped by pg_dump version 14.22 (Ubuntu 14.22-0ubuntu0.22.04.1)
+-- Dumped from database version 18.4 (Ubuntu 18.4-0ubuntu0.26.04.1)
+-- Dumped by pg_dump version 18.4 (Ubuntu 18.4-0ubuntu0.26.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -56,7 +57,7 @@ CREATE SEQUENCE public.actividad_idactividad_seq
     CACHE 1;
 
 
-ALTER TABLE public.actividad_idactividad_seq OWNER TO postgres;
+ALTER SEQUENCE public.actividad_idactividad_seq OWNER TO postgres;
 
 --
 -- Name: actividad_idactividad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -93,55 +94,13 @@ CREATE SEQUENCE public.asignacionproyecto_idasignacion_seq
     CACHE 1;
 
 
-ALTER TABLE public.asignacionproyecto_idasignacion_seq OWNER TO postgres;
+ALTER SEQUENCE public.asignacionproyecto_idasignacion_seq OWNER TO postgres;
 
 --
 -- Name: asignacionproyecto_idasignacion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.asignacionproyecto_idasignacion_seq OWNED BY public.asignacionproyecto.idasignacion;
-
-
---
--- Name: registroerror; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.registroerror (
-    iderror integer NOT NULL,
-    coderror character varying(10) NOT NULL,
-    descripcionerror text NOT NULL,
-    fecharegistroerror date DEFAULT CURRENT_DATE NOT NULL,
-    estadoerror character varying(20) NOT NULL,
-    comentarioerror text,
-    idtipoerror integer NOT NULL,
-    idetapa integer NOT NULL,
-    iddesarrollador integer NOT NULL,
-    CONSTRAINT error_estadoerror_check CHECK (((estadoerror)::text = ANY ((ARRAY['Abierto'::character varying, 'En Revision'::character varying, 'Corregido'::character varying, 'No Reproducible'::character varying, 'Descartado'::character varying])::text[])))
-);
-
-
-ALTER TABLE public.registroerror OWNER TO postgres;
-
---
--- Name: error_iderror_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.error_iderror_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.error_iderror_seq OWNER TO postgres;
-
---
--- Name: error_iderror_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.error_iderror_seq OWNED BY public.registroerror.iderror;
 
 
 --
@@ -170,7 +129,7 @@ CREATE SEQUENCE public.especialidad_idespecialidad_seq
     CACHE 1;
 
 
-ALTER TABLE public.especialidad_idespecialidad_seq OWNER TO postgres;
+ALTER SEQUENCE public.especialidad_idespecialidad_seq OWNER TO postgres;
 
 --
 -- Name: especialidad_idespecialidad_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -208,7 +167,7 @@ CREATE SEQUENCE public.etapa_idetapa_seq
     CACHE 1;
 
 
-ALTER TABLE public.etapa_idetapa_seq OWNER TO postgres;
+ALTER SEQUENCE public.etapa_idetapa_seq OWNER TO postgres;
 
 --
 -- Name: etapa_idetapa_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -249,7 +208,7 @@ CREATE SEQUENCE public.interrupcion_idinterrupcion_seq
     CACHE 1;
 
 
-ALTER TABLE public.interrupcion_idinterrupcion_seq OWNER TO postgres;
+ALTER SEQUENCE public.interrupcion_idinterrupcion_seq OWNER TO postgres;
 
 --
 -- Name: interrupcion_idinterrupcion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -292,7 +251,7 @@ CREATE SEQUENCE public.mensajecontacto_idmensaje_seq
     CACHE 1;
 
 
-ALTER TABLE public.mensajecontacto_idmensaje_seq OWNER TO postgres;
+ALTER SEQUENCE public.mensajecontacto_idmensaje_seq OWNER TO postgres;
 
 --
 -- Name: mensajecontacto_idmensaje_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -327,7 +286,7 @@ CREATE SEQUENCE public.profesion_idprofesion_seq
     CACHE 1;
 
 
-ALTER TABLE public.profesion_idprofesion_seq OWNER TO postgres;
+ALTER SEQUENCE public.profesion_idprofesion_seq OWNER TO postgres;
 
 --
 -- Name: profesion_idprofesion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -367,7 +326,7 @@ CREATE SEQUENCE public.proyecto_idproyecto_seq
     CACHE 1;
 
 
-ALTER TABLE public.proyecto_idproyecto_seq OWNER TO postgres;
+ALTER SEQUENCE public.proyecto_idproyecto_seq OWNER TO postgres;
 
 --
 -- Name: proyecto_idproyecto_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -377,22 +336,30 @@ ALTER SEQUENCE public.proyecto_idproyecto_seq OWNED BY public.proyecto.idproyect
 
 
 --
--- Name: prueba; Type: TABLE; Schema: public; Owner: postgres
+-- Name: registroerror; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.prueba (
-    id integer NOT NULL,
-    nombre character varying(50)
+CREATE TABLE public.registroerror (
+    iderror integer NOT NULL,
+    coderror character varying(10) NOT NULL,
+    descripcionerror text NOT NULL,
+    fecharegistroerror date DEFAULT CURRENT_DATE NOT NULL,
+    estadoerror character varying(20) NOT NULL,
+    comentarioerror text,
+    idtipoerror integer NOT NULL,
+    idetapa integer NOT NULL,
+    iddesarrollador integer NOT NULL,
+    CONSTRAINT registroerror_estadoerror_check CHECK (((estadoerror)::text = ANY ((ARRAY['Abierto'::character varying, 'En Revision'::character varying, 'Corregido'::character varying, 'No Reproducible'::character varying, 'Descartado'::character varying])::text[])))
 );
 
 
-ALTER TABLE public.prueba OWNER TO postgres;
+ALTER TABLE public.registroerror OWNER TO postgres;
 
 --
--- Name: prueba_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: registroerror_iderror_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.prueba_id_seq
+CREATE SEQUENCE public.registroerror_iderror_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -401,13 +368,13 @@ CREATE SEQUENCE public.prueba_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.prueba_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.registroerror_iderror_seq OWNER TO postgres;
 
 --
--- Name: prueba_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: registroerror_iderror_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.prueba_id_seq OWNED BY public.prueba.id;
+ALTER SEQUENCE public.registroerror_iderror_seq OWNED BY public.registroerror.iderror;
 
 
 --
@@ -437,7 +404,7 @@ CREATE SEQUENCE public.rol_idrol_seq
     CACHE 1;
 
 
-ALTER TABLE public.rol_idrol_seq OWNER TO postgres;
+ALTER SEQUENCE public.rol_idrol_seq OWNER TO postgres;
 
 --
 -- Name: rol_idrol_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -472,7 +439,7 @@ CREATE SEQUENCE public.tipoerror_idtipoerror_seq
     CACHE 1;
 
 
-ALTER TABLE public.tipoerror_idtipoerror_seq OWNER TO postgres;
+ALTER SEQUENCE public.tipoerror_idtipoerror_seq OWNER TO postgres;
 
 --
 -- Name: tipoerror_idtipoerror_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -507,7 +474,7 @@ CREATE SEQUENCE public.tipointerrupcion_idtipointerrupcion_seq
     CACHE 1;
 
 
-ALTER TABLE public.tipointerrupcion_idtipointerrupcion_seq OWNER TO postgres;
+ALTER SEQUENCE public.tipointerrupcion_idtipointerrupcion_seq OWNER TO postgres;
 
 --
 -- Name: tipointerrupcion_idtipointerrupcion_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -554,7 +521,7 @@ CREATE SEQUENCE public.usuario_idusuario_seq
     CACHE 1;
 
 
-ALTER TABLE public.usuario_idusuario_seq OWNER TO postgres;
+ALTER SEQUENCE public.usuario_idusuario_seq OWNER TO postgres;
 
 --
 -- Name: usuario_idusuario_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -620,17 +587,10 @@ ALTER TABLE ONLY public.proyecto ALTER COLUMN idproyecto SET DEFAULT nextval('pu
 
 
 --
--- Name: prueba id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.prueba ALTER COLUMN id SET DEFAULT nextval('public.prueba_id_seq'::regclass);
-
-
---
 -- Name: registroerror iderror; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.registroerror ALTER COLUMN iderror SET DEFAULT nextval('public.error_iderror_seq'::regclass);
+ALTER TABLE ONLY public.registroerror ALTER COLUMN iderror SET DEFAULT nextval('public.registroerror_iderror_seq'::regclass);
 
 
 --
@@ -662,6 +622,254 @@ ALTER TABLE ONLY public.usuario ALTER COLUMN idusuario SET DEFAULT nextval('publ
 
 
 --
+-- Data for Name: actividad; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.actividad (idactividad, codactividad, nombreactividad, descripcionactividad, fechainicioactividad, fechafinactividad, estadoactividad, fechaejecucionactividad, idetapa, iddesarrollador) FROM stdin;
+3	ACT-003	Desarrollar módulo de autenticación	Implementar login con JWT y Spring Security	2026-03-01	2026-03-10	Pendiente	\N	3	3
+4	ACT-004	Desarrollar módulo de inventario	Implementar CRUD de productos e inventario	2026-04-01	2026-04-15	Pendiente	\N	5	5
+1	ACT-001	Documentar requerimientos	Elaborar documento de requerimientos funcionales y no funcionales	2026-01-20	2026-01-25	Ejecutada	2026-06-24	1	3
+2	ACT-002	Diseñar modelo de base de datos	Crear el modelo relacional normalizado	2026-02-10	2026-02-17	Ejecutada	2026-06-24	2	4
+\.
+
+
+--
+-- Data for Name: asignacionproyecto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.asignacionproyecto (idasignacion, fechaasignacion, estadoasignacion, idusuario, idproyecto) FROM stdin;
+1	2026-01-15	t	3	1
+2	2026-01-15	t	4	1
+3	2026-03-01	t	5	2
+4	2026-03-01	t	3	2
+\.
+
+
+--
+-- Data for Name: especialidad; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.especialidad (idespecialidad, codespecialidad, nombreespecialidad) FROM stdin;
+1	ESP-001	Desarrollo Frontend
+2	ESP-002	Desarrollo Backend
+3	ESP-003	Base de Datos
+4	ESP-004	DevOps
+5	ESP-005	Seguridad Informática
+6	ESP-006	Desarrollo Móvil
+\.
+
+
+--
+-- Data for Name: etapa; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.etapa (idetapa, codetapa, nombreetapa, descripcionetapa, fechaetapa, idproyecto) FROM stdin;
+1	ETA-001	Análisis	Levantamiento de requerimientos y documentación	2026-01-20	1
+3	ETA-003	Desarrollo	Implementación del sistema	2026-03-01	1
+4	ETA-004	Análisis	Levantamiento de requerimientos	2026-03-05	2
+5	ETA-005	Desarrollo	Implementación de módulos principales	2026-04-01	2
+6	ETP-521	Mejoras UI/UX al landing page	Implementar mejoras habladas en la reuinion para el landing page del proyecto Sistema de facturacion	2026-06-30	1
+2	ETA-002	Diseño	Diseño de arquitectura y base de datos DB	2026-02-10	1
+\.
+
+
+--
+-- Data for Name: interrupcion; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.interrupcion (idinterrupcion, codinterrupcion, descripcioninterrupcion, fechainterrupcion, duracioninterrupcion, idtipointerrupcion, idetapa, iddesarrollador) FROM stdin;
+1	INT-001	Reunión extraordinaria para revisar cambios solicitados por el cliente	2026-03-03	60	1	3	3
+2	INT-002	Caída del servicio de internet durante la jornada laboral	2026-04-02	120	2	5	5
+\.
+
+
+--
+-- Data for Name: mensajecontacto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.mensajecontacto (idmensaje, codmensaje, nombreremitente, correoremitente, mensaje, fechaenvio, estadomensaje, respuesta, fecharespuesta, idresponsable) FROM stdin;
+1	MSG-001	Juan Pérez	juan.perez@empresa.com	¿Ofrecen servicios de desarrollo de aplicaciones móviles?	2026-05-10 09:30:00	Atendido	Sí ofrecemos desarrollo móvil. Le contactaremos para agendar una reunión.	2026-05-10 11:00:00	1
+2	MSG-002	María López	maria.lopez@startup.co	Estoy interesada en cotizar un sistema de gestión.	2026-05-12 14:15:00	Pendiente	\N	\N	\N
+\.
+
+
+--
+-- Data for Name: profesion; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.profesion (idprofesion, codprofesion, nombreprofesion) FROM stdin;
+1	PRO-001	Ingeniería de Sistemas
+2	PRO-002	Ingeniería de Software
+3	PRO-003	Tecnología en ADSI
+4	PRO-004	Ingeniería Informática
+5	PRO-005	Ciencias de la Computación
+\.
+
+
+--
+-- Data for Name: proyecto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.proyecto (idproyecto, codproyecto, nombreproyecto, descripcionproyecto, fechainicioproyecto, fechafinproyecto, estadoproyecto, idlider) FROM stdin;
+1	PRY-001	Sistema de Facturación	Desarrollo de sistema de facturación electrónica para cliente del sector retail	2026-01-15	2026-06-30	t	2
+2	PRY-002	App Gestión de Inventario	Aplicación web para control de inventario en tiempo real	2026-03-01	2026-09-30	t	2
+\.
+
+
+--
+-- Data for Name: registroerror; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.registroerror (iderror, coderror, descripcionerror, fecharegistroerror, estadoerror, comentarioerror, idtipoerror, idetapa, iddesarrollador) FROM stdin;
+1	ERR-001	NullPointerException en el servicio de usuarios al consultar perfil sin token	2026-03-05	Corregido	Se agregó validación de parámetros nulos	1	3	3
+2	ERR-002	Consulta SQL devuelve registros duplicados en reporte de inventario	2026-04-03	En Revision	Pendiente análisis por parte del líder técnico	3	5	5
+\.
+
+
+--
+-- Data for Name: rol; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rol (idrol, codrol, nombrerol, descripcionrol) FROM stdin;
+1	ROL-001	Coordinador	Gestiona perfiles de desarrolladores y asigna proyectos
+2	ROL-002	Lider	Gestiona proyectos, etapas, actividades y genera reportes
+3	ROL-003	Desarrollador	Ejecuta actividades y registra errores e interrupciones
+\.
+
+
+--
+-- Data for Name: tipoerror; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tipoerror (idtipoerror, codtipoerror, nombretipo) FROM stdin;
+1	TER-001	Error de compilación
+2	TER-002	Error de lógica
+3	TER-003	Error de base de datos
+4	TER-004	Error de integración
+5	TER-005	Error de interfaz
+\.
+
+
+--
+-- Data for Name: tipointerrupcion; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tipointerrupcion (idtipointerrupcion, codtipointerrupcion, nombretipointerrupcion) FROM stdin;
+1	TIN-001	Reunión no planificada
+2	TIN-002	Falla de infraestructura
+3	TIN-003	Solicitud urgente del cliente
+4	TIN-004	Problema personal
+5	TIN-005	Corte de energía o internet
+\.
+
+
+--
+-- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.usuario (idusuario, codusuario, nombre, apellido, fechanacimiento, tipoidentificacion, numeroidentificacion, correoelectronico, direccion, contrasena, fotoperfil, estado, idrol, idprofesion, idespecialidad) FROM stdin;
+3	USR-003	Andrés	Torres	1995-11-08	CC	30456789	andres.torres@ikernell.com	Avenida 68 # 23-45, Bogotá	$2a$10$hashedpassword3	\N	t	3	3	1
+4	USR-004	Valentina	Ríos	1993-05-19	CC	40567890	valentina.rios@ikernell.com	Calle 100 # 15-20, Bogotá	$2a$10$hashedpassword4	\N	t	3	2	3
+5	USR-005	Felipe	Castro	1988-09-30	CC	50678901	felipe.castro@ikernell.com	Carrera 30 # 45-67, Bogotá	$2a$10$hashedpassword5	\N	t	3	1	2
+1	USR-001	Carlos Andres	Mendoza	1985-03-12	CC	10234567	carlos.mendoza@ikernell.com	Calle 45 # 12-30, Bogotá	$2a$10$hashedpassword1	\N	t	1	1	\N
+2	USR-002	Diana	Herrera	1990-07-25	CC	20345678	diana.herrera@ikernell.com	Carrera 7 # 80-15, Bogotá	$2a$10$hashedpassword2	\N	t	2	5	\N
+7	USR-007	Test	Test	2000-01-01	CC	123456789	testbcrypt@ikernell.com	Test	$2a$10$rzPVifwGw6JhkwcKqd.UNu/kmWOocyxkk.1ETyL.KzSaKpUqtNmC2	\N	t	3	1	2
+6	USR-006	test	test	2026-06-02	CC	1234567890	test@test.com	test	$2a$10$rzPVifwGw6JhkwcKqd.UNu/kmWOocyxkk.1ETyL.KzSaKpUqtNmC2	\N	t	1	1	2
+\.
+
+
+--
+-- Name: actividad_idactividad_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.actividad_idactividad_seq', 14, true);
+
+
+--
+-- Name: asignacionproyecto_idasignacion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.asignacionproyecto_idasignacion_seq', 4, true);
+
+
+--
+-- Name: especialidad_idespecialidad_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.especialidad_idespecialidad_seq', 6, true);
+
+
+--
+-- Name: etapa_idetapa_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.etapa_idetapa_seq', 9, true);
+
+
+--
+-- Name: interrupcion_idinterrupcion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.interrupcion_idinterrupcion_seq', 2, true);
+
+
+--
+-- Name: mensajecontacto_idmensaje_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.mensajecontacto_idmensaje_seq', 2, true);
+
+
+--
+-- Name: profesion_idprofesion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.profesion_idprofesion_seq', 5, true);
+
+
+--
+-- Name: proyecto_idproyecto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.proyecto_idproyecto_seq', 7, true);
+
+
+--
+-- Name: registroerror_iderror_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.registroerror_iderror_seq', 2, true);
+
+
+--
+-- Name: rol_idrol_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.rol_idrol_seq', 3, true);
+
+
+--
+-- Name: tipoerror_idtipoerror_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.tipoerror_idtipoerror_seq', 5, true);
+
+
+--
+-- Name: tipointerrupcion_idtipointerrupcion_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.tipointerrupcion_idtipointerrupcion_seq', 5, true);
+
+
+--
+-- Name: usuario_idusuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.usuario_idusuario_seq', 7, true);
+
+
+--
 -- Name: actividad actividad_codactividad_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -683,22 +891,6 @@ ALTER TABLE ONLY public.actividad
 
 ALTER TABLE ONLY public.asignacionproyecto
     ADD CONSTRAINT asignacionproyecto_pkey PRIMARY KEY (idasignacion);
-
-
---
--- Name: registroerror error_coderror_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.registroerror
-    ADD CONSTRAINT error_coderror_key UNIQUE (coderror);
-
-
---
--- Name: registroerror error_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.registroerror
-    ADD CONSTRAINT error_pkey PRIMARY KEY (iderror);
 
 
 --
@@ -798,11 +990,19 @@ ALTER TABLE ONLY public.proyecto
 
 
 --
--- Name: prueba prueba_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: registroerror registroerror_coderror_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.prueba
-    ADD CONSTRAINT prueba_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.registroerror
+    ADD CONSTRAINT registroerror_coderror_key UNIQUE (coderror);
+
+
+--
+-- Name: registroerror registroerror_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registroerror
+    ADD CONSTRAINT registroerror_pkey PRIMARY KEY (iderror);
 
 
 --
@@ -926,30 +1126,6 @@ ALTER TABLE ONLY public.asignacionproyecto
 
 
 --
--- Name: registroerror error_iddesarrollador_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.registroerror
-    ADD CONSTRAINT error_iddesarrollador_fkey FOREIGN KEY (iddesarrollador) REFERENCES public.usuario(idusuario);
-
-
---
--- Name: registroerror error_idetapa_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.registroerror
-    ADD CONSTRAINT error_idetapa_fkey FOREIGN KEY (idetapa) REFERENCES public.etapa(idetapa) ON DELETE CASCADE;
-
-
---
--- Name: registroerror error_idtipoerror_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.registroerror
-    ADD CONSTRAINT error_idtipoerror_fkey FOREIGN KEY (idtipoerror) REFERENCES public.tipoerror(idtipoerror);
-
-
---
 -- Name: etapa etapa_idproyecto_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -998,6 +1174,30 @@ ALTER TABLE ONLY public.proyecto
 
 
 --
+-- Name: registroerror registroerror_iddesarrollador_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registroerror
+    ADD CONSTRAINT registroerror_iddesarrollador_fkey FOREIGN KEY (iddesarrollador) REFERENCES public.usuario(idusuario);
+
+
+--
+-- Name: registroerror registroerror_idetapa_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registroerror
+    ADD CONSTRAINT registroerror_idetapa_fkey FOREIGN KEY (idetapa) REFERENCES public.etapa(idetapa) ON DELETE CASCADE;
+
+
+--
+-- Name: registroerror registroerror_idtipoerror_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.registroerror
+    ADD CONSTRAINT registroerror_idtipoerror_fkey FOREIGN KEY (idtipoerror) REFERENCES public.tipoerror(idtipoerror);
+
+
+--
 -- Name: usuario usuario_idespecialidad_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1025,5 +1225,5 @@ ALTER TABLE ONLY public.usuario
 -- PostgreSQL database dump complete
 --
 
-\unrestrict aS8v8SUSa4mooM61qDnaVF5Hx6TEiad9nLgxZbtLvCS7mmjqeAnLCJEhDG3PV7V
+\unrestrict OurxvxLs8wbX515GoZb2m3fLka1orFbMA9YmZAdGdGbaxFRugCB4cgIlD5xh6dL
 

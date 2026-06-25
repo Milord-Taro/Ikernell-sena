@@ -3,7 +3,7 @@ package com.ikernell_backend.service;
 import com.ikernell_backend.entity.Usuario;
 import com.ikernell_backend.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 
 @Service
@@ -81,6 +81,10 @@ public class UsuarioService {
 
         usuario.setEstado(true);
 
+        usuario.setContrasena(
+                encoder.encode(usuario.getContrasena())
+        );
+
         return usuarioRepository.save(usuario);
     }
 
@@ -96,13 +100,6 @@ public class UsuarioService {
 
             throw new RuntimeException(
                     "La fecha de nacimiento no puede ser futura");
-        }
-
-        if (usuario.getNombre() == null ||
-                usuario.getNombre().trim().isEmpty()) {
-
-            throw new RuntimeException(
-                    "El nombre es obligatorio");
         }
 
         if (usuario.getApellido() == null ||
@@ -162,11 +159,25 @@ public class UsuarioService {
             String correo,
             String contrasena) {
 
-        return usuarioRepository
-                .findByCorreoElectronicoAndContrasena(
-                        correo,
-                        contrasena);
+        Usuario usuario =
+                usuarioRepository.findByCorreoElectronico(correo);
+
+        if (usuario == null) {
+            return null;
+        }
+
+        if (encoder.matches(
+                contrasena,
+                usuario.getContrasena())) {
+
+            return usuario;
+        }
+
+        return null;
     }
+
+    private final BCryptPasswordEncoder encoder =
+            new BCryptPasswordEncoder();
 }
 
 

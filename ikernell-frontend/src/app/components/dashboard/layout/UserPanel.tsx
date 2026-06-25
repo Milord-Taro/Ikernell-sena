@@ -60,7 +60,7 @@ export default function UserPanel({ collapsed }: { collapsed: boolean }) {
               color: "#64748b",
             }}
           >
-            Desarrollador
+            {usuario?.rol?.nombreRol ?? "Usuario"}
           </div>
         </div>
       )}
@@ -82,7 +82,13 @@ export default function UserPanel({ collapsed }: { collapsed: boolean }) {
           {!collapsed && <span>Configuración</span>}
         </button>
 
-        <button className="sidebar-user-button">
+        <button
+          className="sidebar-user-button"
+          onClick={() => {
+            cerrarSesion();
+            navigate("/");
+          }}
+        >
           <LogOut size={18} />
           {!collapsed && <span>Cerrar sesión</span>}
         </button>

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import UserPanel from "./UserPanel";
+import { obtenerRolUsuario } from "../../../../utils/auth";
 
 import { NavLink } from "react-router-dom";
 
@@ -45,6 +46,7 @@ function SidebarLink({
 
 export default function DashboardSidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const rol = obtenerRolUsuario();
 
   return (
     <aside
@@ -156,19 +158,23 @@ export default function DashboardSidebar() {
           collapsed={collapsed}
         />
 
-        <SidebarLink
-          to="/dashboard/usuarios"
-          icon={Users}
-          label="Usuarios"
-          collapsed={collapsed}
-        />
+        {rol === "Coordinador" && (
+          <SidebarLink
+            to="/dashboard/usuarios"
+            icon={Users}
+            label="Usuarios"
+            collapsed={collapsed}
+          />
+        )}
 
-        <SidebarLink
-          to="/dashboard/mensajes"
-          icon={Mail}
-          label="Mensajes"
-          collapsed={collapsed}
-        />
+        {rol === "Coordinador" && (
+          <SidebarLink
+            to="/dashboard/mensajes"
+            icon={Mail}
+            label="Mensajes"
+            collapsed={collapsed}
+          />
+        )}
 
         <SidebarLink
           to="/dashboard/errores"
@@ -184,19 +190,23 @@ export default function DashboardSidebar() {
           collapsed={collapsed}
         />
 
-        <SidebarLink
-          to="/dashboard/tipoerrores"
-          icon={Tags}
-          label="Tipos Error"
-          collapsed={collapsed}
-        />
+        {rol === "Coordinador" && (
+          <SidebarLink
+            to="/dashboard/tipoerrores"
+            icon={Tags}
+            label="Tipos Error"
+            collapsed={collapsed}
+          />
+        )}
 
-        <SidebarLink
-          to="/dashboard/tipointerrupciones"
-          icon={Tags}
-          label="Tipos Interrupción"
-          collapsed={collapsed}
-        />
+        {rol === "Coordinador" && (
+          <SidebarLink
+            to="/dashboard/tipointerrupciones"
+            icon={Tags}
+            label="Tipos Interrupción"
+            collapsed={collapsed}
+          />
+        )}
       </nav>
       <div
         style={{

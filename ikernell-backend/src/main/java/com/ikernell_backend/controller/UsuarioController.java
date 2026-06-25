@@ -63,6 +63,7 @@ public class UsuarioController {
         // usuario.setContrasena(usuarioActualizado.getContrasena());
         usuario.setEstado(usuarioActualizado.getEstado());
         usuario.setFotoPerfil(usuarioActualizado.getFotoPerfil());
+
         usuario.setRol(usuarioActualizado.getRol());
         usuario.setProfesion(usuarioActualizado.getProfesion());
         usuario.setEspecialidad(usuarioActualizado.getEspecialidad());

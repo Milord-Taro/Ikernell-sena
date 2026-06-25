@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { Button } from "../app/components/ui/button";
+import { toast } from "sonner";
 
 import { obtenerProyectoPorId } from "../services/proyectoService";
-import { obtenerEtapas } from "../services/etapaService";
+import {
+  crearEtapa,
+  actualizarEtapa,
+  eliminarEtapa,
+  obtenerEtapas
+} from "../services/etapaService";
 import { obtenerResumenProyecto } from "../services/dashboardProyectoService";
 import { obtenerResumenEtapa } from "../services/etapaDashboardService";
+import EtapaModal from "../app/components/dashboard/EtapaModal";
 
 import type { Proyecto } from "../types/Proyecto";
 import type { Etapa } from "../types/Etapa";
@@ -42,6 +50,24 @@ export default function ProyectoDetallePage() {
 
   const [progresoEtapas, setProgresoEtapas] =
     useState<Record<number, number>>({});
+
+  const [mostrarModalEtapa, setMostrarModalEtapa] =
+    useState(false);
+
+  const [etapaEditando, setEtapaEditando] =
+    useState<Etapa | null>(null);
+
+  const [nuevaEtapa, setNuevaEtapa] =
+    useState({
+      codEtapa: "",
+      nombreEtapa: "",
+      descripcionEtapa: "",
+      fechaEtapa: "",
+
+      proyecto: {
+        idProyecto: Number(id),
+      },
+    });
 
   useEffect(() => {
     async function cargarDatos() {
@@ -85,8 +111,201 @@ export default function ProyectoDetallePage() {
     cargarDatos();
   }, [id]);
 
+  function validarEtapa() {
+
+    if (!nuevaEtapa.codEtapa.trim()) {
+      toast.error("Ingrese el código de la etapa");
+      return false;
+    }
+
+    if (nuevaEtapa.codEtapa.length < 7) {
+      toast.error("Código demasiado corto");
+      return false;
+    }
+
+    if (nuevaEtapa.codEtapa.length > 10) {
+      toast.error("Máximo 10 caracteres");
+      return false;
+    }
+
+    if (!nuevaEtapa.nombreEtapa.trim()) {
+      toast.error("Ingrese el nombre de la etapa");
+      return false;
+    }
+
+    if (nuevaEtapa.nombreEtapa.length < 5) {
+      toast.error("Nombre demasiado corto");
+      return false;
+    }
+
+    if (nuevaEtapa.nombreEtapa.length > 100) {
+      toast.error("Máximo 100 caracteres");
+      return false;
+    }
+
+    if (!nuevaEtapa.descripcionEtapa.trim()) {
+      toast.error("Ingrese una descripción");
+      return false;
+    }
+
+    if (
+      nuevaEtapa.descripcionEtapa.length < 10
+    ) {
+      toast.error(
+        "La descripción debe tener mínimo 10 caracteres"
+      );
+      return false;
+    }
+
+    if (
+      nuevaEtapa.descripcionEtapa.length > 500
+    ) {
+      toast.error(
+        "La descripción no puede superar 500 caracteres"
+      );
+      return false;
+    }
+
+    if (!nuevaEtapa.fechaEtapa) {
+      toast.error("Seleccione fecha inicio");
+      return false;
+    }
+
+
+    return true;
+  }
+
+  async function guardarEtapa() {
+    try {
+
+      if (!validarEtapa()) {
+        return;
+      }
+
+      const etapaCreada = await crearEtapa(nuevaEtapa);
+
+      setEtapas([...etapas, etapaCreada]);
+
+      const resumenProyecto =
+        await obtenerResumenProyecto(
+          Number(id)
+        );
+
+      setResumen(resumenProyecto);
+
+      toast.success("Etapa creada correctamente");
+
+      setMostrarModalEtapa(false);
+
+      setNuevaEtapa({
+        codEtapa: "",
+        nombreEtapa: "",
+        descripcionEtapa: "",
+        fechaEtapa: "",
+        proyecto: {
+          idProyecto: Number(id),
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("No se pudo crear la etapa");
+    }
+  }
+
+  async function borrarEtapa(idEtapa: number) {
+
+    const confirmar =
+      confirm("¿Eliminar esta etapa?");
+
+    if (!confirmar) {
+      return;
+    }
+
+    try {
+
+      await eliminarEtapa(idEtapa);
+
+      setEtapas(
+        etapas.filter(
+          e => e.idEtapa !== idEtapa
+        )
+      );
+
+      toast.success(
+        "Etapa eliminada correctamente"
+      );
+
+    } catch (error: any) {
+
+      console.error(error);
+
+      toast.error(
+        error.message
+      );
+    }
+  }
+
+  function editarEtapa(etapa: Etapa) {
+
+    setEtapaEditando(etapa);
+
+    setNuevaEtapa({
+      codEtapa: etapa.codEtapa,
+      nombreEtapa: etapa.nombreEtapa,
+      descripcionEtapa: etapa.descripcionEtapa,
+      fechaEtapa: etapa.fechaEtapa,
+
+      proyecto: {
+        idProyecto: Number(id),
+      },
+    });
+
+    setMostrarModalEtapa(true);
+  }
+
   if (!proyecto) {
     return <p>Cargando...</p>;
+  }
+
+  async function actualizarEtapaHandler() {
+
+    if (!etapaEditando) {
+      return;
+    }
+
+    try {
+
+      await actualizarEtapa(
+        etapaEditando.idEtapa,
+        nuevaEtapa
+      );
+
+      const etapasActualizadas =
+        await obtenerEtapas();
+
+      setEtapas(
+        etapasActualizadas.filter(
+          etapa =>
+            etapa.proyecto?.idProyecto === Number(id)
+        )
+      );
+
+      toast.success(
+        "Etapa actualizada correctamente"
+      );
+
+      setMostrarModalEtapa(false);
+
+      setEtapaEditando(null);
+
+    } catch (error) {
+
+      console.error(error);
+
+      toast.error(
+        "No se pudo actualizar la etapa"
+      );
+    }
   }
 
   return (
@@ -185,11 +404,43 @@ export default function ProyectoDetallePage() {
         />
       </div>
 
+      <div
+        style={{
+          display: "flex",
+          gap: "30px",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <DashboardSection
+          title="Etapas del Proyecto"
+          subtitle="Seguimiento y avance de cada etapa"
+        />
 
-      <DashboardSection
-        title="Etapas del Proyecto"
-        subtitle="Seguimiento y avance de cada etapa"
-      />
+        <Button
+          onClick={() => setMostrarModalEtapa(true)}
+        >
+          Nueva Etapa
+        </Button>
+
+        <EtapaModal
+          open={mostrarModalEtapa}
+          onClose={() => {
+
+            setMostrarModalEtapa(false);
+
+            setEtapaEditando(null);
+          }}
+          etapa={nuevaEtapa}
+          setEtapa={setNuevaEtapa}
+          onGuardar={
+            etapaEditando
+              ? actualizarEtapaHandler
+              : guardarEtapa
+          }
+          editando={!!etapaEditando}
+        />
+      </div>
 
       {etapas.length === 0 ? (
         <p>No hay etapas registradas.</p>
@@ -211,6 +462,8 @@ export default function ProyectoDetallePage() {
               progreso={
                 progresoEtapas[etapa.idEtapa] ?? 0
               }
+              onEdit={() => editarEtapa(etapa)}
+              onDelete={() => borrarEtapa(etapa.idEtapa)}
             />
           ))}
         </div>

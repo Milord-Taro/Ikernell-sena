@@ -3,6 +3,7 @@ package com.ikernell_backend.service;
 import com.ikernell_backend.entity.Etapa;
 import com.ikernell_backend.repository.EtapaRepository;
 import org.springframework.stereotype.Service;
+import com.ikernell_backend.repository.ActividadRepository;
 
 import java.util.List;
 
@@ -11,8 +12,14 @@ public class EtapaService {
 
     private final EtapaRepository etapaRepository;
 
-    public EtapaService(EtapaRepository etapaRepository) {
+    private final ActividadRepository actividadRepository;
+
+    public EtapaService(
+            EtapaRepository etapaRepository,
+            ActividadRepository actividadRepository) {
+
         this.etapaRepository = etapaRepository;
+        this.actividadRepository = actividadRepository;
     }
 
     public List<Etapa> listarEtapas(){
@@ -28,6 +35,16 @@ public class EtapaService {
     }
 
     public void eliminarEtapa(Integer id) {
+
+        long cantidadActividades =
+                actividadRepository.countByEtapaIdEtapa(id);
+
+        if (cantidadActividades > 0) {
+            throw new RuntimeException(
+                    "No se puede eliminar una etapa con actividades asociadas"
+            );
+        }
+
         etapaRepository.deleteById(id);
     }
 

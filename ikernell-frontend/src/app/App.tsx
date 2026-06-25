@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 
-import { AuthModal } from "./components/AuthModal";
-
+import ProtectedRoute from "./components/ProtectedRoute";
+import RoleRoute from "./components/RoleRoute";
 import DashboardLayout from "./components/DashboardLayout";
 import DashboardHomePage from "../pages/DashboardHomePage";
 
@@ -31,7 +30,14 @@ import RegistroErrorEditarPage from "../pages/RegistroErrorEditarPage";
 import RegistroInterrupcionEditarPage from "../pages/RegistroInterrupcionEditarPage";
 
 export default function App() {
-  const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
+
+  function proteger(componente: React.ReactNode) {
+    return (
+      <ProtectedRoute>
+        <DashboardLayout>{componente}</DashboardLayout>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <div className="min-h-screen" style={{ background: "#f8faff" }}>
@@ -41,201 +47,142 @@ export default function App() {
 
           <Route
             path="/dashboard"
-            element={
-              <DashboardLayout>
-                <DashboardHomePage />
-              </DashboardLayout>
-            }
+            element={proteger(<DashboardHomePage />)}
           />
 
           <Route
             path="/dashboard/proyectos"
-            element={
-              <DashboardLayout>
-                <ProyectosPage />
-              </DashboardLayout>
-            }
+            element={proteger(<ProyectosPage />)}
           />
 
           <Route
             path="/dashboard/proyectos/:id"
-            element={
-              <DashboardLayout>
-                <ProyectoDetallePage />
-              </DashboardLayout>
-            }
+            element={proteger(<ProyectoDetallePage />)}
           />
 
           <Route
             path="/dashboard/proyectos/:id/errores"
-            element={
-              <DashboardLayout>
-                <ProyectoErroresPage />
-              </DashboardLayout>
-            }
+            element={proteger(<ProyectoErroresPage />)}
           />
 
           <Route
             path="/dashboard/proyectos/:id/error/nuevo"
-            element={
-              <DashboardLayout>
-                <RegistroErrorNuevoPage />
-              </DashboardLayout>
-            }
+            element={proteger(<RegistroErrorNuevoPage />)}
           />
 
           <Route
             path="/dashboard/proyectos/:id/interrupciones"
-            element={
-              <DashboardLayout>
-                <ProyectoInterrupcionesPage />
-              </DashboardLayout>
-            }
+            element={proteger(<ProyectoInterrupcionesPage />)}
           />
 
           <Route
             path="/dashboard/proyectos/:id/interrupcion/nueva"
-            element={
-              <DashboardLayout>
-                <RegistroInterrupcionNuevoPage />
-              </DashboardLayout>
-            }
+            element={proteger(<RegistroInterrupcionNuevoPage />)}
           />
 
           <Route
             path="/dashboard/mensajes"
-            element={
-              <DashboardLayout>
-                {" "}
-                <MensajesPage />{" "}
-              </DashboardLayout>
-            }
+            element={proteger(<MensajesPage />)}
           />
 
           <Route
             path="/dashboard/usuarios"
             element={
-              <DashboardLayout>
-                <UsuariosPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/usuarios/:id"
-            element={
-              <DashboardLayout>
-                <UsuarioDetallePage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/usuarios/:id/editar"
-            element={
-              <DashboardLayout>
-                <UsuarioEditarPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/errores"
-            element={
-              <DashboardLayout>
-                <RegistroErroresPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/errores/:id/editar"
-            element={
-              <DashboardLayout>
-                <RegistroErrorEditarPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/interrupciones"
-            element={
-              <DashboardLayout>
-                <InterrupcionesPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/interrupciones/:id/editar"
-            element={
-              <DashboardLayout>
-                <RegistroInterrupcionEditarPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/tipoerrores"
-            element={
-              <DashboardLayout>
-                <TipoErrorPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/tipointerrupciones"
-            element={
-              <DashboardLayout>
-                <TipoInterrupcionPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/actividades"
-            element={
-              <DashboardLayout>
-                <ActividadesPage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/actividades/:id"
-            element={
-              <DashboardLayout>
-                <ActividadDetallePage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/etapas/:id"
-            element={
-              <DashboardLayout>
-                <EtapaDetallePage />
-              </DashboardLayout>
-            }
-          />
-
-          <Route
-            path="/dashboard/perfil"
-            element={
-              <DashboardLayout>
-                <PerfilPage />
-              </DashboardLayout>
+              proteger(
+                <RoleRoute roles={["Coordinador"]}>
+                  <UsuariosPage />
+                </RoleRoute>
+              )
             }
           />
 
           <Route
             path="/dashboard/usuarios/nuevo"
             element={
-              <DashboardLayout>
-                <UsuarioNuevoPage />
-              </DashboardLayout>
+              proteger(
+                <RoleRoute roles={["Coordinador"]}>
+                  <UsuarioNuevoPage />
+                </RoleRoute>
+              )
             }
+          />
+
+          <Route
+            path="/dashboard/usuarios/:id/editar"
+            element={
+              proteger(
+                <RoleRoute roles={["Coordinador"]}>
+                  <UsuarioEditarPage />
+                </RoleRoute>
+              )
+            }
+          />
+
+          <Route
+            path="/dashboard/errores"
+            element={proteger(<RegistroErroresPage />)}
+          />
+
+          <Route
+            path="/dashboard/errores/:id/editar"
+            element={proteger(<RegistroErrorEditarPage />)}
+          />
+
+          <Route
+            path="/dashboard/interrupciones"
+            element={proteger(<InterrupcionesPage />)}
+          />
+
+          <Route
+            path="/dashboard/interrupciones/:id/editar"
+            element={proteger(<RegistroInterrupcionEditarPage />)}
+          />
+
+          <Route
+            path="/dashboard/tipoerrores"
+            element={
+              proteger(
+                <RoleRoute roles={["Coordinador"]}>
+                  <TipoErrorPage />
+                </RoleRoute>
+              )
+            }
+          />
+
+          <Route
+            path="/dashboard/tipointerrupciones"
+            element={
+              proteger(
+                <RoleRoute roles={["Coordinador"]}>
+                  <TipoInterrupcionPage />
+                </RoleRoute>
+              )
+            }
+          />
+
+          <Route
+            path="/dashboard/actividades"
+            element={proteger(<ActividadesPage />)}
+          />
+
+          <Route
+            path="/dashboard/actividades/:id"
+            element={proteger(<ActividadDetallePage />)}
+          />
+
+          <Route
+            path="/dashboard/etapas/:id"
+            element={proteger(<EtapaDetallePage />)}
+          />
+
+          <Route
+            path="/dashboard/perfil"
+            element={proteger(<PerfilPage />)}
+          />
+
+          <Route
+            path="/dashboard/usuarios/nuevo"
+            element={proteger(<UsuarioNuevoPage />)}
           />
 
           <Route
@@ -250,13 +197,6 @@ export default function App() {
         </Routes>
       </main>
 
-      {authMode && (
-        <AuthModal
-          mode={authMode}
-          onClose={() => setAuthMode(null)}
-          onSwitchMode={setAuthMode}
-        />
-      )}
       <Toaster richColors position="top-right" />
     </div>
   );
