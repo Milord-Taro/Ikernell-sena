@@ -41,6 +41,10 @@ export async function obtenerActividadPorId(id: number) {
 }
 
 export async function crearActividad(actividad: any) {
+
+  console.log("CREANDO");
+  console.log(JSON.stringify(actividad, null, 2));
+
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
@@ -49,14 +53,25 @@ export async function crearActividad(actividad: any) {
     body: JSON.stringify(actividad),
   });
 
+  const texto = await response.text();
+
+  console.log(texto);
+
   if (!response.ok) {
-    throw new Error("Error al crear actividad");
+    throw new Error(texto);
   }
 
-  return response.json();
+  return texto ? JSON.parse(texto) : null;
 }
 
-export async function actualizarActividad(id: number, actividad: any) {
+export async function actualizarActividad(
+  id: number,
+  actividad: any
+) {
+
+  console.log("ENVIANDO");
+  console.log(JSON.stringify(actividad, null, 2));
+
   const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: {
@@ -66,7 +81,11 @@ export async function actualizarActividad(id: number, actividad: any) {
   });
 
   if (!response.ok) {
-    throw new Error("Error al actualizar actividad");
+
+    console.log(await response.text());
+
+    throw new Error("Error al actualizar");
+
   }
 
   return response.json();

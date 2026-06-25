@@ -1,31 +1,28 @@
 import { useState } from "react";
+import { Button } from "./ui/button";
+import { login } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
 import {
   X,
   Eye,
   EyeOff,
   Code2,
   ArrowRight,
-  Github,
-  Chrome,
 } from "lucide-react";
-import { Button } from "./ui/button";
-import { login } from "../../services/authService";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 interface AuthModalProps {
-  mode: "signin" | "signup";
   onClose: () => void;
-  onSwitchMode: (mode: "signin" | "signup") => void;
 }
 
-export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
+export function AuthModal({
+  onClose,
+}: AuthModalProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
-    company: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,11 +31,6 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (isSignUp) {
-      toast.info("Registro pendiente de implementar");
-      return;
-    }
 
     try {
       const usuario = await login(form.email, form.password);
@@ -64,16 +56,11 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
 
   const navigate = useNavigate();
 
-  const isSignUp = mode === "signup";
-
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-label={
-        isSignUp ? "Formulario de registro" : "Formulario de inicio de sesión"
-      }
     >
       {/* Backdrop */}
       <div
@@ -105,12 +92,11 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
               </div>
               <div>
                 <h2 className="font-semibold text-slate-900 leading-none">
-                  {isSignUp ? "Crear cuenta" : "Bienvenido de vuelta"}
+                  Iniciar sesión
                 </h2>
+
                 <p className="text-xs text-slate-500 mt-0.5">
-                  {isSignUp
-                    ? "Comienza tu prueba gratuita de 30 días"
-                    : "Ingresa a tu cuenta IKernell"}
+                  Accede con las credenciales asignadas por el Coordinador.
                 </p>
               </div>
             </div>
@@ -123,79 +109,8 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
             </button>
           </div>
 
-          {/* Social auth */}
-          <div className="grid grid-cols-2 gap-3 mb-5">
-            <button
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
-              aria-label={`${isSignUp ? "Registrarse" : "Iniciar sesión"} con Google`}
-            >
-              <Chrome className="w-4 h-4 text-red-500" />
-              Google
-            </button>
-            <button
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
-              aria-label={`${isSignUp ? "Registrarse" : "Iniciar sesión"} con GitHub`}
-            >
-              <Github className="w-4 h-4" />
-              GitHub
-            </button>
-          </div>
-
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px bg-slate-200" aria-hidden="true" />
-            <span className="text-xs text-slate-400">o continúa con email</span>
-            <div className="flex-1 h-px bg-slate-200" aria-hidden="true" />
-          </div>
-
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            {isSignUp && (
-              <div>
-                <label
-                  htmlFor="auth-name"
-                  className="block text-sm font-medium text-slate-700 mb-1.5"
-                >
-                  Nombre completo
-                </label>
-                <input
-                  id="auth-name"
-                  name="name"
-                  type="text"
-                  required={isSignUp}
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Tu nombre y apellido"
-                  className="w-full px-4 py-2.5 rounded-xl border text-sm placeholder-slate-400 focus:outline-none transition-all"
-                  style={{ borderColor: "#e2e8f0", background: "#f8faff" }}
-                  onFocus={(e) => (e.target.style.borderColor = "#818cf8")}
-                  onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
-                />
-              </div>
-            )}
-
-            {isSignUp && (
-              <div>
-                <label
-                  htmlFor="auth-company"
-                  className="block text-sm font-medium text-slate-700 mb-1.5"
-                >
-                  Empresa{" "}
-                  <span className="text-slate-400 font-normal">(opcional)</span>
-                </label>
-                <input
-                  id="auth-company"
-                  name="company"
-                  type="text"
-                  value={form.company}
-                  onChange={handleChange}
-                  placeholder="Nombre de tu empresa"
-                  className="w-full px-4 py-2.5 rounded-xl border text-sm placeholder-slate-400 focus:outline-none transition-all"
-                  style={{ borderColor: "#e2e8f0", background: "#f8faff" }}
-                  onFocus={(e) => (e.target.style.borderColor = "#818cf8")}
-                  onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
-                />
-              </div>
-            )}
 
             <div>
               <label
@@ -228,11 +143,7 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
                 >
                   Contraseña
                 </label>
-                {!isSignUp && (
-                  <a href="#" className="text-xs" style={{ color: "#4338ca" }}>
-                    ¿Olvidaste tu contraseña?
-                  </a>
-                )}
+
               </div>
               <div className="relative">
                 <input
@@ -242,9 +153,7 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
                   required
                   value={form.password}
                   onChange={handleChange}
-                  placeholder={
-                    isSignUp ? "Mínimo 8 caracteres" : "Tu contraseña"
-                  }
+                  placeholder={"Tu contraseña"}
                   className="w-full px-4 py-2.5 pr-11 rounded-xl border text-sm placeholder-slate-400 focus:outline-none transition-all"
                   style={{ borderColor: "#e2e8f0", background: "#f8faff" }}
                   onFocus={(e) => (e.target.style.borderColor = "#818cf8")}
@@ -268,41 +177,6 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
               </div>
             </div>
 
-            {isSignUp && (
-              <div className="flex items-start gap-2.5 pt-1">
-                <input
-                  type="checkbox"
-                  id="auth-terms"
-                  required
-                  className="mt-0.5 rounded"
-                  style={{ accentColor: "#4338ca" }}
-                  aria-required="true"
-                />
-                <label
-                  htmlFor="auth-terms"
-                  className="text-xs text-slate-600 leading-relaxed"
-                >
-                  Acepto los{" "}
-                  <a
-                    href="#"
-                    className="underline"
-                    style={{ color: "#4338ca" }}
-                  >
-                    Términos de Servicio
-                  </a>{" "}
-                  y la{" "}
-                  <a
-                    href="#"
-                    className="underline"
-                    style={{ color: "#4338ca" }}
-                  >
-                    Política de Privacidad
-                  </a>{" "}
-                  de IKernell.
-                </label>
-              </div>
-            )}
-
             <Button
               type="submit"
               className="w-full text-white gap-2 py-3 mt-1 shadow-lg hover:shadow-indigo-300/50 transition-all"
@@ -310,22 +184,10 @@ export function AuthModal({ mode, onClose, onSwitchMode }: AuthModalProps) {
                 background: "linear-gradient(135deg, #4338ca, #0ea5e9)",
               }}
             >
-              {isSignUp ? "Crear mi cuenta" : "Iniciar Sesión"}
+              Iniciar sesión
               <ArrowRight className="w-4 h-4" />
             </Button>
           </form>
-
-          {/* Switch mode */}
-          <p className="text-center text-sm text-slate-500 mt-5">
-            {isSignUp ? "¿Ya tienes cuenta?" : "¿No tienes cuenta?"}{" "}
-            <button
-              onClick={() => onSwitchMode(isSignUp ? "signin" : "signup")}
-              className="font-medium underline underline-offset-2"
-              style={{ color: "#4338ca" }}
-            >
-              {isSignUp ? "Inicia sesión" : "Regístrate gratis"}
-            </button>
-          </p>
         </div>
       </div>
     </div>

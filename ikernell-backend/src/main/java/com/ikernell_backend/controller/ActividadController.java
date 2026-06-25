@@ -42,6 +42,9 @@ public class ActividadController {
 
     @PostMapping("/api/actividades")
     public Actividad crearActividad(@RequestBody Actividad actividad) {
+
+        System.out.println("ENTRO AL CONTROLADOR");
+
         return actividadService.guardarActividad(actividad);
     }
 

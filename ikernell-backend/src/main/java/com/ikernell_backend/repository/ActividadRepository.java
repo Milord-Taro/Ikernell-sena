@@ -14,4 +14,7 @@ public interface ActividadRepository
             Integer idEtapa);
 
     Actividad findTopByOrderByIdActividadDesc();
+
+    long countByEtapaIdEtapa(
+            Integer idEtapa);
 }

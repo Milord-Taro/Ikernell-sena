@@ -5,11 +5,16 @@ import type { Etapa } from "../../../../types/Etapa";
 interface StageCardProps {
     etapa: Etapa;
     progreso: number;
+
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
 export default function StageCard({
     etapa,
     progreso,
+    onEdit,
+    onDelete
 }: StageCardProps) {
     return (
         <Link
@@ -99,6 +104,54 @@ export default function StageCard({
                     }}
                 >
                     Fecha: {etapa.fechaEtapa}
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        gap: "10px",
+                        marginTop: "15px",
+                    }}
+                >
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onEdit();
+                        }}
+                        style={{
+                            flex: 1,
+                            border: "none",
+                            borderRadius: "10px",
+                            padding: "10px",
+                            background: "#eef2ff",
+                            color: "#4338ca",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                        }}
+                    >
+                        Editar
+                    </button>
+
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onDelete();
+                        }}
+                        style={{
+                            flex: 1,
+                            border: "none",
+                            borderRadius: "10px",
+                            padding: "10px",
+                            background: "#fee2e2",
+                            color: "#dc2626",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                        }}
+                    >
+                        Eliminar
+                    </button>
                 </div>
             </div>
         </Link>

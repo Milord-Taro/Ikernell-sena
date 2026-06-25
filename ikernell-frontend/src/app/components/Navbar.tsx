@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 interface NavbarProps {
   onSignIn: () => void;
-  onSignUp: () => void;
 }
 
 const navLinks = [
@@ -17,7 +16,7 @@ const navLinks = [
   { label: "Contacto", href: "#contacto" },
 ];
 
-export function Navbar({ onSignIn, onSignUp }: NavbarProps) {
+export function Navbar({ onSignIn }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -85,13 +84,6 @@ export function Navbar({ onSignIn, onSignUp }: NavbarProps) {
             >
               Iniciar Sesión
             </Button>
-            <Button
-              onClick={onSignUp}
-              className="text-white shadow-md hover:shadow-indigo-300/50"
-              style={{ background: "linear-gradient(135deg, #4338ca, #0ea5e9)" }}
-            >
-              Registrarse
-            </Button>
           </div>
 
           {/* Mobile menu button */}
@@ -129,13 +121,6 @@ export function Navbar({ onSignIn, onSignUp }: NavbarProps) {
             <div className="flex gap-2 pt-3 border-t border-indigo-100 mt-2">
               <Button variant="outline" onClick={onSignIn} className="flex-1 border-indigo-200 text-indigo-700">
                 Iniciar Sesión
-              </Button>
-              <Button
-                onClick={onSignUp}
-                className="flex-1 text-white"
-                style={{ background: "linear-gradient(135deg, #4338ca, #0ea5e9)" }}
-              >
-                Registrarse
               </Button>
             </div>
           </div>

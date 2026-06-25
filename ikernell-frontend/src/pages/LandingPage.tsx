@@ -13,13 +13,13 @@ import { Navbar } from "../app/components/Navbar";
 import { AuthModal } from "../app/components/AuthModal";
 
 export default function LandingPage() {
-  const [authMode, setAuthMode] = useState<"signin" | "signup" | null>(null);
+
+  const [mostrarLogin, setMostrarLogin] = useState(false);
 
   return (
     <>
       <Navbar
-        onSignIn={() => setAuthMode("signin")}
-        onSignUp={() => setAuthMode("signup")}
+        onSignIn={() => setMostrarLogin(true)}
       />
 
       <Hero
@@ -38,11 +38,9 @@ export default function LandingPage() {
       <FAQ />
       <Contact />
 
-      {authMode && (
+      {mostrarLogin && (
         <AuthModal
-          mode={authMode}
-          onClose={() => setAuthMode(null)}
-          onSwitchMode={setAuthMode}
+          onClose={() => setMostrarLogin(false)}
         />
       )}
     </>

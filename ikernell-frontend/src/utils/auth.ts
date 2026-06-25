@@ -8,6 +8,14 @@ export function obtenerUsuarioLogueado() {
   return JSON.parse(usuario);
 }
 
+export function obtenerRolUsuario() {
+
+  const usuario = obtenerUsuarioLogueado();
+
+  return usuario?.rol?.nombreRol;
+
+}
+
 export function obtenerIdUsuario() {
   const usuario = obtenerUsuarioLogueado();
 
