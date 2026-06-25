@@ -6,13 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import type { Profesion } from "../types/Profesion";
-
 import type { Especialidad } from "../types/Especialidad";
-
 import { obtenerRoles } from "../services/rolService";
-
 import { obtenerProfesiones } from "../services/profesionService";
-
 import { obtenerEspecialidades } from "../services/especialidadService";
 
 import {
@@ -32,6 +28,10 @@ export default function UsuarioEditarPage() {
   const [profesiones, setProfesiones] = useState<Profesion[]>([]);
 
   const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
+
+  const [confirmarCorreo, setConfirmarCorreo] = useState("");
+
+  const [confirmarContrasena, setConfirmarContrasena] = useState("");
 
   const navigate = useNavigate();
 
@@ -147,6 +147,91 @@ export default function UsuarioEditarPage() {
               marginTop: "6px",
             }}
           />
+        </div>
+
+        <div>
+          <label>Confirmar Correo Electrónico</label>
+
+          <input
+            value={confirmarCorreo}
+            onChange={(e) => setConfirmarCorreo(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px",
+              border: "1px solid #dbe2ea",
+              borderRadius: "8px",
+              marginTop: "6px",
+            }}
+          />
+
+          {confirmarCorreo && (
+            <small
+              style={{
+                color:
+                  usuario.correoElectronico === confirmarCorreo
+                    ? "#16a34a"
+                    : "#dc2626",
+              }}
+            >
+              {usuario.correoElectronico === confirmarCorreo
+                ? "✓ Los correos coinciden"
+                : "✗ Los correos no coinciden"}
+            </small>
+          )}
+        </div>
+
+        <div>
+          <label>Contraseña</label>
+
+          <input
+            type="password"
+            value={usuario.contrasena}
+            onChange={(e) =>
+              setUsuario({
+                ...usuario,
+                contrasena: e.target.value,
+              })
+            }
+            style={{
+              width: "100%",
+              padding: "10px",
+              border: "1px solid #dbe2ea",
+              borderRadius: "8px",
+              marginTop: "6px",
+            }}
+          />
+        </div>
+
+        <div>
+          <label>Confirmar Contraseña</label>
+
+          <input
+            type="password"
+            value={confirmarContrasena}
+            onChange={(e) => setConfirmarContrasena(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px",
+              border: "1px solid #dbe2ea",
+              borderRadius: "8px",
+              marginTop: "6px",
+            }}
+          />
+
+          {confirmarContrasena && (
+            <small
+              style={{
+                color:
+                  usuario.contrasena === confirmarContrasena
+                    ? "#16a34a"
+                    : "#dc2626",
+              }}
+            >
+              {usuario.contrasena === confirmarContrasena
+                ? "✓ Las contraseñas coinciden"
+                : "✗ Las contraseñas no coinciden"}
+            </small>
+          )}
         </div>
 
         <div>
@@ -339,8 +424,14 @@ export default function UsuarioEditarPage() {
           onClick={async () => {
             if (!usuario) return;
 
-            if (!usuario.nombre.trim()) {
-              toast.error("El nombre es obligatorio");
+            // validacion nombre
+            if (usuario.nombre.trim().length < 3) {
+              toast.error("El nombre debe tener mínimo 3 caracteres");
+              return;
+            }
+
+            if (usuario.nombre.trim().length > 50) {
+              toast.error("El nombre debe tener maximo 50 caracteres");
               return;
             }
 
@@ -350,9 +441,14 @@ export default function UsuarioEditarPage() {
               toast.error("El nombre solo puede contener letras");
               return;
             }
+            // validacion apellido
+            if (usuario.apellido.trim().length < 3) {
+              toast.error("El apellido debe tener mínimo 3 caracteres");
+              return;
+            }
 
-            if (!usuario.apellido.trim()) {
-              toast.error("El apellido es obligatorio");
+            if (usuario.apellido.trim().length > 50) {
+              toast.error("El apellido debe tener maximo 50 caracteres");
               return;
             }
 
@@ -361,8 +457,14 @@ export default function UsuarioEditarPage() {
               return;
             }
 
+            // validacion correo electronico
             if (!usuario.correoElectronico.trim()) {
               toast.error("El correo es obligatorio");
+              return;
+            }
+
+            if (usuario.correoElectronico.trim().length > 130) {
+              toast.error("El correo debe tener maximo 130 caracteres");
               return;
             }
 
@@ -373,6 +475,22 @@ export default function UsuarioEditarPage() {
               return;
             }
 
+            if (usuario.correoElectronico !== confirmarCorreo) {
+              toast.error("Los correos no coinciden");
+              return;
+            }
+
+            // validacion direccion
+            if (usuario.direccion.trim().length < 5) {
+              toast.error("La dirección debe tener mínimo 5 caracteres");
+              return;
+            }
+
+            if (usuario.direccion.trim().length > 100) {
+              toast.error("La dirección debe tener maximo 100 caracteres");
+              return;
+            }
+            // validacion numero identificacion
             if (
               usuario.numeroIdentificacion.length < 6 ||
               usuario.numeroIdentificacion.length > 15
@@ -383,12 +501,42 @@ export default function UsuarioEditarPage() {
               return;
             }
 
+            // validacion fecha nacimiento
+            if (!usuario.fechaNacimiento) {
+              toast.error("La fecha de nacimiento es obligatoria");
+              return;
+            }
+
             const hoy = new Date();
 
             const fechaNacimiento = new Date(usuario.fechaNacimiento);
 
             if (fechaNacimiento > hoy) {
               toast.error("La fecha de nacimiento no puede ser futura");
+              return;
+            }
+
+            // validacion contrasena
+            if (usuario.contrasena !== confirmarContrasena) {
+              toast.error("Las contraseñas no coinciden");
+              return;
+            }
+
+            if (
+              usuario.contrasena.length < 8 ||
+              usuario.contrasena.length > 255
+            ) {
+              toast.error("La contraseña debe tener entre 8 y 255 caracteres");
+              return;
+            }
+
+            const passwordRegex =
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&._\-#])[A-Za-z\d@$!%*?&._\-#]{8,255}$/;
+
+            if (!passwordRegex.test(usuario.contrasena)) {
+              toast.error(
+                "La contraseña debe contener mayúsculas, minúsculas, números y un carácter especial",
+              );
               return;
             }
 
