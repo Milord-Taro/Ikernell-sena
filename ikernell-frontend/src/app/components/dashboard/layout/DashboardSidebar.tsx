@@ -1,7 +1,5 @@
 import { Code2 } from "lucide-react";
-
 import { useState } from "react";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { Home } from "lucide-react";
 
 import {
@@ -12,6 +10,7 @@ import {
   TriangleAlert,
   PauseCircle,
   Tags,
+  ChartColumn,
 } from "lucide-react";
 
 import UserPanel from "./UserPanel";
@@ -207,6 +206,16 @@ export default function DashboardSidebar() {
             collapsed={collapsed}
           />
         )}
+
+        {rol === "Coordinador" && (
+          <SidebarLink
+            to="/dashboard/informes"
+            icon={ChartColumn}
+            label="Informes"
+            collapsed={collapsed}
+          />
+        )}
+        
       </nav>
       <div
         style={{

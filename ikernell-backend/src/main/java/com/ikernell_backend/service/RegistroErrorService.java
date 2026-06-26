@@ -46,4 +46,26 @@ public class RegistroErrorService {
         return registroErrorRepository
                 .findByEtapaIdEtapa(idEtapa);
     }
+
+    public RegistroError actualizarEstado(
+            Integer id,
+            String nuevoEstado) {
+
+        RegistroError error =
+                registroErrorRepository.findById(id)
+                        .orElse(null);
+
+        if (error == null) {
+            return null;
+        }
+        System.out.println(">>>" + nuevoEstado + "<<<");
+        System.out.println("Longitud: " + nuevoEstado.length());
+
+        System.out.println("Estado recibido: " + nuevoEstado);
+
+        nuevoEstado = nuevoEstado.replace("\"", "");
+        error.setEstadoError(nuevoEstado);
+
+        return registroErrorRepository.save(error);
+    }
 }

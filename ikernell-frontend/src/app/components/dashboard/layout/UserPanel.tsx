@@ -77,7 +77,10 @@ export default function UserPanel({ collapsed }: { collapsed: boolean }) {
           {!collapsed && <span>Perfil</span>}
         </Link>
 
-        <button className="sidebar-user-button">
+        <button
+          className="sidebar-user-button"
+          onClick={() => navigate("/dashboard/configuracion")}
+        >
           <Settings size={18} />
           {!collapsed && <span>Configuración</span>}
         </button>

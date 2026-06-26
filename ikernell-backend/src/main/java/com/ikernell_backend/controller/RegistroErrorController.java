@@ -68,6 +68,15 @@ public class RegistroErrorController {
         return registroErrorService.actualizarRegistroError(registroError);
     }
 
+    @PutMapping("/api/registroerrores/{id}/estado")
+    public RegistroError actualizarEstado(
+            @PathVariable Integer id,
+            @RequestBody String estado) {
+
+        return registroErrorService
+                .actualizarEstado(id, estado);
+    }
+
     @DeleteMapping("/api/registroerrores/{id}")
     public void eliminarRegistroError(@PathVariable Integer id) {
         registroErrorService.eliminarRegistroError(id);

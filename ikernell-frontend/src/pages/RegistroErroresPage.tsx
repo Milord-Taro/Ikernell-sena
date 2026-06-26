@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { RegistroError } from "../types/RegistroError";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../app/components/ui/button";
 
 import {
   obtenerErrores,
@@ -15,8 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from "../app/components/ui/table";
-
-import { Button } from "../app/components/ui/button";
 
 export default function RegistroErroresPage() {
   const [errores, setErrores] = useState<RegistroError[]>([]);
@@ -98,6 +97,13 @@ export default function RegistroErroresPage() {
                 <TableCell>{error.estadoError}</TableCell>
 
                 <TableCell>
+                  <Button
+                    onClick={() =>
+                      navigate(`/dashboard/errores/${error.idError}`)
+                    }
+                  >
+                    Ver
+                  </Button>
                   <Button
                     onClick={() =>
                       navigate(`/dashboard/errores/${error.idError}/editar`)

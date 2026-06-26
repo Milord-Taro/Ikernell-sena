@@ -155,6 +155,34 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    public void cambiarContrasena(
+            Integer id,
+            String contrasenaActual,
+            String contrasenaNueva) {
+
+        Usuario usuario =
+                usuarioRepository.findById(id)
+                        .orElse(null);
+
+        if (usuario == null) {
+            throw new RuntimeException(
+                    "Usuario no encontrado");
+        }
+
+        if (!encoder.matches(
+                contrasenaActual,
+                usuario.getContrasena())) {
+
+            throw new RuntimeException(
+                    "La contraseña actual es incorrecta");
+        }
+
+        usuario.setContrasena(
+                encoder.encode(contrasenaNueva));
+
+        usuarioRepository.save(usuario);
+    }
+
     public Usuario login(
             String correo,
             String contrasena) {

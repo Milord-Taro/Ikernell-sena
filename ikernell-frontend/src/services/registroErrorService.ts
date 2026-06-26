@@ -49,3 +49,19 @@ export async function actualizarRegistroError(id: number, error: any) {
 
   return response.json();
 }
+
+export async function actualizarEstadoError(id: number, estado: string) {
+  
+  const response = await fetch(`${API_URL}/${id}/estado`, {
+    method: "PUT",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    
+    body: JSON.stringify(estado),
+  });
+
+  return response.json();
+}
