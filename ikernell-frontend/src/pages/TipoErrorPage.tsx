@@ -112,8 +112,6 @@ export default function TipoErrorPage() {
     }
   }
 
-  toast.success("Tipo de error creado correctamente");
-
   async function guardarCambios() {
     if (!tipoEditando) {
       return;

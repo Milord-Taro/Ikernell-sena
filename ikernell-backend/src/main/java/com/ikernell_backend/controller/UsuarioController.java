@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.ikernell_backend.dto.LoginRequest;
-
+import com.ikernell_backend.dto.CambiarContrasenaRequest;
 
 import java.util.List;
 
@@ -96,4 +96,20 @@ public class UsuarioController {
                 request.getCorreo(),
                 request.getContrasena());
     }
+    @PutMapping("/api/usuarios/{id}/contrasena")
+    public void cambiarContrasena(
+
+            @PathVariable Integer id,
+
+            @RequestBody CambiarContrasenaRequest request) {
+
+        usuarioService.cambiarContrasena(
+
+                id,
+
+                request.getContrasenaActual(),
+
+                request.getContrasenaNueva());
+    }
+
 }

@@ -20,14 +20,18 @@ import ProyectoDetallePage from "../pages/ProyectoDetallePage";
 import EtapaDetallePage from "../pages/EtapaDetallePage";
 import RegistroErrorNuevoPage from "../pages/RegistroErrorNuevoPage";
 import RegistroInterrupcionNuevoPage from "../pages/RegistroInterrupcionNuevoPage";
-import ProyectoErroresPage from "../pages/ProyectoErroresPage";
-import ProyectoInterrupcionesPage from "../pages/ProyectoInterrupcionesPage";
+import ProyectoErroresPage from "../pages/ProyectoHistorialErroresPage";
+import ProyectoInterrupcionesPage from "../pages/ProyectoHistorialInterrupcionesPage";
 import PerfilPage from "../pages/PerfilPage";
 import UsuarioDetallePage from "../pages/UsuarioDetallePage";
 import UsuarioEditarPage from "../pages/UsuarioEditarPage";
 import UsuarioNuevoPage from "../pages/UsuarioNuevoPage";
 import RegistroErrorEditarPage from "../pages/RegistroErrorEditarPage";
 import RegistroInterrupcionEditarPage from "../pages/RegistroInterrupcionEditarPage";
+import RegistroErrorDetallePage from "../pages/RegistroErrorDetallePage";
+import InformesPage from "../pages/InformesPage";
+import NotFoundPage from "../pages/NotFoundPage";
+import ConfiguracionPage from "../pages/ConfiguracionPage";
 
 export default function App() {
   function proteger(componente: React.ReactNode) {
@@ -128,6 +132,11 @@ export default function App() {
           />
 
           <Route
+            path="/dashboard/errores/:id"
+            element={proteger(<RegistroErrorDetallePage />)}
+          />
+
+          <Route
             path="/dashboard/interrupciones"
             element={proteger(<InterrupcionesPage />)}
           />
@@ -156,6 +165,15 @@ export default function App() {
           />
 
           <Route
+            path="/dashboard/informes"
+            element={proteger(
+              <RoleRoute roles={["Coordinador"]}>
+                <InformesPage />
+              </RoleRoute>,
+            )}
+          />
+
+          <Route
             path="/dashboard/actividades"
             element={proteger(<ActividadesPage />)}
           />
@@ -178,14 +196,11 @@ export default function App() {
           />
 
           <Route
-            path="*"
-            element={
-              <div style={{ padding: "40px" }}>
-                <h1>404</h1>
-                <p>Página no encontrada</p>
-              </div>
-            }
+            path="/dashboard/configuracion"
+            element={proteger(<ConfiguracionPage />)}
           />
+
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
 

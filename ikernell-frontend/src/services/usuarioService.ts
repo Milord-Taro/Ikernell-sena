@@ -63,3 +63,26 @@ export async function crearUsuario(usuario: Usuario) {
 
   return response.json();
 }
+
+export async function cambiarContrasena(
+  id: number,
+  contrasenaActual: string,
+  contrasenaNueva: string,
+) {
+  const response = await fetch(`${API_URL}/${id}/contrasena`, {
+    method: "PUT",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      contrasenaActual,
+      contrasenaNueva,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+}
