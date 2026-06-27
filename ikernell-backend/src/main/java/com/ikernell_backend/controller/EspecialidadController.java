@@ -43,10 +43,6 @@ public class EspecialidadController {
 
         Especialidad especialidad = especialidadService.obtenerPorId(id);
 
-        if (especialidad == null) {
-            return null;
-        }
-
         especialidad.setCodEspecialidad(especialidadActualizada.getCodEspecialidad());
         especialidad.setNombreEspecialidad(especialidadActualizada.getNombreEspecialidad());
 

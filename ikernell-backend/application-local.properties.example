@@ -1,0 +1,6 @@
+# Copia este archivo como application-local.properties en esta misma carpeta.
+# Ese archivo local esta ignorado por Git y puede contener tu clave privada.
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/ikernell_solutions
+spring.datasource.username=postgres
+spring.datasource.password=fabrica2024*

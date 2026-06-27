@@ -53,10 +53,6 @@ public class RegistroErrorController {
 
         RegistroError registroError = registroErrorService.obtenerPorId(id);
 
-        if (registroError == null) {
-            return null;
-        }
-
         registroError.setCodError(registroErrorActualizado.getCodError());
         registroError.setDescripcionError(registroErrorActualizado.getDescripcionError());
         registroError.setEstadoError(registroErrorActualizado.getEstadoError());

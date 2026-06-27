@@ -1,7 +1,7 @@
-const API_URL = "http://localhost:8080/api/auth";
+import { apiRequest } from "./apiConfig";
 
 export async function login(correo: string, contrasena: string) {
-  const response = await fetch(`${API_URL}/login`, {
+  return apiRequest("/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -11,6 +11,4 @@ export async function login(correo: string, contrasena: string) {
       contrasena,
     }),
   });
-
-  return response.json();
 }

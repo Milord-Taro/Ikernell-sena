@@ -48,10 +48,6 @@ public class AsignacionProyectoController {
         AsignacionProyecto asignacionProyecto =
                 asignacionProyectoService.obtenerPorId(id);
 
-        if (asignacionProyecto == null) {
-            return null;
-        }
-
         asignacionProyecto.setEstadoAsignacion(asignacionProyectoActualizado.getEstadoAsignacion());
         asignacionProyecto.setProyecto(asignacionProyectoActualizado.getProyecto());
         asignacionProyecto.setUsuario(asignacionProyectoActualizado.getUsuario());

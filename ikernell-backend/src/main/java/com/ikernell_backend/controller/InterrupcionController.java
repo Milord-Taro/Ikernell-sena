@@ -54,10 +54,6 @@
 
             Interrupcion interrupcion = interrupcionService.obtenerPorId(id);
 
-            if (interrupcion == null) {
-                return null;
-            }
-
             interrupcion.setCodInterrupcion(interrupcionActualizado.getCodInterrupcion());
             interrupcion.setDescripcionInterrupcion(interrupcionActualizado.getDescripcionInterrupcion());
             interrupcion.setFechaInterrupcion(interrupcionActualizado.getFechaInterrupcion());

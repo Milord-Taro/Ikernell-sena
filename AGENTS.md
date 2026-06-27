@@ -159,12 +159,6 @@ portafolio, noticias, FAQ, links y contacto.
 
 ---
 
-## Objetivo de esta sesión
-
-te darte objetivos en el chat para trabajar
-
----
-
 ## Notas operativas
 
 - Proyecto en fase de pulimiento — **priorizar no romper lo que ya funciona**

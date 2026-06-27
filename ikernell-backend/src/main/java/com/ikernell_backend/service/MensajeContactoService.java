@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.MensajeContacto;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.MensajeContactoRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class MensajeContactoService {
     }
 
     public MensajeContacto obtenerPorId(Integer id) {
-        return mensajeContactoRepository.findById(id).orElse(null);
+        return mensajeContactoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Mensaje no encontrado"));
     }
 
     public MensajeContacto crearMensaje(
@@ -48,11 +51,8 @@ public class MensajeContactoService {
 
         MensajeContacto mensaje =
                 mensajeContactoRepository.findById(id)
-                        .orElse(null);
-
-        if (mensaje == null) {
-            return null;
-        }
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Mensaje no encontrado"));
 
         mensaje.setEstadoMensaje("Leido");
 
@@ -65,11 +65,8 @@ public class MensajeContactoService {
 
         MensajeContacto mensaje =
                 mensajeContactoRepository.findById(id)
-                        .orElse(null);
-
-        if (mensaje == null) {
-            return null;
-        }
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Mensaje no encontrado"));
 
         mensaje.setRespuesta(respuesta);
 

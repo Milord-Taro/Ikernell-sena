@@ -1,83 +1,44 @@
 import type { Proyecto } from "../types/Proyecto";
-
-const API_URL = "http://localhost:8080/api/proyectos";
+import { apiRequest } from "./apiConfig";
 
 export async function obtenerProyectos(): Promise<Proyecto[]> {
-
-  const response = await fetch(API_URL);
-
-  if (!response.ok) {
-    throw new Error("Error obteniendo proyectos");
-  }
-
-  return response.json();
+  return apiRequest<Proyecto[]>("/api/proyectos");
 }
 
 export async function crearProyecto(proyecto: any) {
-
-  const response = await fetch(API_URL, {
+  return apiRequest<Proyecto>("/api/proyectos", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(proyecto),
   });
-
-  if (!response.ok) {
-    throw new Error("Error creando proyecto");
-  }
-
-  return response.json();
 }
 
 export async function eliminarProyecto(id: number) {
-
-  const response = await fetch(
-    `${API_URL}/${id}`,
-    {
-      method: "DELETE",
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Error eliminando proyecto");
-  }
+  await apiRequest<void>(`/api/proyectos/${id}`, {
+    method: "DELETE",
+  });
 }
 
 export async function actualizarProyecto(
   id: number,
   proyecto: any
 ) {
-
-  const response = await fetch(
-    `${API_URL}/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(proyecto),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Error actualizando proyecto");
-  }
-
-  return response.json();
+  return apiRequest<Proyecto>(`/api/proyectos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(proyecto),
+  });
 }
 
 export async function obtenerProyectoPorId(
   id: number
 ) {
-  const response = await fetch(
-    `http://localhost:8080/api/proyectos/${id}`
-  );
-
-  return response.json();
+  return apiRequest<Proyecto>(`/api/proyectos/${id}`);
 }
-
-
 
 
 

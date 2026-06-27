@@ -18,7 +18,7 @@ export default function UsuariosPage() {
 
   const [busqueda, setBusqueda] = useState("");
 
-  const [filtroEstado, setFiltroEstado] = useState("todos");
+  const [filtroEstado, setFiltroEstado] = useState("activos");
 
   const navigate = useNavigate();
 
@@ -78,9 +78,9 @@ export default function UsuariosPage() {
           borderRadius: "8px",
         }}
       >
-        <option value="todos">Todos</option>
         <option value="activos">Activos</option>
-        <option value="inactivos">Inactivos</option>
+        <option value="inactivos">Inhabilitados</option>
+        <option value="todos">Todos</option>
       </select>
 
       <div
@@ -91,6 +91,12 @@ export default function UsuariosPage() {
           marginTop: "24px",
         }}
       >
+        {usuariosFiltrados.length === 0 && (
+          <p style={{ color: "#64748b" }}>
+            No hay usuarios para el filtro seleccionado.
+          </p>
+        )}
+
         {usuariosFiltrados.map((usuario) => (
           <UserCard
             key={usuario.idUsuario}

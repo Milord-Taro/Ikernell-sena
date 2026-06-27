@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { apiRequest } from "../../services/apiConfig";
 import { Mail, Phone, MapPin, Send, CheckCircle2, Clock, MessageSquare } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -43,27 +44,20 @@ export function Contact() {
 
   try {
 
-    const response = await fetch(
-      "http://localhost:8080/api/mensajes",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          codMensaje: "MSG999",
-          nombreRemitente: form.name,
-          correoRemitente: form.email,
-          mensaje: form.message
-        })
-      }
-    );
+    await apiRequest("/api/mensajes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        codMensaje: "MSG999",
+        nombreRemitente: form.name,
+        correoRemitente: form.email,
+        mensaje: form.message
+      })
+    });
 
-    if (response.ok) {
-      setSent(true);
-    } else {
-      alert("Error enviando mensaje");
-    }
+    setSent(true);
 
   } catch (error) {
 

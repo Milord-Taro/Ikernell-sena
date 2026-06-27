@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Rol;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.RolRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class RolService {
     }
 
     public Rol obtenerPorId(Integer id) {
-        return rolRepository.findById(id).orElse(null);
+        return rolRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Rol no encontrado"));
     }
 
     public Rol crearRol(Rol rol) {

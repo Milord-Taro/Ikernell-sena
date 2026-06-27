@@ -1,43 +1,35 @@
-const API_URL = "http://localhost:8080/api/tipoerrores";
+import { apiRequest } from "./apiConfig";
 
 export async function obtenerTiposError() {
-  const response = await fetch(API_URL);
-
-  return response.json();
+  return apiRequest("/api/tipoerrores");
 }
 
 export async function obtenerTipoErrorPorId(id: number) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  return response.json();
+  return apiRequest(`/api/tipoerrores/${id}`);
 }
 
 export async function crearTipoError(tipoError: any) {
-  const response = await fetch(API_URL, {
+  return apiRequest("/api/tipoerrores", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(tipoError),
   });
-
-  return response.json();
 }
 
 export async function actualizarTipoError(id: number, tipoError: any) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  return apiRequest(`/api/tipoerrores/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(tipoError),
   });
-
-  return response.json();
 }
 
 export async function eliminarTipoError(id: number) {
-  await fetch(`${API_URL}/${id}`, {
+  await apiRequest<void>(`/api/tipoerrores/${id}`, {
     method: "DELETE",
   });
 }

@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.TipoInterrupcion;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.TipoInterrupcionRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class TipoInterrupcionService {
     }
 
     public TipoInterrupcion obtenerPorId(Integer id) {
-        return tipoInterrupcionRepository.findById(id).orElse(null);
+        return tipoInterrupcionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Tipo de interrupción no encontrado"));
     }
 
     public TipoInterrupcion crearTipoInterrupcion(TipoInterrupcion tipoInterrupcion) {

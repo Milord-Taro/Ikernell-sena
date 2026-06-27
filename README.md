@@ -65,6 +65,20 @@ Posteriormente configure el archivo:
 ikernell-backend/src/main/resources/application.properties
 ```
 
+El proyecto usa variables de entorno para evitar credenciales reales en Git.
+Puede tomar como guía cualquiera de estos archivos:
+
+```
+ikernell-backend/application.properties.example
+ikernell-backend/application-local.properties.example
+```
+
+Opción recomendada para trabajar en casa/oficina:
+
+1. Crear `ikernell-backend/application-local.properties`.
+2. Colocar allí las credenciales reales de la máquina local.
+3. No commitear ese archivo; ya está ignorado por Git.
+
 Ejemplo:
 
 ```properties
@@ -214,7 +228,22 @@ La carpeta contiene:
 
 # Documentación
 
-La documentación completa del proyecto se encuentra disponible en:
+La documentación académica y técnica del proyecto está organizada en:
+
+```
+docs/
+```
+
+Índice principal:
+
+```
+docs/README.md
+```
+
+Allí se encuentran historias de usuario, requerimientos, casos de uso,
+diagramas, documentación de base de datos, Gantt, matriz HU/RF y TODO final.
+
+La carpeta de Google Drive se conserva como respaldo y para evidencias pesadas:
 
 https://drive.google.com/drive/folders/1OnvTFJ1jugodW-5ikjnausxOfQSWGa_T
 

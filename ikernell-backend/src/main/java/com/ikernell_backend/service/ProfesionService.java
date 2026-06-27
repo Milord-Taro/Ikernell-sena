@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Profesion;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.ProfesionRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class ProfesionService {
     }
 
     public Profesion obtenerPorId(Integer id) {
-        return profesionRepository.findById(id).orElse(null);
+        return profesionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Profesión no encontrada"));
     }
 
     public Profesion crearProfesion(Profesion profesion) {

@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.TipoError;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.TipoErrorRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class TipoErrorService {
     }
 
     public TipoError obtenerPorId(Integer id) {
-        return tipoErrorRepository.findById(id).orElse(null);
+        return tipoErrorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Tipo de error no encontrado"));
     }
 
     public TipoError crearTipoError(TipoError tipoError) {

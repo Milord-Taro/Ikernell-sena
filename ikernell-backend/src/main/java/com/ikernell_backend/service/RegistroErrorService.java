@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.RegistroError;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.RegistroErrorRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class RegistroErrorService {
     }
 
     public RegistroError obtenerPorId(Integer id) {
-        return registroErrorRepository.findById(id).orElse(null);
+        return registroErrorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Registro de error no encontrado"));
     }
 
     public RegistroError crearRegistroError(RegistroError registroError) {
@@ -53,11 +56,8 @@ public class RegistroErrorService {
 
         RegistroError error =
                 registroErrorRepository.findById(id)
-                        .orElse(null);
-
-        if (error == null) {
-            return null;
-        }
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Registro de error no encontrado"));
         System.out.println(">>>" + nuevoEstado + "<<<");
         System.out.println("Longitud: " + nuevoEstado.length());
 

@@ -55,6 +55,10 @@ export default function UsuarioNuevoPage() {
     especialidad: null,
   });
 
+  const rolesAsignables = roles.filter(
+    (rol) => rol.nombreRol.toLowerCase() !== "coordinador",
+  );
+
   useEffect(() => {
     async function cargar() {
       const rolesData = await obtenerRoles();
@@ -371,7 +375,7 @@ export default function UsuarioNuevoPage() {
           >
             <option value={0}>Seleccione un rol</option>
 
-            {roles.map((rol) => (
+            {rolesAsignables.map((rol) => (
               <option key={rol.idRol} value={rol.idRol}>
                 {rol.nombreRol}
               </option>

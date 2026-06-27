@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Especialidad;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.EspecialidadRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class EspecialidadService {
     }
 
     public Especialidad obtenerPorId(Integer id) {
-        return especialidadRepository.findById(id).orElse(null);
+        return especialidadRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Especialidad no encontrada"));
     }
 
     public Especialidad crearEspecialidad(Especialidad especialidad) {

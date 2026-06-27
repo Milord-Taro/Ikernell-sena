@@ -1,67 +1,49 @@
-const API_URL = "http://localhost:8080/api/registroerrores";
+import { apiRequest } from "./apiConfig";
 
 export async function obtenerErrores() {
-  const response = await fetch(API_URL);
-
-  return response.json();
+  return apiRequest("/api/registroerrores");
 }
 
 export async function eliminarError(id: number) {
-  await fetch(`${API_URL}/${id}`, {
+  await apiRequest<void>(`/api/registroerrores/${id}`, {
     method: "DELETE",
   });
 }
 
 export async function crearRegistroError(error: any) {
-  const response = await fetch(API_URL, {
+  return apiRequest("/api/registroerrores", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(error),
   });
-
-  return response.json();
 }
 
 export async function obtenerErroresPorEtapa(idEtapa: number) {
-  const response = await fetch(
-    `http://localhost:8080/api/etapas/${idEtapa}/errores`,
-  );
-
-  return response.json();
+  return apiRequest(`/api/etapas/${idEtapa}/errores`);
 }
 
 export async function obtenerErrorPorId(id: number) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  return response.json();
+  return apiRequest(`/api/registroerrores/${id}`);
 }
 
 export async function actualizarRegistroError(id: number, error: any) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  return apiRequest(`/api/registroerrores/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(error),
   });
-
-  return response.json();
 }
 
 export async function actualizarEstadoError(id: number, estado: string) {
-  
-  const response = await fetch(`${API_URL}/${id}/estado`, {
+  return apiRequest(`/api/registroerrores/${id}/estado`, {
     method: "PUT",
-
     headers: {
       "Content-Type": "application/json",
     },
-
-    
     body: JSON.stringify(estado),
   });
-
-  return response.json();
 }

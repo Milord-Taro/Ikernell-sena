@@ -3,6 +3,9 @@ package com.ikernell_backend.controller;
 
 import com.ikernell_backend.entity.Usuario;
 import com.ikernell_backend.service.UsuarioService;
+import com.ikernell_backend.dto.LoginResponse;
+import com.ikernell_backend.dto.UsuarioMapper;
+import com.ikernell_backend.dto.UsuarioResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +16,7 @@ import com.ikernell_backend.dto.LoginRequest;
 import com.ikernell_backend.dto.CambiarContrasenaRequest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class UsuarioController {
@@ -24,33 +28,34 @@ public class UsuarioController {
     }
 
     @GetMapping("/api/usuarios")
-    public  List<Usuario> listarUsuarios(){
-        return usuarioService.listarUsuarios();
+    public  List<UsuarioResponse> listarUsuarios(){
+        return usuarioService.listarUsuarios()
+                .stream()
+                .map(UsuarioMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/api/usuarios/{id}")
-    public Usuario obtenerPorId(@PathVariable Integer id){
-        return usuarioService.obtenerPorId(id);
+    public UsuarioResponse obtenerPorId(@PathVariable Integer id){
+        return UsuarioMapper.toResponse(
+                usuarioService.obtenerPorId(id));
     }
 
     @PostMapping("/api/usuarios")
-    public Usuario crearUsuario(@RequestBody Usuario usuario) {
+    public UsuarioResponse crearUsuario(@RequestBody Usuario usuario) {
 
-        return usuarioService.crearUsuario(
-                usuario);
+        return UsuarioMapper.toResponse(
+                usuarioService.crearUsuario(
+                        usuario));
     }
 
     @PutMapping("/api/usuarios/{id}")
-    public Usuario actualizarUsuario(
+    public UsuarioResponse actualizarUsuario(
             @PathVariable Integer id,
             @RequestBody Usuario usuarioActualizado) {
 
         Usuario usuario =
                 usuarioService.obtenerPorId(id);
-
-        if (usuario == null) {
-            return null;
-        }
 
         usuario.setCodUsuario(usuarioActualizado.getCodUsuario());
         usuario.setNombre(usuarioActualizado.getNombre());
@@ -58,9 +63,7 @@ public class UsuarioController {
         usuario.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
         usuario.setTipoIdentificacion(usuarioActualizado.getTipoIdentificacion());
         usuario.setNumeroIdentificacion(usuarioActualizado.getNumeroIdentificacion());
-        usuario.setCorreoElectronico(usuarioActualizado.getCorreoElectronico());
         usuario.setDireccion(usuarioActualizado.getDireccion());
-        // usuario.setContrasena(usuarioActualizado.getContrasena());
         usuario.setEstado(usuarioActualizado.getEstado());
         usuario.setFotoPerfil(usuarioActualizado.getFotoPerfil());
 
@@ -68,33 +71,37 @@ public class UsuarioController {
         usuario.setProfesion(usuarioActualizado.getProfesion());
         usuario.setEspecialidad(usuarioActualizado.getEspecialidad());
 
-        return usuarioService.actualizarUsuario(
-                usuario);
+        return UsuarioMapper.toResponse(
+                usuarioService.actualizarUsuario(
+                        usuario));
     }
 
     @PutMapping("/api/usuarios/{id}/inhabilitar")
-    public Usuario inhabilitarUsuario(
+    public UsuarioResponse inhabilitarUsuario(
             @PathVariable Integer id) {
 
-        return usuarioService
-                .inhabilitarUsuario(id);
+        return UsuarioMapper.toResponse(
+                usuarioService
+                        .inhabilitarUsuario(id));
     }
 
     @PutMapping("/api/usuarios/{id}/habilitar")
-    public Usuario habilitarUsuario(
+    public UsuarioResponse habilitarUsuario(
             @PathVariable Integer id) {
 
-        return usuarioService
-                .habilitarUsuario(id);
+        return UsuarioMapper.toResponse(
+                usuarioService
+                        .habilitarUsuario(id));
     }
 
     @PostMapping("/api/auth/login")
-    public Usuario login(
+    public LoginResponse login(
             @RequestBody LoginRequest request) {
 
-        return usuarioService.login(
-                request.getCorreo(),
-                request.getContrasena());
+        return UsuarioMapper.toLoginResponse(
+                usuarioService.login(
+                        request.getCorreo(),
+                        request.getContrasena()));
     }
     @PutMapping("/api/usuarios/{id}/contrasena")
     public void cambiarContrasena(
