@@ -1,67 +1,44 @@
 import type { Usuario } from "../types/Usuario";
-
-const API_URL = "http://localhost:8080/api/usuarios";
+import { apiRequest } from "./apiConfig";
 
 export async function obtenerUsuarios() {
-  const response = await fetch(API_URL);
-
-  return response.json();
+  return apiRequest<Usuario[]>("/api/usuarios");
 }
 
 export async function inhabilitarUsuario(id: number) {
-  const response = await fetch(`${API_URL}/${id}/inhabilitar`, {
+  return apiRequest<Usuario>(`/api/usuarios/${id}/inhabilitar`, {
     method: "PUT",
   });
-
-  return response.json();
 }
 
 export async function habilitarUsuario(id: number) {
-  const response = await fetch(`${API_URL}/${id}/habilitar`, {
+  return apiRequest<Usuario>(`/api/usuarios/${id}/habilitar`, {
     method: "PUT",
   });
-
-  return response.json();
 }
 
 export async function obtenerUsuarioPorId(id: number) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  return response.json();
+  return apiRequest<Usuario>(`/api/usuarios/${id}`);
 }
 
 export async function actualizarUsuario(usuario: Usuario) {
-  const response = await fetch(`${API_URL}/${usuario.idUsuario}`, {
+  return apiRequest<Usuario>(`/api/usuarios/${usuario.idUsuario}`, {
     method: "PUT",
-
     headers: {
       "Content-Type": "application/json",
     },
-
     body: JSON.stringify(usuario),
   });
-
-  return response.json();
 }
 
 export async function crearUsuario(usuario: Usuario) {
-  const response = await fetch(API_URL, {
+  return apiRequest<Usuario>("/api/usuarios", {
     method: "POST",
-
     headers: {
       "Content-Type": "application/json",
     },
-
     body: JSON.stringify(usuario),
   });
-
-  if (!response.ok) {
-    const mensaje = await response.text();
-
-    throw new Error(mensaje);
-  }
-
-  return response.json();
 }
 
 export async function cambiarContrasena(
@@ -69,20 +46,14 @@ export async function cambiarContrasena(
   contrasenaActual: string,
   contrasenaNueva: string,
 ) {
-  const response = await fetch(`${API_URL}/${id}/contrasena`, {
+  await apiRequest<void>(`/api/usuarios/${id}/contrasena`, {
     method: "PUT",
-
     headers: {
       "Content-Type": "application/json",
     },
-
     body: JSON.stringify({
       contrasenaActual,
       contrasenaNueva,
     }),
   });
-
-  if (!response.ok) {
-    throw new Error(await response.text());
-  }
 }

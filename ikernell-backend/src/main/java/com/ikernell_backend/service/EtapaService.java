@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Etapa;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.EtapaRepository;
 import org.springframework.stereotype.Service;
 import com.ikernell_backend.repository.ActividadRepository;
@@ -27,7 +28,9 @@ public class EtapaService {
     }
 
     public Etapa obtenerPorId(Integer id) {
-        return etapaRepository.findById(id).orElse(null);
+        return etapaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Etapa no encontrada"));
     }
 
     public Etapa guardarEtapa(Etapa etapa) {

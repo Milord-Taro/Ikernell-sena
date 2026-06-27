@@ -1,3 +1,5 @@
+import { apiRequest } from "../services/apiConfig";
+
 export interface RegistroError {
 
   idError: number;
@@ -32,11 +34,5 @@ export interface RegistroError {
 export async function obtenerErroresPorEtapa(
   idEtapa: number
 ) {
-
-  const response =
-    await fetch(
-      `http://localhost:8080/api/etapas/${idEtapa}/errores`
-    );
-
-  return response.json();
+  return apiRequest(`/api/etapas/${idEtapa}/errores`);
 }

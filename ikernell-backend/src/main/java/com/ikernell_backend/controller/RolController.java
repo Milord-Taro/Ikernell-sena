@@ -40,10 +40,6 @@ public class RolController {
 
         Rol rol = rolService.obtenerPorId(id);
 
-        if (rol == null) {
-            return null;
-        }
-
         rol.setCodRol(rolActualizado.getCodRol());
         rol.setNombreRol(rolActualizado.getNombreRol());
         rol.setDescripcionRol(rolActualizado.getDescripcionRol());

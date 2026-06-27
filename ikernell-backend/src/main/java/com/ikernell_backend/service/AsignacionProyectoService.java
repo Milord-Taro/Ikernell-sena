@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.AsignacionProyecto;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.AsignacionProyectoRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class AsignacionProyectoService {
     }
 
     public AsignacionProyecto obtenerPorId(Integer id) {
-        return asignacionProyectoRepository.findById(id).orElse(null);
+        return asignacionProyectoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Asignación de proyecto no encontrada"));
     }
 
     public AsignacionProyecto crearAsignacionProyecto(

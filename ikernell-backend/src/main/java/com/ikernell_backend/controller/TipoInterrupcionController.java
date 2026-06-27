@@ -45,10 +45,6 @@ public class TipoInterrupcionController {
 
         TipoInterrupcion tipoInterrupcion = tipoInterrupcionService.obtenerPorId(id);
 
-        if (tipoInterrupcion == null) {
-            return null;
-        }
-
         tipoInterrupcion.setCodTipoInterrupcion(tipoInterrupcionActualizado.getCodTipoInterrupcion());
         tipoInterrupcion.setNombreTipoInterrupcion(tipoInterrupcionActualizado.getNombreTipoInterrupcion());
 

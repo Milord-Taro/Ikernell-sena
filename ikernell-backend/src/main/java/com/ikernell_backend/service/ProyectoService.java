@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Proyecto;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.ProyectoRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class ProyectoService {
     }
 
     public Proyecto obtenerPorId(Integer id) {
-        return proyectoRepository.findById(id).orElse(null);
+        return proyectoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Proyecto no encontrado"));
     }
 
     public Proyecto crearProyecto(

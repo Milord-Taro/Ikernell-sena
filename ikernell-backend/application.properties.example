@@ -1,0 +1,16 @@
+# Base de datos
+spring.config.import=optional:file:./application-local.properties
+spring.datasource.url=${DB_URL:jdbc:postgresql://localhost:5432/ikernell_solutions}
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:TU_PASSWORD_LOCAL}
+
+# JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Puerto del servidor
+server.port=8080
+
+# Nombre de la app
+spring.application.name=ikernell-backend

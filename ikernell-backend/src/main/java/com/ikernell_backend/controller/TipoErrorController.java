@@ -47,10 +47,6 @@ public class TipoErrorController {
 
         TipoError tipoError = tipoErrorService.obtenerPorId(id);
 
-        if (tipoError == null) {
-            return null;
-        }
-
         tipoError.setCodTipoError(tipoErrorActualizado.getCodTipoError());
         tipoError.setNombreTipo(tipoErrorActualizado.getNombreTipo());
 

@@ -46,10 +46,6 @@
             Proyecto proyecto =
                     proyectoService.obtenerPorId(id);
 
-            if (proyecto == null) {
-                return null;
-            }
-
             proyecto.setCodProyecto(proyectoActualizado.getCodProyecto());
             proyecto.setNombreProyecto(proyectoActualizado.getNombreProyecto());
             proyecto.setDescripcionProyecto(proyectoActualizado.getDescripcionProyecto());

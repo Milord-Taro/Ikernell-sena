@@ -52,10 +52,6 @@ public class EtapaController {
 
         Etapa etapa = etapaService.obtenerPorId(id);
 
-        if (etapa == null) {
-            return null;
-        }
-
         etapa.setCodEtapa(etapaActualizada.getCodEtapa());
         etapa.setNombreEtapa(etapaActualizada.getNombreEtapa());
         etapa.setDescripcionEtapa(etapaActualizada.getDescripcionEtapa());

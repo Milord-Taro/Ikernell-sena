@@ -55,10 +55,6 @@ public class ActividadController {
 
         Actividad actividad = actividadService.obtenerPorId(id);
 
-        if (actividad == null) {
-            return null;
-        }
-
         actividad.setNombreActividad(actividadActualizada.getNombreActividad());
         actividad.setDescripcionActividad(actividadActualizada.getDescripcionActividad());
         actividad.setFechaInicioActividad(actividadActualizada.getFechaInicioActividad());

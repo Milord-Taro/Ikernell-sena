@@ -1,6 +1,7 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Actividad;
+import com.ikernell_backend.exception.ResourceNotFoundException;
 import com.ikernell_backend.repository.ActividadRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class ActividadService {
     }
 
     public Actividad obtenerPorId(Integer id) {
-        return actividadRepository.findById(id).orElse(null);
+        return actividadRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Actividad no encontrada"));
     }
 
     public Actividad guardarActividad(Actividad actividad) {
@@ -60,11 +63,8 @@ public class ActividadService {
     public Actividad ejecutarActividad(Integer id) {
 
         Actividad actividad = actividadRepository.findById(id)
-                .orElse(null);
-
-        if (actividad == null) {
-            return null;
-        }
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Actividad no encontrada"));
 
         actividad.setEstadoActividad("Ejecutada");
         actividad.setFechaEjecucionActividad(java.time.LocalDate.now());

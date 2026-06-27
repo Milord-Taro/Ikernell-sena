@@ -1,18 +1,27 @@
 package com.ikernell_backend.service;
 
 import com.ikernell_backend.entity.Usuario;
+import com.ikernell_backend.entity.Rol;
+import com.ikernell_backend.exception.ResourceNotFoundException;
+import com.ikernell_backend.repository.RolRepository;
 import com.ikernell_backend.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final RolRepository rolRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            RolRepository rolRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.rolRepository = rolRepository;
     }
 
     public List<Usuario> listarUsuarios(){
@@ -20,10 +29,14 @@ public class UsuarioService {
     }
 
     public Usuario obtenerPorId(Integer id) {
-        return usuarioRepository.findById(id).orElse(null);
+        return usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Usuario no encontrado"));
     }
 
     public Usuario crearUsuario(Usuario usuario) {
+        validarRolAsignable(usuario);
 
         if (usuario.getFechaNacimiento() == null) {
             throw new RuntimeException(
@@ -89,6 +102,7 @@ public class UsuarioService {
     }
 
     public Usuario actualizarUsuario(Usuario usuario) {
+        validarRolAsignable(usuario);
 
         if (usuario.getFechaNacimiento() == null) {
             throw new RuntimeException(
@@ -123,11 +137,9 @@ public class UsuarioService {
 
         Usuario usuario =
                 usuarioRepository.findById(id)
-                        .orElse(null);
-
-        if (usuario == null) {
-            return null;
-        }
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Usuario no encontrado"));
 
         if(usuario.getRol().getNombreRol()
                 .equalsIgnoreCase("Coordinador")) {
@@ -144,11 +156,9 @@ public class UsuarioService {
 
         Usuario usuario =
                 usuarioRepository.findById(id)
-                        .orElse(null);
-
-        if (usuario == null) {
-            return null;
-        }
+                        .orElseThrow(() -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Usuario no encontrado"));
 
         usuario.setEstado(true);
 
@@ -162,12 +172,8 @@ public class UsuarioService {
 
         Usuario usuario =
                 usuarioRepository.findById(id)
-                        .orElse(null);
-
-        if (usuario == null) {
-            throw new RuntimeException(
-                    "Usuario no encontrado");
-        }
+                        .orElseThrow(() -> new ResourceNotFoundException(
+                                "Usuario no encontrado"));
 
         if (!encoder.matches(
                 contrasenaActual,
@@ -188,11 +194,12 @@ public class UsuarioService {
             String contrasena) {
 
         Usuario usuario =
-                usuarioRepository.findByCorreoElectronico(correo);
-
-        if (usuario == null) {
-            return null;
-        }
+                usuarioRepository
+                        .findOptionalByCorreoElectronico(correo)
+                        .orElseThrow(() ->
+                                new ResponseStatusException(
+                                        HttpStatus.UNAUTHORIZED,
+                                        "Correo o contraseña incorrectos"));
 
         if (encoder.matches(
                 contrasena,
@@ -201,11 +208,38 @@ public class UsuarioService {
             return usuario;
         }
 
-        return null;
+        throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,
+                "Correo o contraseña incorrectos");
     }
 
     private final BCryptPasswordEncoder encoder =
             new BCryptPasswordEncoder();
+
+    private void validarRolAsignable(Usuario usuario) {
+
+        if (usuario.getRol() == null ||
+                usuario.getRol().getIdRol() == null) {
+
+            throw new RuntimeException(
+                    "El rol es obligatorio");
+        }
+
+        Rol rol =
+                rolRepository.findById(
+                        usuario.getRol().getIdRol())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "El rol no existe"));
+
+        if (rol.getNombreRol() != null &&
+                rol.getNombreRol()
+                        .equalsIgnoreCase("Coordinador")) {
+
+            throw new RuntimeException(
+                    "No se puede asignar el rol Coordinador");
+        }
+
+        usuario.setRol(rol);
+    }
 }
-
-

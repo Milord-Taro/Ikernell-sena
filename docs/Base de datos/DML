@@ -1,0 +1,122 @@
+INSERT INTO Rol (codRol, nombreRol, descripcionRol) VALUES
+    ('ROL-001', 'Coordinador', 'Gestiona perfiles de desarrolladores y asigna proyectos'),
+    ('ROL-002', 'Lider',       'Gestiona proyectos, etapas, actividades y genera reportes'),
+    ('ROL-003', 'Desarrollador','Ejecuta actividades y registra errores e interrupciones');
+
+
+INSERT INTO Profesion (codProfesion, nombreProfesion) VALUES
+    ('PRO-001', 'Ingeniería de Sistemas'),
+    ('PRO-002', 'Ingeniería de Software'),
+    ('PRO-003', 'Tecnología en ADSI'),
+    ('PRO-004', 'Ingeniería Informática'),
+    ('PRO-005', 'Ciencias de la Computación');
+
+
+INSERT INTO Especialidad (codEspecialidad, nombreEspecialidad) VALUES
+    ('ESP-001', 'Desarrollo Frontend'),
+    ('ESP-002', 'Desarrollo Backend'),
+    ('ESP-003', 'Base de Datos'),
+    ('ESP-004', 'DevOps'),
+    ('ESP-005', 'Seguridad Informática'),
+    ('ESP-006', 'Desarrollo Móvil');
+
+
+INSERT INTO Usuario (codUsuario, nombre, apellido, fechaNacimiento,tipoIdentificacion,
+    numeroIdentificacion, correoElectronico, direccion,
+    contrasena, estado, idRol, idProfesion, idEspecialidad) VALUES
+    ('USR-001', 'Carlos',  'Mendoza',  '1985-03-12','CC', '10234567',
+     'carlos.mendoza@ikernell.com',  'Calle 45 # 12-30, Bogotá',
+     '$2a$10$hashedpassword1', TRUE, 1, 1, NULL),
+    ('USR-002', 'Diana',   'Herrera',  '1990-07-25','CC', '20345678',
+     'diana.herrera@ikernell.com',   'Carrera 7 # 80-15, Bogotá',
+     '$2a$10$hashedpassword2', TRUE, 2, 2, 2),
+    ('USR-003', 'Andrés',  'Torres',   '1995-11-08','CC', '30456789',
+     'andres.torres@ikernell.com',   'Avenida 68 # 23-45, Bogotá',
+     '$2a$10$hashedpassword3', TRUE, 3, 3, 1),
+    ('USR-004', 'Valentina','Ríos',    '1993-05-19','CC', '40567890',
+     'valentina.rios@ikernell.com',  'Calle 100 # 15-20, Bogotá',
+     '$2a$10$hashedpassword4', TRUE, 3, 2, 3),
+    ('USR-005', 'Felipe',  'Castro',   '1988-09-30','CC', '50678901',
+     'felipe.castro@ikernell.com',   'Carrera 30 # 45-67, Bogotá',
+     '$2a$10$hashedpassword5', TRUE, 3, 1, 2);
+
+INSERT INTO Proyecto (codProyecto, nombreProyecto, descripcionProyecto, fechaInicioProyecto,
+	fechaFinProyecto, estadoProyecto, idLider) VALUES
+    ('PRY-001', 'Sistema de Facturación', 
+	'Desarrollo de sistema de facturación electrónica para cliente del sector retail',
+    '2026-01-15', '2026-06-30', TRUE, 2),
+    ('PRY-002', 'App Gestión de Inventario',
+    'Aplicación web para control de inventario en tiempo real',
+    '2026-03-01', '2026-09-30', TRUE, 2);
+
+INSERT INTO AsignacionProyecto (fechaAsignacion, estadoAsignacion, idUsuario, idProyecto) VALUES
+    ('2026-01-15', TRUE, 3, 1),
+    ('2026-01-15', TRUE, 4, 1),
+    ('2026-03-01', TRUE, 5, 2),
+    ('2026-03-01', TRUE, 3, 2);
+
+INSERT INTO Etapa (codEtapa, nombreEtapa, descripcionEtapa, fechaEtapa, idProyecto) VALUES
+    ('ETA-001', 'Análisis',      'Levantamiento de requerimientos y documentación', '2026-01-20', 1),
+    ('ETA-002', 'Diseño',        'Diseño de arquitectura y base de datos',           '2026-02-10', 1),
+    ('ETA-003', 'Desarrollo',    'Implementación del sistema',                       '2026-03-01', 1),
+    ('ETA-004', 'Análisis',      'Levantamiento de requerimientos',                  '2026-03-05', 2),
+    ('ETA-005', 'Desarrollo',    'Implementación de módulos principales',            '2026-04-01', 2);
+
+INSERT INTO TipoError (codTipoError, nombreTipo) VALUES
+    ('TER-001', 'Error de compilación'),
+    ('TER-002', 'Error de lógica'),
+    ('TER-003', 'Error de base de datos'),
+    ('TER-004', 'Error de integración'),
+    ('TER-005', 'Error de interfaz');
+
+INSERT INTO TipoInterrupcion (codTipoInterrupcion, nombreTipoInterrupcion) VALUES
+    ('TIN-001', 'Reunión no planificada'),
+    ('TIN-002', 'Falla de infraestructura'),
+    ('TIN-003', 'Solicitud urgente del cliente'),
+    ('TIN-004', 'Problema personal'),
+    ('TIN-005', 'Corte de energía o internet');
+
+INSERT INTO Actividad (codActividad, nombreActividad, descripcionActividad,
+    fechaInicioActividad, fechaFinActividad, estadoActividad, fechaEjecucionActividad,
+    idEtapa, idDesarrollador) VALUES
+    ('ACT-001', 'Documentar requerimientos',
+     'Elaborar documento de requerimientos funcionales y no funcionales',
+     '2026-01-20', '2026-01-25', 'Ejecutada', '2026-01-24', 1, 3),
+    ('ACT-002', 'Diseñar modelo de base de datos',
+     'Crear el modelo relacional normalizado',
+     '2026-02-10', '2026-02-17', 'Ejecutada', '2026-02-16', 2, 4),
+    ('ACT-003', 'Desarrollar módulo de autenticación',
+     'Implementar login con JWT y Spring Security',
+     '2026-03-01', '2026-03-10', 'Pendiente', NULL, 3, 3),
+    ('ACT-004', 'Desarrollar módulo de inventario',
+     'Implementar CRUD de productos e inventario',
+     '2026-04-01', '2026-04-15', 'Pendiente', NULL, 5, 5);
+
+INSERT INTO RegistroError (codError, descripcionError, fechaRegistroError, estadoError, comentarioError, 
+    idTipoError, idEtapa, idDesarrollador) VALUES
+    ('ERR-001', 'NullPointerException en el servicio de usuarios al consultar perfil sin token',
+     '2026-03-05','Corregido', 'Se agregó validación de parámetros nulos', 1, 3, 3),
+    ('ERR-002', 'Consulta SQL devuelve registros duplicados en reporte de inventario',
+     '2026-04-03', 'En Revision', 'Pendiente análisis por parte del líder técnico', 3, 5, 5);
+
+INSERT INTO Interrupcion (codInterrupcion,descripcionInterrupcion, fechaInterrupcion, 
+	duracionInterrupcion, idTipoInterrupcion, idEtapa, idDesarrollador) VALUES
+    ('INT-001','Reunión extraordinaria para revisar cambios solicitados por el cliente',
+	'2026-03-03', 60,  1, 3, 3),
+    ('INT-002','Caída del servicio de internet durante la jornada laboral',
+	'2026-04-02', 120, 2, 5, 5);
+
+INSERT INTO MensajeContacto (codMensaje, nombreRemitente,
+    correoRemitente, mensaje, fechaEnvio,
+    estadoMensaje, respuesta, fechaRespuesta, idResponsable) VALUES
+    ('MSG-001', 'Juan Pérez',
+     'juan.perez@empresa.com',
+     '¿Ofrecen servicios de desarrollo de aplicaciones móviles?',
+     '2026-05-10 09:30:00', 'Atendido',
+     'Sí ofrecemos desarrollo móvil. Le contactaremos para agendar una reunión.',
+     '2026-05-10 11:00:00', 1),
+    ('MSG-002', 'María López',
+     'maria.lopez@startup.co',
+     'Estoy interesada en cotizar un sistema de gestión.',
+     '2026-05-12 14:15:00', 'Pendiente',
+     NULL, NULL, NULL);

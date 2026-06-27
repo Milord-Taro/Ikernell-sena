@@ -1,50 +1,38 @@
-const API_URL = "http://localhost:8080/api/interrupciones";
+import { apiRequest } from "./apiConfig";
 
 export async function obtenerInterrupciones() {
-  const response = await fetch(API_URL);
-
-  return response.json();
+  return apiRequest("/api/interrupciones");
 }
 
 export async function crearInterrupcion(interrupcion: any) {
-  const response = await fetch(API_URL, {
+  return apiRequest("/api/interrupciones", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(interrupcion),
   });
-
-  return response.json();
 }
 
 export async function obtenerInterrupcionesPorEtapa(idEtapa: number) {
-  const response = await fetch(
-    `http://localhost:8080/api/etapas/${idEtapa}/interrupciones`,
-  );
-
-  return response.json();
+  return apiRequest(`/api/etapas/${idEtapa}/interrupciones`);
 }
 
 export async function eliminarInterrupcion(id: number) {
-  await fetch(`${API_URL}/${id}`, {
+  await apiRequest<void>(`/api/interrupciones/${id}`, {
     method: "DELETE",
   });
 }
 export async function obtenerInterrupcionPorId(id: number) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  return response.json();
+  return apiRequest(`/api/interrupciones/${id}`);
 }
 
 export async function actualizarInterrupcion(id: number, interrupcion: any) {
-  const response = await fetch(`${API_URL}/${id}`, {
+  return apiRequest(`/api/interrupciones/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(interrupcion),
   });
-
-  return response.json();
 }

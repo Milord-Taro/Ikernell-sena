@@ -44,10 +44,6 @@ public class ProfesionController {
 
         Profesion profesion = profesionService.obtenerPorId(id);
 
-        if (profesion == null) {
-            return null;
-        }
-
         profesion.setCodProfesion(profesionActualizado.getCodProfesion());
         profesion.setNombreProfesion(profesionActualizado.getNombreProfesion());
 
