@@ -4,19 +4,22 @@ import type { Interrupcion } from "../../../types/Interrupcion";
 type Props = {
   tipo: "error" | "interrupcion";
   item: RegistroError | Interrupcion;
+  onClick?: () => void;
 };
 
-export default function HistoryCard({ tipo, item }: Props) {
+export default function HistoryCard({ tipo, item, onClick }: Props) {
   const esError = tipo === "error";
 
   return (
     <div
+      onClick={onClick}
       style={{
         background: "white",
         borderRadius: "16px",
         padding: "20px",
         boxShadow: "0 2px 8px rgba(0,0,0,.05)",
         marginBottom: "20px",
+        cursor: onClick ? "pointer" : "default",
       }}
     >
       <div

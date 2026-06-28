@@ -49,6 +49,13 @@ export default function RegistroErrorEditarPage() {
     async function cargarDatos() {
       try {
         const error = await obtenerErrorPorId(idError);
+        const idUsuarioActual = obtenerIdUsuario();
+
+        if (error.desarrollador.idUsuario !== idUsuarioActual) {
+          toast.error("Solo el desarrollador responsable puede editar este error");
+          navigate("/dashboard/errores");
+          return;
+        }
 
         setFormulario({
           codError: error.codError,
@@ -163,7 +170,7 @@ export default function RegistroErrorEditarPage() {
         },
 
         desarrollador: {
-          idUsuario: obtenerIdUsuario(),
+          idUsuario: idDesarrollador,
         },
       });
 

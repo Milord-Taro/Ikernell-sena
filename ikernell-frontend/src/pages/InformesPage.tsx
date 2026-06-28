@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { obtenerProyectos } from "../services/proyectoService";
+import { obtenerAsignacionesProyecto } from "../services/asignacionProyectoService";
 import { obtenerErrores } from "../services/registroErrorService";
 import { obtenerInterrupciones } from "../services/interrupcionService";
 import { obtenerActividades } from "../services/actividadService";
 import type { Actividad } from "../types/Actividad";
+import type { AsignacionProyecto } from "../types/AsignacionProyecto";
 
 import {
   exportarReporteGeneral,
@@ -16,6 +18,7 @@ export default function InformesPage() {
   const [errores, setErrores] = useState<any[]>([]);
   const [interrupciones, setInterrupciones] = useState<any[]>([]);
   const [actividades, setActividades] = useState<Actividad[]>([]);
+  const [asignaciones, setAsignaciones] = useState<AsignacionProyecto[]>([]);
   const [desarrolladorSeleccionado, setDesarrolladorSeleccionado] =
     useState("");
   const [proyectoSeleccionado, setProyectoSeleccionado] = useState("");
@@ -26,9 +29,72 @@ export default function InformesPage() {
       setErrores(await obtenerErrores());
       setInterrupciones(await obtenerInterrupciones());
       setActividades(await obtenerActividades());
+      setAsignaciones(await obtenerAsignacionesProyecto());
     }
     cargar();
   }, []);
+
+  const asignacionesActivas = useMemo(
+    () => asignaciones.filter((a) => a.estadoAsignacion),
+    [asignaciones],
+  );
+
+  const desarrolladores = useMemo(() => {
+    const asignacionesFiltradas = proyectoSeleccionado
+      ? asignacionesActivas.filter(
+          (a) =>
+            a.proyecto?.idProyecto === Number(proyectoSeleccionado),
+        )
+      : asignacionesActivas;
+
+    return [
+      ...new Map(
+        asignacionesFiltradas.map((a) => [
+          a.usuario?.idUsuario,
+          a.usuario,
+        ]),
+      ).values(),
+    ].filter(Boolean);
+  }, [asignacionesActivas, proyectoSeleccionado]);
+
+  const proyectosInforme = useMemo(() => {
+    if (!desarrolladorSeleccionado) {
+      return proyectos;
+    }
+
+    const idsProyecto = new Set(
+      asignacionesActivas
+        .filter(
+          (a) =>
+            a.usuario?.idUsuario === Number(desarrolladorSeleccionado),
+        )
+        .map((a) => a.proyecto?.idProyecto),
+    );
+
+    return proyectos.filter((p) => idsProyecto.has(p.idProyecto));
+  }, [asignacionesActivas, desarrolladorSeleccionado, proyectos]);
+
+  useEffect(() => {
+    if (
+      desarrolladorSeleccionado &&
+      !desarrolladores.some(
+        (d) => d.idUsuario === Number(desarrolladorSeleccionado),
+      )
+    ) {
+      setDesarrolladorSeleccionado("");
+    }
+  }, [desarrolladorSeleccionado, desarrolladores]);
+
+  useEffect(() => {
+    if (
+      proyectoSeleccionado &&
+      !proyectosInforme.some(
+        (p) => p.idProyecto === Number(proyectoSeleccionado),
+      )
+    ) {
+      setProyectoSeleccionado("");
+    }
+  }, [proyectoSeleccionado, proyectosInforme]);
 
   const erroresAbiertos = errores.filter(
     (e) => e.estadoError === "Abierto",
@@ -78,12 +144,6 @@ export default function InformesPage() {
     .filter((p) => p.cantidad > 0)
     .sort((a, b) => b.cantidad - a.cantidad)
     .slice(0, 5);
-
-  const desarrolladores = [
-    ...new Map(
-      errores.map((e) => [e.desarrollador?.idUsuario, e.desarrollador]),
-    ).values(),
-  ];
 
   const informeDesempeno =
     desarrolladorSeleccionado && proyectoSeleccionado
@@ -300,7 +360,7 @@ export default function InformesPage() {
             >
               <option value="">Seleccione desarrollador</option>
 
-              {desarrolladores.map((d: any) => (
+              {desarrolladores.map((d) => (
                 <option key={d.idUsuario} value={d.idUsuario}>
                   {d.nombre} {d.apellido}
                 </option>
@@ -313,7 +373,7 @@ export default function InformesPage() {
             >
               <option value="">Seleccione proyecto</option>
 
-              {proyectos.map((p) => (
+              {proyectosInforme.map((p) => (
                 <option key={p.idProyecto} value={p.idProyecto}>
                   {p.nombreProyecto}
                 </option>

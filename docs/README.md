@@ -13,6 +13,7 @@ El `README.md` de la raiz sigue siendo la portada principal del repositorio en G
 | [Casos de Uso](./Casos%20de%20Uso/) | Casos de uso extendidos y diagrama UML de alto nivel | Revisar nombres y consistencia |
 | [Diagramas](./Diagramas/) | Diagrama de clases en formato drawio e imagen | Revisar contra entidades Java actuales |
 | [Base de datos](./Base%20de%20datos/) | DDL, DML, consultas y modelo relacional | Revisar contra backup y schema actual |
+| [Seed visual de BD](./Base%20de%20datos/02_seed_visual_tests.sql) | Datos demo para pruebas visuales, filtros y reportes | Actualizado |
 | [Gantt](./GANTT%20PROYECTO%20IKERNELL.xlsx) | Planeacion del proyecto | Revisar fechas y avance real |
 | [Caso guia](./Caso%20de%20Estudio%20ADSI%202017%20-%20Tomar%20como%20guia.pdf) | Documento guia del caso de estudio | Referencia academica |
 | [TODO final](./TODO%20FINAL%20Ikernell%20sena.md) | Priorizacion general del trabajo pendiente | Vivo |

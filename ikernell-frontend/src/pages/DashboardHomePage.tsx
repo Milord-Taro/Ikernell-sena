@@ -161,17 +161,22 @@ export default function DashboardHomePage() {
         {actividadesPendientes.length === 0 ? (
           <p>No hay actividades pendientes.</p>
         ) : (
-          actividadesPendientes.map((actividad) => (
-            <div key={actividad.idActividad} className="border-b py-2">
-              <strong>{actividad.codActividad}</strong>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {actividadesPendientes.map((actividad) => (
+              <div
+                key={actividad.idActividad}
+                className="border rounded-lg p-3 min-h-[120px]"
+              >
+                <strong>{actividad.codActividad}</strong>
 
-              <p>{actividad.nombreActividad}</p>
+                <p className="mt-2">{actividad.nombreActividad}</p>
 
-              <span className="text-sm text-orange-500">
-                {actividad.estadoActividad}
-              </span>
-            </div>
-          ))
+                <span className="inline-block mt-3 text-sm text-orange-600 bg-orange-50 rounded-full px-3 py-1">
+                  {actividad.estadoActividad}
+                </span>
+              </div>
+            ))}
+          </div>
         )}
       </div>
     </div>

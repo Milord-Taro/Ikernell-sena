@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "../app/components/ui/button";
 
-import { obtenerActividadPorId } from "../services/actividadService";
+import {
+  ejecutarActividad,
+  obtenerActividadPorId,
+} from "../services/actividadService";
+import { obtenerIdUsuario, obtenerRolUsuario } from "../utils/auth";
 
 export default function ActividadDetallePage() {
   const { id } = useParams();
@@ -10,6 +14,8 @@ export default function ActividadDetallePage() {
   const navigate = useNavigate();
 
   const [actividad, setActividad] = useState<any>(null);
+  const idUsuarioActual = obtenerIdUsuario();
+  const rolUsuario = obtenerRolUsuario();
 
   useEffect(() => {
     cargarActividad();
@@ -28,6 +34,14 @@ export default function ActividadDetallePage() {
   if (!actividad) {
     return <h2>Cargando actividad...</h2>;
   }
+
+  const puedeReportar =
+    rolUsuario === "Desarrollador" &&
+    actividad.desarrollador?.idUsuario === idUsuarioActual;
+
+  const puedeEjecutar =
+    puedeReportar &&
+    actividad.estadoActividad === "Pendiente";
 
   return (
     <div style={{ padding: "20px" }}>
@@ -120,32 +134,48 @@ export default function ActividadDetallePage() {
         </p>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-        }}
-      >
-        <Button
-          onClick={() =>
-            navigate(
-              `/dashboard/proyectos/${actividad.etapa?.proyecto?.idProyecto}/error/nuevo`,
-            )
-          }
+      {puedeReportar && (
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+          }}
         >
-          Registrar Error
-        </Button>
+          {puedeEjecutar && (
+            <Button
+              onClick={async () => {
+                const actualizada = await ejecutarActividad(
+                  actividad.idActividad,
+                );
 
-        <Button
-          onClick={() =>
-            navigate(
-              `/dashboard/proyectos/${actividad.etapa?.proyecto?.idProyecto}/interrupcion/nueva`,
-            )
-          }
-        >
-          Registrar Interrupción
-        </Button>
-      </div>
+                setActividad(actualizada);
+              }}
+            >
+              Ejecutar actividad
+            </Button>
+          )}
+
+          <Button
+            onClick={() =>
+              navigate(
+                `/dashboard/proyectos/${actividad.etapa?.proyecto?.idProyecto}/error/nuevo`,
+              )
+            }
+          >
+            Registrar Error
+          </Button>
+
+          <Button
+            onClick={() =>
+              navigate(
+                `/dashboard/proyectos/${actividad.etapa?.proyecto?.idProyecto}/interrupcion/nueva`,
+              )
+            }
+          >
+            Registrar Interrupción
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { MensajeContacto } from "../types/MensajeContacto";
 
 import {
   obtenerMensajes,
   eliminarMensaje,
-  leerMensaje,
 } from "../services/mensajeService";
 
 import MensajeDetallePage from "./MensajeDetallePage";
@@ -32,9 +31,21 @@ export default function MensajesPage() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("todos");
 
+  const cargarMensajes = useCallback(async () => {
+    try {
+      const data = await obtenerMensajes();
+
+      setMensajes(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     cargarMensajes();
-  }, []);
+  }, [cargarMensajes]);
 
   const mensajesFiltrados = mensajes.filter((m) => {
     const coincideBusqueda =
@@ -47,18 +58,6 @@ export default function MensajesPage() {
 
     return coincideBusqueda && coincideEstado;
   });
-
-  async function cargarMensajes() {
-    try {
-      const data = await obtenerMensajes();
-
-      setMensajes(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   async function borrarMensaje(id: number) {
     try {
@@ -106,6 +105,7 @@ export default function MensajesPage() {
         >
           <option value="todos">Todos</option>
           <option value="Pendiente">Pendiente</option>
+          <option value="Leido">Leído</option>
           <option value="Atendido">Atendido</option>
         </select>
       </div>
@@ -149,12 +149,16 @@ export default function MensajesPage() {
                         background:
                           mensaje.estadoMensaje === "Atendido"
                             ? "#dcfce7"
-                            : "#fee2e2",
+                            : mensaje.estadoMensaje === "Leido"
+                              ? "#dbeafe"
+                              : "#fee2e2",
 
                         color:
                           mensaje.estadoMensaje === "Atendido"
                             ? "#166534"
-                            : "#b91c1c",
+                            : mensaje.estadoMensaje === "Leido"
+                              ? "#1d4ed8"
+                              : "#b91c1c",
 
                         padding: "4px 10px",
                         borderRadius: "999px",

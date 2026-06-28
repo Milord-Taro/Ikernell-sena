@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../app/components/ui/button";
 import { toast } from "sonner";
 
 import { obtenerErrorPorId } from "../services/registroErrorService";
 import { actualizarEstadoError } from "../services/registroErrorService";
 import type { RegistroError } from "../types/RegistroError";
+import { obtenerEstiloEstadoError } from "../utils/errorStatus";
+import { obtenerIdUsuario } from "../utils/auth";
 
 export default function RegistroErrorDetallePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [error, setError] = useState<RegistroError | null>(null);
+  const idUsuarioActual = obtenerIdUsuario();
 
   useEffect(() => {
     async function cargar() {
@@ -28,7 +32,8 @@ export default function RegistroErrorDetallePage() {
     return <p>Cargando...</p>;
   }
 
-  console.log(error.estadoError);
+  const puedeGestionar =
+    error.desarrollador.idUsuario === idUsuarioActual;
 
   return (
     <div style={{ padding: "20px" }}>
@@ -69,65 +74,57 @@ export default function RegistroErrorDetallePage() {
 
             <span
               style={{
-                background:
-                  error.estadoError === "Corregido"
-                    ? "#dcfce7"
-                    : error.estadoError === "En Revision"
-                      ? "#fef3c7"
-                      : "#fee2e2",
-
-                color:
-                  error.estadoError === "Corregido"
-                    ? "#166534"
-                    : error.estadoError === "En Revision"
-                      ? "#92400e"
-                      : "#991b1b",
-
+                ...obtenerEstiloEstadoError(error.estadoError),
                 padding: "6px 12px",
                 borderRadius: "999px",
-
                 fontWeight: 600,
-
                 display: "inline-block",
-
                 marginTop: "16px",
               }}
             >
               {error.estadoError}
             </span>
           </div>
-          <div>
-            <Button>Editar</Button>
-
-            <Button
-              onClick={async () => {
-                let nuevoEstado = "";
-
-                if (error.estadoError === "Abierto") {
-                  nuevoEstado = "En Revision";
-                } else if (error.estadoError === "En Revision") {
-                  nuevoEstado = "Corregido";
-                } else {
-                  nuevoEstado = "En Revision";
+          {puedeGestionar && (
+            <div>
+              <Button
+                onClick={() =>
+                  navigate(`/dashboard/errores/${error.idError}/editar`)
                 }
+              >
+                Editar
+              </Button>
 
-                const actualizado = await actualizarEstadoError(
-                  error.idError,
-                  nuevoEstado,
-                );
+              <Button
+                onClick={async () => {
+                  let nuevoEstado = "";
 
-                setError(actualizado);
+                  if (error.estadoError === "Abierto") {
+                    nuevoEstado = "En Revision";
+                  } else if (error.estadoError === "En Revision") {
+                    nuevoEstado = "Corregido";
+                  } else {
+                    nuevoEstado = "En Revision";
+                  }
 
-                toast.success("Estado actualizado");
-              }}
-            >
-              {error.estadoError === "Abierto"
-                ? "Iniciar Revision"
-                : error.estadoError === "En Revision"
-                  ? "Marcar corregido"
-                  : "Reabrir Revision"}
-            </Button>
-          </div>
+                  const actualizado = await actualizarEstadoError(
+                    error.idError,
+                    nuevoEstado,
+                  );
+
+                  setError(actualizado);
+
+                  toast.success("Estado actualizado");
+                }}
+              >
+                {error.estadoError === "Abierto"
+                  ? "Iniciar Revision"
+                  : error.estadoError === "En Revision"
+                    ? "Marcar corregido"
+                    : "Reabrir Revision"}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

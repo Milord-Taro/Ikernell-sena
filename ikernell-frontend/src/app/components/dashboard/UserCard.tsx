@@ -35,6 +35,9 @@ export default function UserCard({
   activo,
   onAccionEstado,
 }: Props) {
+  const esCoordinador =
+    rol.toLowerCase() === "coordinador";
+
   return (
     <div className="dashboard-card">
       <div
@@ -129,47 +132,49 @@ export default function UserCard({
           </button>
         </Link>
 
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <button
-              className="project-action-button"
-              style={{
-                flex: 1,
-                border: "none",
-                borderRadius: "10px",
-                padding: "10px",
-                background: "#fee2e2",
-                color: "#dc2626",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
-              {activo ? "Inhabilitar" : "Habilitar"}
-            </button>
-          </AlertDialogTrigger>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {activo ? "Inhabilitar usuario" : "Habilitar usuario"}
-              </AlertDialogTitle>
-
-              <AlertDialogDescription>
-                {activo
-                  ? `¿Deseas inhabilitar a ${nombre}?`
-                  : `¿Deseas habilitar a ${nombre}?`}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-
-              <AlertDialogAction onClick={onAccionEstado}>
+        {!esCoordinador && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                className="project-action-button"
+                style={{
+                  flex: 1,
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "10px",
+                  background: "#fee2e2",
+                  color: "#dc2626",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
                 {activo ? "Inhabilitar" : "Habilitar"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              </button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {activo ? "Inhabilitar usuario" : "Habilitar usuario"}
+                </AlertDialogTitle>
+
+                <AlertDialogDescription>
+                  {activo
+                    ? `¿Deseas inhabilitar a ${nombre}?`
+                    : `¿Deseas habilitar a ${nombre}?`}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+
+                <AlertDialogAction onClick={onAccionEstado}>
+                  {activo ? "Inhabilitar" : "Habilitar"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
     </div>
   );

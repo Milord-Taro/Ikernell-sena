@@ -4,6 +4,7 @@ package com.ikernell_backend.controller;
 import com.ikernell_backend.entity.Usuario;
 import com.ikernell_backend.service.UsuarioService;
 import com.ikernell_backend.dto.LoginResponse;
+import com.ikernell_backend.dto.UsuarioRequest;
 import com.ikernell_backend.dto.UsuarioMapper;
 import com.ikernell_backend.dto.UsuarioResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,34 +43,23 @@ public class UsuarioController {
     }
 
     @PostMapping("/api/usuarios")
-    public UsuarioResponse crearUsuario(@RequestBody Usuario usuario) {
+    public UsuarioResponse crearUsuario(
+            @RequestBody UsuarioRequest request) {
 
         return UsuarioMapper.toResponse(
                 usuarioService.crearUsuario(
-                        usuario));
+                        UsuarioMapper.toEntity(request)));
     }
 
     @PutMapping("/api/usuarios/{id}")
     public UsuarioResponse actualizarUsuario(
             @PathVariable Integer id,
-            @RequestBody Usuario usuarioActualizado) {
+            @RequestBody UsuarioRequest request) {
 
         Usuario usuario =
                 usuarioService.obtenerPorId(id);
 
-        usuario.setCodUsuario(usuarioActualizado.getCodUsuario());
-        usuario.setNombre(usuarioActualizado.getNombre());
-        usuario.setApellido(usuarioActualizado.getApellido());
-        usuario.setFechaNacimiento(usuarioActualizado.getFechaNacimiento());
-        usuario.setTipoIdentificacion(usuarioActualizado.getTipoIdentificacion());
-        usuario.setNumeroIdentificacion(usuarioActualizado.getNumeroIdentificacion());
-        usuario.setDireccion(usuarioActualizado.getDireccion());
-        usuario.setEstado(usuarioActualizado.getEstado());
-        usuario.setFotoPerfil(usuarioActualizado.getFotoPerfil());
-
-        usuario.setRol(usuarioActualizado.getRol());
-        usuario.setProfesion(usuarioActualizado.getProfesion());
-        usuario.setEspecialidad(usuarioActualizado.getEspecialidad());
+        UsuarioMapper.actualizarEntity(usuario, request);
 
         return UsuarioMapper.toResponse(
                 usuarioService.actualizarUsuario(

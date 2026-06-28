@@ -28,6 +28,7 @@ import UsuarioEditarPage from "../pages/UsuarioEditarPage";
 import UsuarioNuevoPage from "../pages/UsuarioNuevoPage";
 import RegistroErrorEditarPage from "../pages/RegistroErrorEditarPage";
 import RegistroInterrupcionEditarPage from "../pages/RegistroInterrupcionEditarPage";
+import RegistroInterrupcionDetallePage from "../pages/RegistroInterrupcionDetallePage";
 import RegistroErrorDetallePage from "../pages/RegistroErrorDetallePage";
 import InformesPage from "../pages/InformesPage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -144,6 +145,11 @@ export default function App() {
           <Route
             path="/dashboard/interrupciones/:id/editar"
             element={proteger(<RegistroInterrupcionEditarPage />)}
+          />
+
+          <Route
+            path="/dashboard/interrupciones/:id"
+            element={proteger(<RegistroInterrupcionDetallePage />)}
           />
 
           <Route

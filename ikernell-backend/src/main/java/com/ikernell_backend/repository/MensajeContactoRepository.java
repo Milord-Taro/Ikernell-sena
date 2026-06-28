@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MensajeContactoRepository
         extends JpaRepository<MensajeContacto, Integer> {
+
+    MensajeContacto findTopByOrderByIdMensajeDesc();
 }

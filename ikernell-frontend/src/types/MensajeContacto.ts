@@ -18,3 +18,9 @@ export interface MensajeContacto {
 
   fechaRespuesta: string | null;
 }
+
+export interface MensajeContactoRequest {
+  nombreRemitente: string;
+  correoRemitente: string;
+  mensaje: string;
+}

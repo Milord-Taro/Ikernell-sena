@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Code2, ChevronDown } from "lucide-react";
+import { Menu, X, Code2, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  cerrarSesion,
+  obtenerUsuarioLogueado,
+} from "../../utils/auth";
 
 interface NavbarProps {
   onSignIn: () => void;
@@ -17,8 +21,12 @@ const navLinks = [
 ];
 
 export function Navbar({ onSignIn }: NavbarProps) {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [haySesion, setHaySesion] = useState(
+    Boolean(obtenerUsuarioLogueado()),
+  );
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -26,10 +34,38 @@ export function Navbar({ onSignIn }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const actualizarSesion = () => {
+      setHaySesion(Boolean(obtenerUsuarioLogueado()));
+    };
+
+    window.addEventListener("storage", actualizarSesion);
+    window.addEventListener("focus", actualizarSesion);
+    window.addEventListener("ikernell-auth-change", actualizarSesion);
+
+    return () => {
+      window.removeEventListener("storage", actualizarSesion);
+      window.removeEventListener("focus", actualizarSesion);
+      window.removeEventListener("ikernell-auth-change", actualizarSesion);
+    };
+  }, []);
+
   const scrollTo = (href: string) => {
     setMenuOpen(false);
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const irAlDashboard = () => {
+    setMenuOpen(false);
+    navigate("/dashboard");
+  };
+
+  const salir = () => {
+    cerrarSesion();
+    setHaySesion(false);
+    setMenuOpen(false);
+    window.dispatchEvent(new Event("ikernell-auth-change"));
   };
 
   return (
@@ -77,13 +113,34 @@ export function Navbar({ onSignIn }: NavbarProps) {
 
           {/* Auth buttons */}
           <div className="hidden lg:flex items-center gap-2">
-            <Button
-              variant="ghost"
-              onClick={onSignIn}
-              className="text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
-            >
-              Iniciar Sesión
-            </Button>
+            {haySesion ? (
+              <>
+                <Button
+                  variant="ghost"
+                  onClick={irAlDashboard}
+                  className="text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
+                >
+                  Ir al dashboard
+                </Button>
+
+                <Button
+                  variant="outline"
+                  onClick={salir}
+                  className="border-indigo-200 text-indigo-700 gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Cerrar sesión
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="ghost"
+                onClick={onSignIn}
+                className="text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
+              >
+                Iniciar Sesión
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -119,9 +176,30 @@ export function Navbar({ onSignIn }: NavbarProps) {
               </a>
             ))}
             <div className="flex gap-2 pt-3 border-t border-indigo-100 mt-2">
-              <Button variant="outline" onClick={onSignIn} className="flex-1 border-indigo-200 text-indigo-700">
-                Iniciar Sesión
-              </Button>
+              {haySesion ? (
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={irAlDashboard}
+                    className="flex-1 border-indigo-200 text-indigo-700"
+                  >
+                    Ir al dashboard
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={salir}
+                    className="border-indigo-200 text-indigo-700"
+                    aria-label="Cerrar sesión"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" onClick={onSignIn} className="flex-1 border-indigo-200 text-indigo-700">
+                  Iniciar Sesión
+                </Button>
+              )}
             </div>
           </div>
         </div>

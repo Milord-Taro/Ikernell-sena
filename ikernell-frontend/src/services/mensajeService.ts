@@ -1,13 +1,17 @@
 import { apiRequest } from "./apiConfig";
+import type {
+  MensajeContacto,
+  MensajeContactoRequest,
+} from "../types/MensajeContacto";
 
-  export async function obtenerMensajes() {
-  return apiRequest("/api/mensajes");
+export async function obtenerMensajes() {
+  return apiRequest<MensajeContacto[]>("/api/mensajes");
 }
 
 export async function crearMensaje(
-  mensaje: any
+  mensaje: MensajeContactoRequest,
 ) {
-  return apiRequest("/api/mensajes", {
+  return apiRequest<MensajeContacto>("/api/mensajes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,9 +22,9 @@ export async function crearMensaje(
 
 export async function actualizarMensaje(
   id: number,
-  mensaje: any
+  mensaje: MensajeContactoRequest,
 ) {
-  return apiRequest(`/api/mensajes/${id}`, {
+  return apiRequest<MensajeContacto>(`/api/mensajes/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -40,7 +44,7 @@ export async function eliminarMensaje(
 export async function leerMensaje(
   id: number
 ) {
-  return apiRequest(`/api/mensajes/${id}/leer`, {
+  return apiRequest<MensajeContacto>(`/api/mensajes/${id}/leer`, {
     method: "PUT",
   });
 }
@@ -49,7 +53,7 @@ export async function atenderMensaje(
   id: number,
   respuesta: string
 ) {
-  return apiRequest(`/api/mensajes/${id}/atender`, {
+  return apiRequest<MensajeContacto>(`/api/mensajes/${id}/atender`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -63,5 +67,5 @@ export async function atenderMensaje(
 export async function obtenerMensajePorId(
   id: number
 ) {
-  return apiRequest(`/api/mensajes/${id}`);
+  return apiRequest<MensajeContacto>(`/api/mensajes/${id}`);
 }

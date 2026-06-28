@@ -50,6 +50,15 @@ export default function RegistroInterrupcionEditarPage() {
     async function cargarDatos() {
       try {
         const interrupcion = await obtenerInterrupcionPorId(idInterrupcion);
+        const idUsuarioActual = obtenerIdUsuario();
+
+        if (interrupcion.desarrollador.idUsuario !== idUsuarioActual) {
+          toast.error(
+            "Solo el desarrollador responsable puede editar esta interrupción",
+          );
+          navigate("/dashboard/interrupciones");
+          return;
+        }
 
         setFormulario({
           codInterrupcion: interrupcion.codInterrupcion,
@@ -172,7 +181,7 @@ export default function RegistroInterrupcionEditarPage() {
         },
 
         desarrollador: {
-          idUsuario: obtenerIdUsuario(),
+          idUsuario: idDesarrollador,
         },
       });
 

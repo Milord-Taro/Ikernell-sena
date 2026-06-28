@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../app/components/ui/button";
 
 import { exportarHistorialInterrupciones } from "../services/exportService";
@@ -9,6 +9,7 @@ import type { Interrupcion } from "../types/Interrupcion";
 
 export default function ProyectoInterrupcionesPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [interrupciones, setInterrupciones] = useState<Interrupcion[]>([]);
   const [busqueda, setBusqueda] = useState("");
 
@@ -92,6 +93,11 @@ export default function ProyectoInterrupcionesPage() {
               key={interrupcion.idInterrupcion}
               tipo="interrupcion"
               item={interrupcion}
+              onClick={() =>
+                navigate(
+                  `/dashboard/interrupciones/${interrupcion.idInterrupcion}`,
+                )
+              }
             />
           ))
         )}

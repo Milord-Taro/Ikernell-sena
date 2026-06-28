@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "../app/components/ui/button";
 
 import type { Usuario } from "../types/Usuario";
+import type { UsuarioRequest } from "../types/Usuario";
 import type { Rol } from "../types/Rol";
 import type { Profesion } from "../types/Profesion";
 import type { Especialidad } from "../types/Especialidad";
@@ -548,12 +549,6 @@ export default function UsuarioNuevoPage() {
               return;
             }
 
-            const usuarioNuevo = {
-              ...usuario,
-            };
-
-            delete (usuarioNuevo as any).idUsuario;
-
             // validacion fecha nacimiento
             if (!usuario.fechaNacimiento) {
               toast.error("La fecha de nacimiento es obligatoria");
@@ -594,6 +589,21 @@ export default function UsuarioNuevoPage() {
             }
 
             try {
+              const usuarioNuevo: UsuarioRequest = {
+                nombre: usuario.nombre,
+                apellido: usuario.apellido,
+                correoElectronico: usuario.correoElectronico,
+                direccion: usuario.direccion,
+                fechaNacimiento: usuario.fechaNacimiento,
+                tipoIdentificacion: usuario.tipoIdentificacion,
+                numeroIdentificacion: usuario.numeroIdentificacion,
+                fotoPerfil: usuario.fotoPerfil,
+                contrasena: usuario.contrasena,
+                idRol: usuario.rol.idRol,
+                idProfesion: usuario.profesion.idProfesion,
+                idEspecialidad: usuario.especialidad?.idEspecialidad ?? null,
+              };
+
               const creado = await crearUsuario(usuarioNuevo);
 
               toast.success("Usuario creado correctamente");
