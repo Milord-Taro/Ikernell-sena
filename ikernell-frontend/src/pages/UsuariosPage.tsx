@@ -47,12 +47,81 @@ export default function UsuariosPage() {
     return coincideBusqueda && coincideEstado;
   });
 
+  const totalActivos = usuarios.filter((u) => u.estado).length;
+  const totalInhabilitados = usuarios.filter((u) => !u.estado).length;
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Usuarios</h1>
       <Button onClick={() => navigate("/dashboard/usuarios/nuevo")}>
         Nuevo Usuario
       </Button>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          gap: "12px",
+          marginTop: "20px",
+        }}
+      >
+        {[
+          {
+            label: "Total",
+            value: usuarios.length,
+            background: "#eef2ff",
+            color: "#4338ca",
+          },
+          {
+            label: "Activos",
+            value: totalActivos,
+            background: "#dcfce7",
+            color: "#166534",
+          },
+          {
+            label: "Inhabilitados",
+            value: totalInhabilitados,
+            background: "#fee2e2",
+            color: "#991b1b",
+          },
+        ].map((contador) => (
+          <div
+            key={contador.label}
+            style={{
+              background: "white",
+              border: "1px solid #e5e7eb",
+              borderRadius: "12px",
+              padding: "14px",
+            }}
+          >
+            <div
+              style={{
+                color: "#64748b",
+                fontSize: "13px",
+                fontWeight: 600,
+              }}
+            >
+              {contador.label}
+            </div>
+
+            <div
+              style={{
+                display: "inline-flex",
+                marginTop: "8px",
+                minWidth: "44px",
+                justifyContent: "center",
+                borderRadius: "999px",
+                padding: "4px 10px",
+                background: contador.background,
+                color: contador.color,
+                fontWeight: 700,
+              }}
+            >
+              {contador.value}
+            </div>
+          </div>
+        ))}
+      </div>
 
       <input
         type="text"

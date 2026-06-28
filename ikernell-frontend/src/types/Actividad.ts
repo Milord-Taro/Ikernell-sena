@@ -23,6 +23,11 @@ export interface Actividad {
     proyecto?: {
       idProyecto: number;
       nombreProyecto: string;
+      lider?: {
+        idUsuario: number;
+        nombre: string;
+        apellido: string;
+      };
     };
   };
 }

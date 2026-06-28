@@ -41,6 +41,7 @@ export function AuthModal({
       }
 
       localStorage.setItem("usuario", JSON.stringify(usuario));
+      window.dispatchEvent(new Event("ikernell-auth-change"));
 
       toast.success(`Bienvenido ${usuario.nombre}`);
 

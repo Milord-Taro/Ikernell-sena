@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiRequest } from "../../services/apiConfig";
+import { crearMensaje } from "../../services/mensajeService";
 import { Mail, Phone, MapPin, Send, CheckCircle2, Clock, MessageSquare } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -44,17 +44,10 @@ export function Contact() {
 
   try {
 
-    await apiRequest("/api/mensajes", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        codMensaje: "MSG999",
-        nombreRemitente: form.name,
-        correoRemitente: form.email,
-        mensaje: form.message
-      })
+    await crearMensaje({
+      nombreRemitente: form.name,
+      correoRemitente: form.email,
+      mensaje: form.message,
     });
 
     setSent(true);

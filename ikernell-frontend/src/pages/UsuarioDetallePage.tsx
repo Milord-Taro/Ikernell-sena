@@ -147,7 +147,8 @@ export default function UsuarioDetallePage() {
               </Button>
             )}
 
-            {usuario.estado && (
+            {usuario.estado &&
+              usuario.rol.nombreRol.toLowerCase() !== "coordinador" && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive">Inhabilitar</Button>

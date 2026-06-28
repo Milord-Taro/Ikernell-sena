@@ -83,7 +83,7 @@
   - `MensajeContactoResponse`.
   - Evitar exponer entidades JPA directamente.
 
-- [ ] Crear DTOs de entrada.
+- [x] Crear DTOs de entrada.
   - `UsuarioRequest`.
   - `MensajeContactoRequest`.
   - Ajustar formularios y controladores gradualmente.
@@ -110,18 +110,52 @@
   - Confirmar que `docs/Base de datos/DDL`, `DML`, `Consultas` y modelo relacional coinciden con la BD actual.
   - Separar script inicial, datos de prueba y backup.
   - Documentar orden de restauración.
+  - Ya iniciado: `docs/Base de datos/README.md` y `02_seed_visual_tests.sql`.
+
+- [ ] Mejorar informes de desempeño.
+  - Al seleccionar un proyecto, mostrar solo desarrolladores asignados a ese proyecto.
+  - Al seleccionar un desarrollador, mostrar solo proyectos donde participa.
+  - Ya iniciado: filtros cruzados por asignaciones activas en la vista de informes.
+  - Revisar si la fórmula de desempeño actual representa bien productividad, errores e interrupciones.
+  - Evitar métricas que castiguen injustamente al desarrollador por errores asignados o interrupciones externas.
+
+- [ ] Reforzar permisos y trazabilidad en errores e interrupciones.
+  - Solo el creador/desarrollador responsable debería editar su propio error o interrupción.
+  - Evitar eliminación libre de errores/interrupciones; preferir estados o inhabilitación lógica.
+  - Definir si líder puede revisar/cambiar estado sin editar el contenido original.
+  - Revisar si Coordinador debe cambiar estados de errores; por ahora no parece lo mas profesional.
+  - Agregar colores visuales por estado de error.
+  - Ya iniciado: badges de color por estado en listado y detalle de errores.
+  - Ya iniciado: ocultar edición/eliminación en frontend para registros ajenos.
+  - Ya iniciado: detalle de interrupción agregado.
+  - Pendiente: reforzar la misma regla en backend con autenticación real.
+
+- [x] Agregar confirmación antes de eliminar registros.
+  - Revisar botones `Eliminar` en todos los módulos.
+  - Usar confirmación clara antes de borrar proyectos, etapas, actividades, errores, interrupciones, mensajes y catálogos.
+  - Evitar eliminaciones accidentales desde listados.
+  - Preferir inhabilitación lógica cuando el registro tenga trazabilidad histórica.
+  - Ya iniciado: confirmación agregada en errores e interrupciones.
+
+- [x] Corregir estado de lectura en mensajes.
+  - Al abrir/ver un mensaje, llamar el endpoint `/api/mensajes/{id}/leer`.
+  - Incluir visualmente estado `Pendiente`, `Leido` y `Atendido`.
+
+- [x] Mejorar comportamiento de sesión en landing.
+  - Si el usuario ya inició sesión, cambiar botón de login por `Ir al dashboard`.
+  - Mostrar opción clara de cerrar sesión.
 
 - [ ] Mejorar módulo de mensajes.
-  - Incluir filtro `Leído` si se mantiene ese estado.
-  - Usar endpoint `/leer` al abrir mensaje o quitarlo si no se usará.
+  - Ya iniciado: filtro `Leído`.
+  - Ya iniciado: usar endpoint `/leer` al abrir mensaje.
   - Registrar responsable al atender mensaje.
   - Decidir si se implementa JavaMailSender o se documenta como pendiente.
 
-- [ ] Mejorar UX de usuarios.
+- [x] Mejorar UX de usuarios.
   - Ya iniciado: filtro Activos/Inhabilitados/Todos.
   - Ya iniciado: ocultar Coordinador en select.
-  - Falta: ocultar botón de inhabilitar para Coordinadores.
-  - Falta: contadores por estado.
+  - Ya iniciado: ocultar botón de inhabilitar para Coordinadores.
+  - Ya iniciado: contadores por estado.
 
 - [ ] Agregar validaciones backend equivalentes al frontend.
   - Usuarios.
@@ -129,9 +163,31 @@
   - Actividades.
   - Errores.
   - Interrupciones.
-  - Mensajes.
+  - Ya iniciado: Mensajes.
 
 ## MEDIA PRIORIDAD
+
+- [ ] Definir permisos de actividades.
+  - Desarrollador ejecuta solo actividades asignadas a él.
+  - Líder gestiona actividades de sus propios proyectos.
+  - Coordinador supervisa, pero no ejecuta actividades.
+  - Definir quién puede editar o eliminar actividades y bajo qué condiciones.
+
+- [ ] Generar códigos automáticamente en backend.
+  - Usuarios: `USR-00001`.
+  - Proyectos: `PRY-00001`.
+  - Etapas: `ETA-00001`.
+  - Actividades: `ACT-00001`.
+  - Errores: `ERR-00001`.
+  - Interrupciones: `INT-00001`.
+  - Mensajes: `MSG-00001`.
+  - Revisar longitud máxima de columnas antes de cambiar formato.
+
+- [ ] Mejorar fotos de perfil.
+  - Mostrar foto si existe.
+  - Mantener fallback con iniciales.
+  - Definir si se guardará URL, archivo local o carga real de imagen.
+  - Aplicar en perfil, crear usuario y editar usuario.
 
 - [ ] Crear pruebas backend mínimas.
   - Login correcto/incorrecto.
@@ -169,6 +225,16 @@
 
 ## BAJA PRIORIDAD / PULIMIENTO
 
+- [ ] Ampliar vista de configuración.
+  - Preferencias de experiencia de usuario.
+  - Datos básicos de cuenta.
+  - Acceso claro a cambio de contraseña.
+  - Opciones de sesión.
+
+- [x] Mejorar layout del dashboard.
+  - Actividades pendientes en 3 columnas cuando hay espacio suficiente.
+  - Evitar espacios vacíos grandes en escritorio.
+
 - [ ] Agregar lint frontend.
   - Definir ESLint.
   - Crear `npm run lint`.
@@ -182,6 +248,8 @@
   - Reducir mezcla de inline styles, Tailwind y CSS.
   - Mantener dashboard consistente.
   - Revisar responsive.
+  - Estandarizar fuentes, colores de texto, botones, tablas, cards y badges.
+  - Mejorar apariencia general sin romper el sidebar, que ya funciona bien visualmente.
 
 - [ ] Mejorar estados vacíos y cargas.
   - Usuarios sin resultados.

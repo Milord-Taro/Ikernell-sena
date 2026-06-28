@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { RegistroError } from "../types/RegistroError";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../app/components/ui/button";
+import { obtenerEstiloEstadoError } from "../utils/errorStatus";
+import { obtenerIdUsuario } from "../utils/auth";
 
 import {
   obtenerErrores,
@@ -33,6 +35,7 @@ export default function RegistroErroresPage() {
   }, []);
 
   const navigate = useNavigate();
+  const idUsuarioActual = obtenerIdUsuario();
 
   const erroresFiltrados = errores.filter(
     (e) =>
@@ -94,7 +97,20 @@ export default function RegistroErroresPage() {
 
                 <TableCell>{error.etapa.nombreEtapa}</TableCell>
 
-                <TableCell>{error.estadoError}</TableCell>
+                <TableCell>
+                  <span
+                    style={{
+                      ...obtenerEstiloEstadoError(error.estadoError),
+                      padding: "4px 10px",
+                      borderRadius: "999px",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      display: "inline-block",
+                    }}
+                  >
+                    {error.estadoError}
+                  </span>
+                </TableCell>
 
                 <TableCell>
                   <Button
@@ -104,24 +120,37 @@ export default function RegistroErroresPage() {
                   >
                     Ver
                   </Button>
-                  <Button
-                    onClick={() =>
-                      navigate(`/dashboard/errores/${error.idError}/editar`)
-                    }
-                  >
-                    Editar
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      await eliminarError(error.idError);
+                  {error.desarrollador.idUsuario === idUsuarioActual && (
+                    <>
+                      <Button
+                        onClick={() =>
+                          navigate(`/dashboard/errores/${error.idError}/editar`)
+                        }
+                      >
+                        Editar
+                      </Button>
 
-                      setErrores(
-                        errores.filter((e) => e.idError !== error.idError),
-                      );
-                    }}
-                  >
-                    Eliminar
-                  </Button>
+                      <Button
+                        onClick={async () => {
+                          const confirmar = confirm(
+                            `¿Deseas eliminar el error ${error.codError}? Esta acción no se puede deshacer.`,
+                          );
+
+                          if (!confirmar) {
+                            return;
+                          }
+
+                          await eliminarError(error.idError);
+
+                          setErrores(
+                            errores.filter((e) => e.idError !== error.idError),
+                          );
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -4,6 +4,7 @@ package com.ikernell_backend.controller;
 import com.ikernell_backend.entity.MensajeContacto;
 import com.ikernell_backend.service.MensajeContactoService;
 import com.ikernell_backend.dto.RespuestaMensajeDTO;
+import com.ikernell_backend.dto.MensajeContactoRequest;
 import com.ikernell_backend.dto.MensajeContactoMapper;
 import com.ikernell_backend.dto.MensajeContactoResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,27 +43,24 @@ public class MensajeContactoController {
 
     @PostMapping("/api/mensajes")
     public MensajeContactoResponse crearMensajeContacto(
-            @RequestBody MensajeContacto mensajeContacto){
+            @RequestBody MensajeContactoRequest request){
 
         return MensajeContactoMapper.toResponse(
                 mensajeContactoService.crearMensaje(
-                        mensajeContacto));
+                        MensajeContactoMapper.toEntity(request)));
     }
 
     @PutMapping("/api/mensajes/{id}")
     public MensajeContactoResponse actualizarMensajeContacto(
             @PathVariable Integer id,
-            @RequestBody MensajeContacto mensajeContactoActualizado) {
+            @RequestBody MensajeContactoRequest request) {
 
-        MensajeContacto mensajeContacto = mensajeContactoService.obtenerPorId(id);
+        MensajeContacto mensajeContacto =
+                mensajeContactoService.obtenerPorId(id);
 
-        mensajeContacto.setCodMensaje(mensajeContactoActualizado.getCodMensaje());
-        mensajeContacto.setNombreRemitente(mensajeContactoActualizado.getNombreRemitente());
-        mensajeContacto.setCorreoRemitente(mensajeContactoActualizado.getCorreoRemitente());
-        mensajeContacto.setMensaje(mensajeContactoActualizado.getMensaje());
-        mensajeContacto.setRespuesta(mensajeContactoActualizado.getRespuesta());
-        mensajeContacto.setFechaRespuesta(mensajeContactoActualizado.getFechaRespuesta());
-        mensajeContacto.setResponsable(mensajeContactoActualizado.getResponsable());
+        MensajeContactoMapper.actualizarEntity(
+                mensajeContacto,
+                request);
 
         return MensajeContactoMapper.toResponse(
                 mensajeContactoService.actualizarMensaje(

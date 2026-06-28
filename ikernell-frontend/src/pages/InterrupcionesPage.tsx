@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Interrupcion } from "../types/Interrupcion";
+import { obtenerIdUsuario } from "../utils/auth";
 
 import {
   obtenerInterrupciones,
@@ -42,6 +43,7 @@ export default function InterrupcionesPage() {
   }, []);
 
   const navigate = useNavigate();
+  const idUsuarioActual = obtenerIdUsuario();
 
   const interrupcionesFiltradas = interrupciones.filter(
     (i) =>
@@ -121,26 +123,49 @@ export default function InterrupcionesPage() {
                   <Button
                     onClick={() =>
                       navigate(
-                        `/dashboard/interrupciones/${interrupcion.idInterrupcion}/editar`,
+                        `/dashboard/interrupciones/${interrupcion.idInterrupcion}`,
                       )
                     }
                   >
-                    Editar
+                    Ver
                   </Button>
-                  <Button
-                    onClick={async () => {
-                      await eliminarInterrupcion(interrupcion.idInterrupcion);
 
-                      setInterrupciones(
-                        interrupciones.filter(
-                          (i) =>
-                            i.idInterrupcion !== interrupcion.idInterrupcion,
-                        ),
-                      );
-                    }}
-                  >
-                    Eliminar
-                  </Button>
+                  {interrupcion.desarrollador.idUsuario === idUsuarioActual && (
+                    <>
+                      <Button
+                        onClick={() =>
+                          navigate(
+                            `/dashboard/interrupciones/${interrupcion.idInterrupcion}/editar`,
+                          )
+                        }
+                      >
+                        Editar
+                      </Button>
+
+                      <Button
+                        onClick={async () => {
+                          const confirmar = confirm(
+                            `¿Deseas eliminar la interrupción ${interrupcion.codInterrupcion}? Esta acción no se puede deshacer.`,
+                          );
+
+                          if (!confirmar) {
+                            return;
+                          }
+
+                          await eliminarInterrupcion(interrupcion.idInterrupcion);
+
+                          setInterrupciones(
+                            interrupciones.filter(
+                              (i) =>
+                                i.idInterrupcion !== interrupcion.idInterrupcion,
+                            ),
+                          );
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

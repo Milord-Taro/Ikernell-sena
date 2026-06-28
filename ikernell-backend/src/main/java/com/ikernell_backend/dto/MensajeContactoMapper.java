@@ -31,4 +31,23 @@ public final class MensajeContactoMapper {
 
         return response;
     }
+
+    public static MensajeContacto toEntity(
+            MensajeContactoRequest request) {
+
+        MensajeContacto mensaje = new MensajeContacto();
+
+        actualizarEntity(mensaje, request);
+
+        return mensaje;
+    }
+
+    public static void actualizarEntity(
+            MensajeContacto mensaje,
+            MensajeContactoRequest request) {
+
+        mensaje.setNombreRemitente(request.getNombreRemitente());
+        mensaje.setCorreoRemitente(request.getCorreoRemitente());
+        mensaje.setMensaje(request.getMensaje());
+    }
 }

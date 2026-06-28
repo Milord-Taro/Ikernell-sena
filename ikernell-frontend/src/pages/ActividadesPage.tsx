@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ActividadModal from "../app/components/dashboard/ActividadModal";
 import { obtenerEtapas } from "../services/etapaService";
 import { obtenerUsuarios } from "../services/usuarioService";
+import { obtenerIdUsuario, obtenerRolUsuario } from "../utils/auth";
 
 import {
   obtenerActividades,
@@ -34,6 +35,10 @@ export default function ActividadesPage() {
   const [etapas, setEtapas] = useState<any[]>([]);
   const [usuarios, setUsuarios] = useState<any[]>([]);
   const [errorFormulario, setErrorFormulario] = useState("");
+  const idUsuarioActual = obtenerIdUsuario();
+  const rolUsuario = obtenerRolUsuario();
+  const esDesarrollador = rolUsuario === "Desarrollador";
+  const esLider = rolUsuario === "Lider";
 
   const [nuevaActividad, setNuevaActividad] = useState({
     codActividad: "",
@@ -240,35 +245,56 @@ export default function ActividadesPage() {
       .includes(busqueda.toLowerCase()),
   );
 
+  function puedeGestionarActividad(actividad: Actividad) {
+    if (!esLider) {
+      return false;
+    }
+
+    const idLiderProyecto =
+      actividad.etapa?.proyecto?.lider?.idUsuario;
+
+    return !idLiderProyecto || idLiderProyecto === idUsuarioActual;
+  }
+
+  function puedeEjecutarActividad(actividad: Actividad) {
+    return (
+      esDesarrollador &&
+      actividad.estadoActividad === "Pendiente" &&
+      actividad.desarrollador?.idUsuario === idUsuarioActual
+    );
+  }
+
   return (
     <div>
       <h1> Actividades </h1>
-      <Button
-        onClick={() => {
-          setActividadEditando(null);
+      {esLider && (
+        <Button
+          onClick={() => {
+            setActividadEditando(null);
 
-          setNuevaActividad({
-            codActividad: "",
-            nombreActividad: "",
-            descripcionActividad: "",
-            fechaInicioActividad: "",
-            fechaFinActividad: "",
-            estadoActividad: "Pendiente",
+            setNuevaActividad({
+              codActividad: "",
+              nombreActividad: "",
+              descripcionActividad: "",
+              fechaInicioActividad: "",
+              fechaFinActividad: "",
+              estadoActividad: "Pendiente",
 
-            etapa: {
-              idEtapa: 0,
-            },
+              etapa: {
+                idEtapa: 0,
+              },
 
-            desarrollador: {
-              idUsuario: 0,
-            },
-          });
+              desarrollador: {
+                idUsuario: 0,
+              },
+            });
 
-          setMostrarFormulario(true);
-        }}
-      >
-        Nueva Actividad
-      </Button>
+            setMostrarFormulario(true);
+          }}
+        >
+          Nueva Actividad
+        </Button>
+      )}
 
       <input
         type="text"
@@ -385,60 +411,66 @@ export default function ActividadesPage() {
                         Ver
                       </Button>
 
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          setActividadEditando(actividad);
+                      {puedeGestionarActividad(actividad) && (
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setActividadEditando(actividad);
 
-                          setNuevaActividad({
-                            codActividad: actividad.codActividad,
+                            setNuevaActividad({
+                              codActividad: actividad.codActividad,
 
-                            nombreActividad: actividad.nombreActividad,
+                              nombreActividad: actividad.nombreActividad,
 
-                            descripcionActividad:
-                              actividad.descripcionActividad,
+                              descripcionActividad:
+                                actividad.descripcionActividad,
 
-                            fechaInicioActividad:
-                              actividad.fechaInicioActividad,
+                              fechaInicioActividad:
+                                actividad.fechaInicioActividad,
 
-                            fechaFinActividad: actividad.fechaFinActividad,
+                              fechaFinActividad: actividad.fechaFinActividad,
 
-                            estadoActividad: actividad.estadoActividad,
+                              estadoActividad: actividad.estadoActividad,
 
-                            etapa: {
-                              idEtapa: actividad.etapa?.idEtapa ?? 1,
-                            },
+                              etapa: {
+                                idEtapa: actividad.etapa?.idEtapa ?? 1,
+                              },
 
-                            desarrollador: {
-                              idUsuario:
-                                actividad.desarrollador?.idUsuario ?? 1,
-                            },
-                          });
+                              desarrollador: {
+                                idUsuario:
+                                  actividad.desarrollador?.idUsuario ?? 1,
+                              },
+                            });
 
-                          setMostrarFormulario(true);
-                        }}
-                      >
-                        Editar
-                      </Button>
+                            setMostrarFormulario(true);
+                          }}
+                        >
+                          Editar
+                        </Button>
+                      )}
 
-                      <Button
-                        size="sm"
-                        onClick={() => handleEjecutar(actividad.idActividad)}
-                      >
-                        Ejecutar
-                      </Button>
+                      {puedeEjecutarActividad(actividad) && (
+                        <Button
+                          size="sm"
+                          onClick={() => handleEjecutar(actividad.idActividad)}
+                        >
+                          Ejecutar
+                        </Button>
+                      )}
 
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          if (confirm("¿Eliminar actividad?")) {
-                            handleEliminar(actividad.idActividad);
-                          }
-                        }}
-                      >
-                        Eliminar
-                      </Button>
+                      {puedeGestionarActividad(actividad) && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            if (confirm("¿Eliminar actividad?")) {
+                              handleEliminar(actividad.idActividad);
+                            }
+                          }}
+                        >
+                          Eliminar
+                        </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>

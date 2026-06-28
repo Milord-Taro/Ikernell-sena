@@ -38,3 +38,19 @@ export interface Usuario {
     nombreEspecialidad: string;
   } | null;
 }
+
+export interface UsuarioRequest {
+  nombre: string;
+  apellido: string;
+  correoElectronico?: string;
+  direccion: string;
+  fechaNacimiento: string;
+  tipoIdentificacion: string;
+  numeroIdentificacion: string;
+  fotoPerfil: string | null;
+  contrasena?: string;
+  estado?: boolean;
+  idRol: number;
+  idProfesion: number;
+  idEspecialidad: number | null;
+}

@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import {
   obtenerMensajePorId,
   atenderMensaje,
+  leerMensaje,
 } from "../services/mensajeService";
 
 import { Button } from "../app/components/ui/button";
+import type { MensajeContacto } from "../types/MensajeContacto";
 
 interface Props {
   idMensaje: number;
@@ -16,7 +18,7 @@ export default function MensajeDetallePage({
   idMensaje,
   onMensajeActualizado,
 }: Props) {
-  const [mensaje, setMensaje] = useState<any>(null);
+  const [mensaje, setMensaje] = useState<MensajeContacto | null>(null);
 
   const [respuesta, setRespuesta] = useState("");
 
@@ -24,12 +26,20 @@ export default function MensajeDetallePage({
     async function cargar() {
       const data = await obtenerMensajePorId(idMensaje);
 
-      setMensaje(data);
+      if (data.estadoMensaje === "Pendiente") {
+        const actualizado = await leerMensaje(idMensaje);
+
+        setMensaje(actualizado);
+        onMensajeActualizado();
+      } else {
+        setMensaje(data);
+      }
+
       setRespuesta("");
     }
 
     cargar();
-  }, [idMensaje]);
+  }, [idMensaje, onMensajeActualizado]);
 
   if (!mensaje) {
     return <h2>Cargando...</h2>;
