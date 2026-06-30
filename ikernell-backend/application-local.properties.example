@@ -3,4 +3,4 @@
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/ikernell_solutions
 spring.datasource.username=postgres
-spring.datasource.password=fabrica2024*
+spring.datasource.password=Password
