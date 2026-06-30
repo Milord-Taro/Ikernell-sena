@@ -37,10 +37,23 @@ Antes de ejecutar el proyecto es necesario tener instalado:
 
 # Clonar el repositorio
 
+## Clonar la versión estable (`main`)
+
 ```bash
 git clone https://github.com/Milord-Taro/Ikernell-sena.git
+cd Ikernell-sena
 ```
 
+---
+
+## Clonar la rama con el desarrollo más reciente (`refactor-prueba`)
+
+```bash
+git clone --branch refactor-prueba --single-branch https://github.com/Milord-Taro/Ikernell-sena.git
+cd Ikernell-sena
+```
+
+> **Nota:** La rama `refactor-prueba` contiene la versión más reciente del proyecto con mejoras y refactorizaciones que aún no han sido fusionadas a `main`.
 ---
 
 # Restaurar la base de datos
@@ -54,7 +67,7 @@ ikernell-DB
 Allí se incluye el archivo:
 
 ```
-ikernell_solutions-actual-25062026.sql
+ikernell_solutions-actual-30062026.sql
 ```
 
 Importe dicho archivo en PostgreSQL.
@@ -77,7 +90,7 @@ Opción recomendada para trabajar en casa/oficina:
 
 1. Crear `ikernell-backend/application-local.properties`.
 2. Colocar allí las credenciales reales de la máquina local.
-3. No commitear ese archivo; ya está ignorado por Git.
+3. Este archivo ya está ignorado por Git.
 
 Ejemplo:
 
