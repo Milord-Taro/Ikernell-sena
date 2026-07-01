@@ -68,6 +68,7 @@ proyecto. Analizarlos conjuntamente cuando una tarea involucre cambios full-stac
 ```bash
 # Desde /ikernell-frontend
 npm install                # Instalar dependencias
+npm run typecheck     	  # Verificación estricta de TypeScript
 npm run dev                # Servidor de desarrollo (Vite — puerto 5173)
 npm run build              # Build de producción
 npm run lint               # ESLint — ejecutar antes de dar una tarea por terminada
@@ -82,9 +83,24 @@ npm test                   # Tests unitarios
 ```
 
 > **Antes de declarar una tarea completa:**
-> 1. Compilar backend: `./mvnw compile` (sin errores)
-> 2. Lint frontend: `npm run lint` (sin errores)
-> 3. Describir brevemente qué se cambió y por qué
+> 1. Compilar backend:
+   ./mvnw compile
+
+> 2. Verificar tipos TypeScript:
+   npm run typecheck
+   (o npx tsc --noEmit si el script no existe)
+
+> 3. Ejecutar lint:
+   npm run lint
+
+> 4. Generar build del frontend:
+   npm run build
+
+> 5. Solo si todos los pasos anteriores pasan sin errores,
+   considerar la tarea finalizada.
+
+> 6. Si aparece cualquier error de compilación o tipado,
+   corregirlo antes de continuar con nuevas funcionalidades.
 
 ---
 
@@ -117,7 +133,11 @@ portafolio, noticias, FAQ, links y contacto.
 
 ### Frontend (React + TypeScript)
 - Componentes funcionales con hooks — sin class components
-- Tipado estricto: no usar `any` salvo casos excepcionales documentados
+- Tipado estricto:
+    - No usar any salvo casos excepcionales documentados.
+    - No devolver Promise<unknown> desde services.
+    - Todas las funciones del directorio /services deben declarar explícitamente su tipo de retorno (Promise<T>).
+    - Todas las llamadas a apiRequest deben utilizar el genérico correspondiente.
 - Separar lógica de UI: llamadas HTTP van en `/services`, lógica reutilizable en hooks
 - Un componente por archivo; nombres de componentes en PascalCase, hooks con prefijo `use`
 - No duplicar llamadas HTTP — centralizarlas en `/services`
@@ -165,3 +185,29 @@ portafolio, noticias, FAQ, links y contacto.
 - Supervisión humana en todos los cambios — proponer antes de ejecutar cuando sea ambiguo
 - Trabajar en branch `codex/[nombre-tarea]` — no tocar `main` directamente
 - Máquina de desarrollo: Ubuntu, usuario `milord-taro`
+
+## Refactorizaciones
+
+- Después de cualquier refactor que afecte servicios, DTOs o tipos compartidos:
+
+  - ejecutar ./mvnw compile
+  - ejecutar npm run typecheck
+  - ejecutar npm run build
+
+- No asumir tipos devueltos por la API.
+
+- Toda llamada a apiRequest<T>() debe especificar explícitamente el tipo
+  genérico correspondiente.
+
+  Correcto:
+
+      apiRequest<Usuario[]>()
+
+  Incorrecto:
+
+      apiRequest()
+
+- No utilizar any cuando exista un tipo del dominio.
+
+- Si un endpoint cambia su respuesta, actualizar inmediatamente el tipo
+  del service correspondiente.

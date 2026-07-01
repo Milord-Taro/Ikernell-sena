@@ -1,7 +1,8 @@
 import { apiRequest } from "./apiConfig";
+import type { RegistroError } from "../types/RegistroError";
 
-export async function obtenerErrores() {
-  return apiRequest("/api/registroerrores");
+export async function obtenerErrores(): Promise<RegistroError[]> {
+  return apiRequest<RegistroError[]>("/api/registroerrores");
 }
 
 export async function eliminarError(id: number) {
@@ -10,8 +11,8 @@ export async function eliminarError(id: number) {
   });
 }
 
-export async function crearRegistroError(error: any) {
-  return apiRequest("/api/registroerrores", {
+export async function crearRegistroError(error: any): Promise<RegistroError> {
+  return apiRequest<RegistroError>("/api/registroerrores", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,16 +21,21 @@ export async function crearRegistroError(error: any) {
   });
 }
 
-export async function obtenerErroresPorEtapa(idEtapa: number) {
-  return apiRequest(`/api/etapas/${idEtapa}/errores`);
+export async function obtenerErroresPorEtapa(
+  idEtapa: number,
+): Promise<RegistroError[]> {
+  return apiRequest<RegistroError[]>(`/api/etapas/${idEtapa}/errores`);
 }
 
-export async function obtenerErrorPorId(id: number) {
-  return apiRequest(`/api/registroerrores/${id}`);
+export async function obtenerErrorPorId(id: number): Promise<RegistroError> {
+  return apiRequest<RegistroError>(`/api/registroerrores/${id}`);
 }
 
-export async function actualizarRegistroError(id: number, error: any) {
-  return apiRequest(`/api/registroerrores/${id}`, {
+export async function actualizarRegistroError(
+  id: number,
+  error: any,
+): Promise<RegistroError> {
+  return apiRequest<RegistroError>(`/api/registroerrores/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -38,8 +44,11 @@ export async function actualizarRegistroError(id: number, error: any) {
   });
 }
 
-export async function actualizarEstadoError(id: number, estado: string) {
-  return apiRequest(`/api/registroerrores/${id}/estado`, {
+export async function actualizarEstadoError(
+  id: number,
+  estado: string,
+): Promise<RegistroError> {
+  return apiRequest<RegistroError>(`/api/registroerrores/${id}/estado`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
