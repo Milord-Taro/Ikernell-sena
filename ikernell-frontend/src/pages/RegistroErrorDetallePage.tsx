@@ -9,6 +9,7 @@ import type { RegistroError } from "../types/RegistroError";
 import { obtenerEstiloEstadoError } from "../utils/errorStatus";
 import { obtenerIdUsuario } from "../utils/auth";
 
+
 export default function RegistroErrorDetallePage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export default function RegistroErrorDetallePage() {
 
   const puedeGestionar =
     error.desarrollador.idUsuario === idUsuarioActual;
+
 
   return (
     <div style={{ padding: "20px" }}>

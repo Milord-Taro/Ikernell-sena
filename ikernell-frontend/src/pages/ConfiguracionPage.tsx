@@ -52,6 +52,11 @@ export default function ConfiguracionPage() {
       return;
     }
 
+if (!usuario) {
+  toast.error("No se encontró un usuario autenticado");
+  return;
+}
+
     try {
       await cambiarContrasena(
         usuario.idUsuario,

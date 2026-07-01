@@ -1,15 +1,20 @@
 import { apiRequest } from "./apiConfig";
+import type { TipoError } from "../types/TipoError";
 
-export async function obtenerTiposError() {
-  return apiRequest("/api/tipoerrores");
+export async function obtenerTiposError(): Promise<TipoError[]> {
+  return apiRequest<TipoError[]>("/api/tipoerrores");
 }
 
-export async function obtenerTipoErrorPorId(id: number) {
-  return apiRequest(`/api/tipoerrores/${id}`);
+export async function obtenerTipoErrorPorId(
+  id: number,
+): Promise<TipoError> {
+  return apiRequest<TipoError>(`/api/tipoerrores/${id}`);
 }
 
-export async function crearTipoError(tipoError: any) {
-  return apiRequest("/api/tipoerrores", {
+export async function crearTipoError(
+  tipoError: any,
+): Promise<TipoError> {
+  return apiRequest<TipoError>("/api/tipoerrores", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -18,8 +23,11 @@ export async function crearTipoError(tipoError: any) {
   });
 }
 
-export async function actualizarTipoError(id: number, tipoError: any) {
-  return apiRequest(`/api/tipoerrores/${id}`, {
+export async function actualizarTipoError(
+  id: number,
+  tipoError: any,
+): Promise<TipoError> {
+  return apiRequest<TipoError>(`/api/tipoerrores/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

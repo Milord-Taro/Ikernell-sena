@@ -1,11 +1,13 @@
-export function obtenerUsuarioLogueado() {
+import type { Usuario } from "../types/Usuario";
+
+export function obtenerUsuarioLogueado(): Usuario | null {
   const usuario = localStorage.getItem("usuario");
 
   if (!usuario) {
     return null;
   }
 
-  return JSON.parse(usuario);
+  return JSON.parse(usuario) as Usuario;
 }
 
 export function obtenerRolUsuario() {
