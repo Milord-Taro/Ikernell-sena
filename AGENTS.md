@@ -41,21 +41,22 @@ proyecto. Analizarlos conjuntamente cuando una tarea involucre cambios full-stac
 
 ## Stack técnico
 
-| Capa       | Tecnología                                         |
-|------------|----------------------------------------------------|
-| Frontend   | React 18.3.1 + TypeScript 5.8.2, Vite 6.3.5       |
+| Capa       | Tecnología                                              |
+| ---------- | ------------------------------------------------------- |
+| Frontend   | React 18.3.1 + TypeScript 5.8.2, Vite 6.3.5             |
 | Backend    | Java 17.0.19 (OpenJDK), Spring Boot 4.1.0, Maven 3.9.12 |
-| ORM        | Spring Data JPA                                    |
-| Seguridad  | Spring Security                                    |
-| Base datos | PostgreSQL 18.4 — schema: `public`                 |
-| Runtime    | Node.js v22.22.1, npm 9.2.0                        |
-| Control    | Git — monorepo en GitHub                           |
+| ORM        | Spring Data JPA                                         |
+| Seguridad  | Spring Security                                         |
+| Base datos | PostgreSQL 18.4 — schema: `public`                      |
+| Runtime    | Node.js v22.22.1, npm 9.2.0                             |
+| Control    | Git — monorepo en GitHub                                |
 
 ---
 
 ## Comandos esenciales
 
 ### Backend
+
 ```bash
 # Desde /ikernell-backend
 ./mvnw spring-boot:run     # Levantar el servidor (puerto 8080 por defecto)
@@ -65,6 +66,7 @@ proyecto. Analizarlos conjuntamente cuando una tarea involucre cambios full-stac
 ```
 
 ### Frontend
+
 ```bash
 # Desde /ikernell-frontend
 npm install                # Instalar dependencias
@@ -76,6 +78,7 @@ npm test                   # Tests unitarios
 ```
 
 ### Base de datos
+
 ```bash
 # La app se conecta a PostgreSQL local
 # Credenciales en ikernell-backend/src/main/resources/application.properties
@@ -83,24 +86,25 @@ npm test                   # Tests unitarios
 ```
 
 > **Antes de declarar una tarea completa:**
+>
 > 1. Compilar backend:
-   ./mvnw compile
+>    ./mvnw compile
 
 > 2. Verificar tipos TypeScript:
-   npm run typecheck
-   (o npx tsc --noEmit si el script no existe)
+>    npm run typecheck
+>    (o npx tsc --noEmit si el script no existe)
 
 > 3. Ejecutar lint:
-   npm run lint
+>    npm run lint
 
 > 4. Generar build del frontend:
-   npm run build
+>    npm run build
 
 > 5. Solo si todos los pasos anteriores pasan sin errores,
-   considerar la tarea finalizada.
+>    considerar la tarea finalizada.
 
 > 6. Si aparece cualquier error de compilación o tipado,
-   corregirlo antes de continuar con nuevas funcionalidades.
+>    corregirlo antes de continuar con nuevas funcionalidades.
 
 ---
 
@@ -122,6 +126,7 @@ portafolio, noticias, FAQ, links y contacto.
 ## Convenciones del código
 
 ### Backend (Java / Spring Boot)
+
 - Seguimos **principios SOLID** — cada clase tiene una sola responsabilidad
 - **Controladores delgados**: solo reciben la request, llaman al service, retornan `ResponseEntity`
 - **Sin lógica de negocio en controladores ni repositorios**
@@ -132,17 +137,19 @@ portafolio, noticias, FAQ, links y contacto.
 - Nombres de clases en inglés; nombres de dominio de negocio pueden estar en español
 
 ### Frontend (React + TypeScript)
+
 - Componentes funcionales con hooks — sin class components
 - Tipado estricto:
-    - No usar any salvo casos excepcionales documentados.
-    - No devolver Promise<unknown> desde services.
-    - Todas las funciones del directorio /services deben declarar explícitamente su tipo de retorno (Promise<T>).
-    - Todas las llamadas a apiRequest deben utilizar el genérico correspondiente.
+  - No usar any salvo casos excepcionales documentados.
+  - No devolver Promise<unknown> desde services.
+  - Todas las funciones del directorio /services deben declarar explícitamente su tipo de retorno (Promise<T>).
+  - Todas las llamadas a apiRequest deben utilizar el genérico correspondiente.
 - Separar lógica de UI: llamadas HTTP van en `/services`, lógica reutilizable en hooks
 - Un componente por archivo; nombres de componentes en PascalCase, hooks con prefijo `use`
 - No duplicar llamadas HTTP — centralizarlas en `/services`
 
 ### Base de datos
+
 - Nombres de tablas en snake_case y en plural (`trabajadores`, `proyectos`, `actividades`)
 - Toda migración de schema va como script SQL numerado en el directorio de migraciones
 - No hacer cambios de schema sin el script de migración correspondiente
@@ -189,7 +196,6 @@ portafolio, noticias, FAQ, links y contacto.
 ## Refactorizaciones
 
 - Después de cualquier refactor que afecte servicios, DTOs o tipos compartidos:
-
   - ejecutar ./mvnw compile
   - ejecutar npm run typecheck
   - ejecutar npm run build
@@ -211,3 +217,94 @@ portafolio, noticias, FAQ, links y contacto.
 
 - Si un endpoint cambia su respuesta, actualizar inmediatamente el tipo
   del service correspondiente.
+
+  ***
+
+# Overhaul IKernell v2
+
+El proyecto se encuentra actualmente en un proceso de overhaul integral cuyo objetivo es mejorar la calidad técnica, la experiencia de usuario y la documentación sin alterar el alcance funcional principal del caso de estudio.
+
+Todas las decisiones deberán alinearse con la documentación ubicada en:
+
+architecture/
+planning/
+
+Especialmente:
+
+- architecture/03-diseno-y-design-system.md
+- architecture/05.5-arquitectura-del-dominio.md
+- planning/00-checklist-overhaul.md
+- planning/01-product-backlog.md
+
+---
+
+## Principios del Overhaul
+
+Antes de implementar una nueva funcionalidad verificar siempre:
+
+1. ¿Ya existe una solución reutilizable?
+
+2. ¿Puede convertirse en un componente compartido?
+
+3. ¿Respeta el Design System?
+
+4. ¿Respeta el dominio del negocio?
+
+5. ¿Existe una observación del profesor relacionada?
+
+6. ¿Debe actualizarse la documentación?
+
+---
+
+## Prioridades
+
+Orden obligatorio de trabajo:
+
+1. Dominio
+2. Base de Datos
+3. Backend
+4. Frontend
+5. UX
+6. Documentación
+
+No modificar el Frontend si previamente no se ha validado el impacto sobre el dominio y el backend.
+
+---
+
+## Objetivo del proyecto
+
+El propósito del overhaul NO es agregar la mayor cantidad posible de funcionalidades.
+
+El objetivo es aumentar la calidad general del sistema mediante:
+
+- mayor consistencia
+- mejor arquitectura
+- mejor experiencia de usuario
+- mejor representación del dominio
+- mayor reutilización
+- documentación consistente
+
+---
+
+## Valor agregado aprobado
+
+Durante el overhaul únicamente se desarrollarán dos funcionalidades adicionales:
+
+- Auditoría Global
+- Timeline del Proyecto
+
+# NOTA
+
+No agregar nuevas funcionalidades de valor agregado sin justificación.
+
+Fuente de verdad del proyecto
+
+architecture/
+
+planning/
+
+audit/
+
+CODEX_CONTEXT.md
+
+Toda propuesta deberá alinearse con esos documentos.

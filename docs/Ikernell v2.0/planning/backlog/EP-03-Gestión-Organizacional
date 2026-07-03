@@ -1,0 +1,276 @@
+# EP-03 — Gestión Organizacional
+
+---
+
+## Objetivo
+
+Administrar la estructura organizacional utilizada por IKernell para clasificar y asignar responsabilidades a los usuarios del sistema.
+
+Esta épica permite mantener actualizados los catálogos organizacionales utilizados por las diferentes funcionalidades del sistema, garantizando consistencia y flexibilidad frente a cambios futuros.
+
+---
+
+## Problema que resuelve
+
+Actualmente parte de la estructura organizacional se encuentra administrada de forma parcial.
+
+Aunque el sistema permite asignar roles, profesiones y especialidades a los usuarios, algunos de estos catálogos no disponen de interfaces completas de administración.
+
+Esto dificulta adaptar el sistema a nuevos escenarios sin modificar directamente la base de datos.
+
+---
+
+## Alcance
+
+Comprende la administración de todos los catálogos organizacionales del sistema.
+
+Incluye:
+
+- Roles.
+- Profesiones.
+- Especialidades.
+- Estados.
+- Relaciones con usuarios.
+
+No incluye la administración de usuarios, la cual pertenece a la Épica EP-02.
+
+---
+
+## Actores involucrados
+
+### Coordinador
+
+Administración completa de la estructura organizacional.
+
+---
+
+# Features
+
+## EP03-F01
+
+Consultar Roles.
+
+---
+
+## EP03-F02
+
+Crear Rol.
+
+---
+
+## EP03-F03
+
+Editar Rol.
+
+---
+
+## EP03-F04
+
+Desactivar Rol.
+
+---
+
+## EP03-F05
+
+Consultar Profesiones.
+
+---
+
+## EP03-F06
+
+Crear Profesión.
+
+---
+
+## EP03-F07
+
+Editar Profesión.
+
+---
+
+## EP03-F08
+
+Desactivar Profesión.
+
+---
+
+## EP03-F09
+
+Consultar Especialidades.
+
+---
+
+## EP03-F10
+
+Crear Especialidad.
+
+---
+
+## EP03-F11
+
+Editar Especialidad.
+
+---
+
+## EP03-F12
+
+Desactivar Especialidad.
+
+---
+
+## EP03-F13
+
+Buscar registros.
+
+---
+
+## EP03-F14
+
+Filtrar registros.
+
+---
+
+## EP03-F15
+
+Auditoría de modificaciones.
+
+---
+
+## Historias de Usuario relacionadas
+
+HU correspondientes a la administración de catálogos.
+
+---
+
+## Requerimientos relacionados
+
+### Funcionales
+
+- Administrar Roles.
+- Administrar Profesiones.
+- Administrar Especialidades.
+
+### No Funcionales
+
+- Integridad.
+- Mantenibilidad.
+- Escalabilidad.
+
+---
+
+## Casos de Uso
+
+- Administrar Rol.
+- Administrar Profesión.
+- Administrar Especialidad.
+
+---
+
+## Entidades involucradas
+
+- Rol.
+- Profesión.
+- Especialidad.
+- Usuario.
+
+---
+
+## Reglas del negocio
+
+- Todo usuario deberá tener un rol válido.
+- Una profesión únicamente podrá eliminarse cuando no existan usuarios asociados.
+- Una especialidad únicamente podrá eliminarse cuando no existan usuarios asociados.
+- Los cambios realizados sobre los catálogos deberán conservar la integridad referencial.
+
+---
+
+## Dependencias
+
+EP-02 Gestión de Usuarios.
+
+---
+
+## Criterios de aceptación
+
+- CRUD completo para Roles.
+- CRUD completo para Profesiones.
+- CRUD completo para Especialidades.
+- Validaciones implementadas.
+- Relaciones preservadas.
+- Catálogos reutilizados en todo el sistema.
+
+---
+
+## Impacto Técnico
+
+### Backend
+
+- Rol.
+- Profesión.
+- Especialidad.
+
+### Frontend
+
+- Pantallas administrativas.
+- Formularios.
+- Tablas.
+- Selectores reutilizables.
+
+### Base de Datos
+
+- Rol.
+- Profesión.
+- Especialidad.
+
+### Documentación
+
+- RF.
+- HU.
+- Casos de Uso.
+- Manual Técnico.
+
+---
+
+## Implementación Actual
+
+### Backend
+
+- CRUD de Rol implementado.
+- CRUD de Profesión implementado parcialmente.
+- CRUD de Especialidad implementado parcialmente.
+
+### Frontend
+
+- Administración de Roles disponible.
+- Profesiones sin CRUD completo.
+- Especialidades sin CRUD completo.
+
+### Mejoras previstas
+
+- CRUD completo para Profesiones.
+- CRUD completo para Especialidades.
+- Estandarizar tablas.
+- Estandarizar formularios.
+- Incorporar búsqueda.
+- Incorporar filtros.
+- Incorporar auditoría.
+
+---
+
+## Riesgos
+
+- Eliminación de catálogos utilizados.
+- Inconsistencia referencial.
+- Duplicidad de registros.
+
+---
+
+## Prioridad
+
+P0
+
+---
+
+## Estado
+
+Pendiente.
