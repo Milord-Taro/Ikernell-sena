@@ -1,6 +1,15 @@
-# Copia este archivo como application-local.properties en esta misma carpeta.
-# Ese archivo local esta ignorado por Git y puede contener tu clave privada.
+# ================================================================
+# Este archivo es SOLO una plantilla.
+# Cada máquina (SENA, PC de escritorio, laptop) debe tener su propia
+# copia de application-local.properties (sin .template) con los
+# valores reales, y ese archivo real NUNCA debe subirse a git.
+#
+# Sirve para sobreescribir valores del perfil activo sin tocar
+# application-dev.properties ni versionar contraseñas.
+# ================================================================
 
-spring.datasource.url=jdbc:postgresql://localhost:5432/ikernell_solutions
-spring.datasource.username=postgres
-spring.datasource.password=Password
+# Ejemplo: si en esta máquina tu contraseña de postgres es distinta:
+# DB_PASSWORD=tu_password_real_local
+
+# Ejemplo: si en esta máquina usas otro puerto o otra base de datos:
+# spring.datasource.url=jdbc:postgresql://localhost:5432/ikernell_v2
