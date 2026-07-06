@@ -482,7 +482,7 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
 
 ## Fase 1 — Preparación del proyecto
 
-- [ ] Revisar y actualizar `pom.xml`
+- [X] Revisar y actualizar `pom.xml`
 - [ ] Incorporar Spring Security
 - [ ] Incorporar MapStruct
 - [ ] Incorporar JWT

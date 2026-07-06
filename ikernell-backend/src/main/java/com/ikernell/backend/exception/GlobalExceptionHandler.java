@@ -1,29 +1,78 @@
 package com.ikernell.backend.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Captura ResourceNotFoundException, BusinessException, ConflictException,
+     * UnauthorizedException, ForbiddenException y ValidationException, ya que
+     * todas heredan de ResponseStatusException.
+     */
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<String> manejarResponseStatusException(
-            ResponseStatusException ex) {
+    public ResponseEntity<ApiError> manejarResponseStatusException(
+            ResponseStatusException ex,
+            HttpServletRequest request) {
 
-        return ResponseEntity
-                .status(ex.getStatusCode())
-                .body(ex.getReason());
+        List<ApiError.CampoError> errores =
+                (ex instanceof ValidationException ve) ? ve.getErrores() : null;
+
+        ApiError error = ApiError.of(
+                HttpStatus.valueOf(ex.getStatusCode().value()),
+                ex.getReason(),
+                request.getRequestURI(),
+                errores);
+
+        return ResponseEntity.status(ex.getStatusCode()).body(error);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> manejarRuntimeException(
-            RuntimeException ex) {
+    /**
+     * Captura los errores de Bean Validation (@Valid) sobre los DTOs
+     * en los Controllers, devolviendo el detalle campo por campo.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> manejarValidacionBean(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+        List<ApiError.CampoError> errores = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fe -> new ApiError.CampoError(fe.getField(), fe.getDefaultMessage()))
+                .toList();
+
+        ApiError error = ApiError.of(
+                HttpStatus.BAD_REQUEST,
+                "Error de validación en los datos enviados.",
+                request.getRequestURI(),
+                errores);
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    /**
+     * Cualquier excepción no controlada explícitamente cae aquí como 500,
+     * evitando exponer detalles internos del stacktrace al cliente.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> manejarExcepcionGeneral(
+            Exception ex,
+            HttpServletRequest request) {
+
+        ApiError error = ApiError.of(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocurrió un error inesperado en el servidor.",
+                request.getRequestURI());
+
+        return ResponseEntity.internalServerError().body(error);
     }
 }
