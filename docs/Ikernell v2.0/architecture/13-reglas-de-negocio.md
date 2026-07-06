@@ -44,6 +44,10 @@ RN-US-008
 
 Los usuarios únicamente podrán consultar la información correspondiente a los permisos definidos para su rol dentro del sistema.
 
+RN-US-009
+
+El sistema únicamente permitirá registrar trabajadores con una edad mínima de 16 años cumplidos al momento de su vinculación.
+
 ---
 
 # Gestión de Proyectos
