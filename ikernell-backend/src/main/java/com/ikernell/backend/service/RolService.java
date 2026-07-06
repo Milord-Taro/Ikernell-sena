@@ -1,0 +1,39 @@
+package com.ikernell.backend.service;
+
+import com.ikernell.backend.entity.Rol;
+import com.ikernell.backend.exception.ResourceNotFoundException;
+import com.ikernell.backend.repository.RolRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class RolService {
+
+    private final RolRepository rolRepository;
+
+    public RolService(RolRepository rolRepository){
+        this.rolRepository = rolRepository;
+    }
+
+    public List<Rol> listarRoles() {
+        return rolRepository.findAll();
+    }
+
+    public Rol obtenerPorId(Integer id) {
+        return rolRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Rol no encontrado"));
+    }
+
+    public Rol crearRol(Rol rol) {
+        return rolRepository.save(rol);
+    }
+
+    public Rol actualizarRol(Rol rol) {
+        return rolRepository.save(rol);
+    }
+
+    public void eliminarRol(Integer id) {rolRepository.deleteById(id);
+    }
+}
