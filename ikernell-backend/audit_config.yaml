@@ -1,0 +1,67 @@
+project:
+  name: IKernell Backend
+  version: V2
+
+# Ruta base del código fuente Java, relativa a la raíz del proyecto
+source_root: src/main/java/com/ikernell/backend
+
+packages:
+  - controller
+  - service
+  - repository
+  - entity
+  - dto
+  - mapper
+  - security
+  - exception
+
+# Entidades planeadas según el dominio (para detectar faltantes/sobrantes)
+entities:
+  - Rol
+  - Profesion
+  - Especialidad
+  - Usuario
+  - Proyecto
+  - AsignacionProyecto
+  - Etapa
+  - Actividad
+  - TipoError
+  - RegistroError
+  - TipoInterrupcion
+  - Interrupcion
+  - MensajeContacto
+  - Notificacion
+  - Trazabilidad
+
+required_security:
+  - SecurityConfig
+  - JwtService
+  - JwtAuthenticationFilter
+  - CustomUserDetailsService
+  - AuthController
+
+# Sufijos de DTO que deben llevar Bean Validation
+dto_request_suffixes:
+  - Request
+
+validation_annotations:
+  - "@NotNull"
+  - "@NotBlank"
+  - "@NotEmpty"
+  - "@Email"
+  - "@Pattern"
+  - "@Size"
+  - "@Past"
+  - "@PastOrPresent"
+  - "@Future"
+  - "@Min"
+  - "@Max"
+  - "@Valid"
+
+# Ruta opcional a un dump de esquema (pg_dump --schema-only > schema.sql)
+# Si no existe, esa sección del reporte se omite con una nota.
+schema_sql_path: schema.sql
+
+# Carpeta donde se guardan los reportes generados
+output_dir: tools/output
+history_dir: tools/output/history
