@@ -481,49 +481,39 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
 # Sprint 0 — Infraestructura
 
 ## Fase 1 — Preparación del proyecto
-
 - [X] Revisar y actualizar `pom.xml`
-- [ ] Incorporar Spring Security
-- [ ] Incorporar MapStruct
-- [ ] Incorporar JWT
-- [ ] Incorporar OpenAPI / Swagger
+- [X] Incorporar Spring Security
+- [X] Incorporar MapStruct
+- [X] Incorporar JWT
+- [X] Incorporar OpenAPI / Swagger
 - [ ] Revisar dependencias de pruebas
-- [ ] Revisar Lombok (decisión final)
-- [ ] Configurar perfiles (`dev`, `prod`, `local`)
-- [ ] Revisar `application.properties`
-- [ ] Configurar CORS para futura autenticación
-
+- [X] Revisar Lombok (decisión final)
+- [X] Configurar perfiles (`dev`, `prod`, `local`)
+- [X] Revisar `application.properties`
+- [X] Configurar CORS para futura autenticación
 ---
-
 ## Fase 2 — Organización del proyecto
-
-- [ ] Crear paquete `mapper`
-- [ ] Crear paquete `validation`
-- [ ] Crear paquete `security`
-- [ ] Crear paquete `audit`
-- [ ] Crear paquete `notification`
-- [ ] Crear paquete `report`
-- [ ] Crear paquete `constants`
-- [ ] Crear paquete `enums`
-- [ ] Crear paquete `util`
-
+- [X] Crear paquete `mapper`
+- [X] Crear paquete `validation`
+- [X] Crear paquete `security`
+- [X] Crear paquete `audit`
+- [X] Crear paquete `notification`
+- [X] Crear paquete `report`
+- [X] Crear paquete `constants`
+- [X] Crear paquete `enums`
+- [X] Crear paquete `util`
 ---
-
 ## Fase 3 — Infraestructura transversal
-
-- [ ] Diseñar `ApiResponse`
-- [ ] Diseñar `ApiError`
-- [ ] Mejorar `GlobalExceptionHandler`
-- [ ] Crear `BusinessException`
-- [ ] Crear `ConflictException`
-- [ ] Crear `UnauthorizedException`
-- [ ] Crear `ForbiddenException`
-- [ ] Crear `ValidationException`
-
+- [X] Diseñar `ApiResponse`
+- [X] Diseñar `ApiError`
+- [X] Mejorar `GlobalExceptionHandler`
+- [X] Crear `BusinessException`
+- [X] Crear `ConflictException`
+- [X] Crear `UnauthorizedException`
+- [X] Crear `ForbiddenException`
+- [X] Crear `ValidationException`
 ---
-
 ## Fase 4 — Convenciones
-
 - [ ] Definir formato estándar de respuestas
 - [ ] Definir códigos HTTP
 - [ ] Definir estrategia de transacciones
@@ -531,22 +521,16 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
 - [ ] Definir convenciones REST
 - [ ] Definir estrategia de auditoría
 - [ ] Definir estrategia de reportes
-
 ---
-
 # Sprint 1 — Catálogos
-
-- [ ] Rol
-- [ ] Profesión
-- [ ] Especialidad
-
+- [X] Rol
+- [X] Profesión
+- [X] Especialidad
 ---
-
 # Sprint 2 — Usuarios
-
-- [ ] Usuario
-- [ ] Login
-- [ ] JWT
+- [X] Usuario
+- [X] Login
+- [X] JWT
 - [ ] Recuperación de contraseña
 
 ---
