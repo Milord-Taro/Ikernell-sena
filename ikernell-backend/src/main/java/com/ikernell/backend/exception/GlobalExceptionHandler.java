@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 
@@ -59,6 +61,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler({
+            AuthorizationDeniedException.class,
+            AccessDeniedException.class
+    })
+    public ResponseEntity<ApiError> manejarAccesoDenegado(
+            Exception ex,
+            HttpServletRequest request) {
+
+        ApiError error = ApiError.of(
+                HttpStatus.FORBIDDEN,
+                "No tiene permisos para realizar esta operación.",
+                request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+
     /**
      * Cualquier excepción no controlada explícitamente cae aquí como 500,
      * evitando exponer detalles internos del stacktrace al cliente.
@@ -76,3 +95,5 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError().body(error);
     }
 }
+
+

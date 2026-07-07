@@ -8,15 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,22 +21,18 @@ public class EspecialidadController {
     private final EspecialidadService especialidadService;
 
     @PostMapping
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> crear(@Valid @RequestBody EspecialidadRequest request) {
         EspecialidadResponse creada = especialidadService.crear(request);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Especialidad creada correctamente.", creada));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<EspecialidadResponse>>> listar(
             @RequestParam(name = "soloActivas", defaultValue = "false") boolean soloActivas) {
-
         List<EspecialidadResponse> especialidades = soloActivas
-                ? especialidadService.listarActivas()
-                : especialidadService.listarTodas();
-
+                ? especialidadService.listarActivas() : especialidadService.listarTodas();
         return ResponseEntity.ok(ApiResponse.of(especialidades));
     }
 
@@ -53,24 +42,19 @@ public class EspecialidadController {
     }
 
     @PutMapping("/{idEspecialidad}")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> actualizar(
-            @PathVariable Integer idEspecialidad,
-            @Valid @RequestBody EspecialidadRequest request) {
-
+            @PathVariable Integer idEspecialidad, @Valid @RequestBody EspecialidadRequest request) {
         EspecialidadResponse actualizada = especialidadService.actualizar(idEspecialidad, request);
-
         return ResponseEntity.ok(ApiResponse.of("Especialidad actualizada correctamente.", actualizada));
     }
 
     @PatchMapping("/{idEspecialidad}/estado")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> cambiarEstado(
-            @PathVariable Integer idEspecialidad,
-            @RequestParam boolean activo) {
-
+            @PathVariable Integer idEspecialidad, @RequestParam boolean activo) {
         EspecialidadResponse actualizada = especialidadService.cambiarEstado(idEspecialidad, activo);
-
         return ResponseEntity.ok(ApiResponse.of(
-                activo ? "Especialidad activada correctamente." : "Especialidad desactivada correctamente.",
-                actualizada));
+                activo ? "Especialidad activada correctamente." : "Especialidad desactivada correctamente.", actualizada));
     }
 }

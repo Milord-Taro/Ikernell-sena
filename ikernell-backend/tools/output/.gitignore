@@ -1,0 +1,4 @@
+history/*
+!history/.gitkeep
+
+latest.md
