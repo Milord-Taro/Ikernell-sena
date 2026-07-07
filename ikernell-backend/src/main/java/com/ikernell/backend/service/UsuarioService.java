@@ -1,0 +1,162 @@
+package com.ikernell.backend.service;
+
+import com.ikernell.backend.dto.UsuarioRequest;
+import com.ikernell.backend.dto.UsuarioResponse;
+import com.ikernell.backend.entity.Especialidad;
+import com.ikernell.backend.entity.Profesion;
+import com.ikernell.backend.entity.Rol;
+import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.exception.ConflictException;
+import com.ikernell.backend.exception.ResourceNotFoundException;
+import com.ikernell.backend.mapper.UsuarioMapper;
+import com.ikernell.backend.repository.EspecialidadRepository;
+import com.ikernell.backend.repository.ProfesionRepository;
+import com.ikernell.backend.repository.RolRepository;
+import com.ikernell.backend.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final RolRepository rolRepository;
+    private final ProfesionRepository profesionRepository;
+    private final EspecialidadRepository especialidadRepository;
+    private final UsuarioMapper usuarioMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public UsuarioResponse crear(UsuarioRequest request) {
+        String correo = request.getCorreoElectronico().toLowerCase();
+
+        validarCodigoDisponible(request.getCodigoUsuario(), null);
+        validarIdentificacionDisponible(request.getNumeroIdentificacion(), null);
+        validarCorreoDisponible(correo, null);
+
+        Rol rol = buscarRolOFallar(request.getIdRol());
+        Profesion profesion = buscarProfesionOFallar(request.getIdProfesion());
+        Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
+
+        Usuario usuario = usuarioMapper.toEntity(request);
+        usuario.setCorreoElectronico(correo);
+        usuario.setHashContrasena(passwordEncoder.encode(request.getContrasena()));
+        usuario.setRol(rol);
+        usuario.setProfesion(profesion);
+        usuario.setEspecialidad(especialidad);
+
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        return usuarioMapper.toResponse(guardado);
+    }
+
+    public List<UsuarioResponse> listarTodos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(usuarioMapper::toResponse)
+                .toList();
+    }
+
+    public List<UsuarioResponse> listarActivos() {
+        return usuarioRepository.findByActivoTrue()
+                .stream()
+                .map(usuarioMapper::toResponse)
+                .toList();
+    }
+
+    public UsuarioResponse obtenerPorId(Integer idUsuario) {
+        return usuarioMapper.toResponse(buscarOFallar(idUsuario));
+    }
+
+    @Transactional
+    public UsuarioResponse actualizar(Integer idUsuario, UsuarioRequest request) {
+        Usuario usuario = buscarOFallar(idUsuario);
+        String correo = request.getCorreoElectronico().toLowerCase();
+
+        validarCodigoDisponible(request.getCodigoUsuario(), idUsuario);
+        validarIdentificacionDisponible(request.getNumeroIdentificacion(), idUsuario);
+        validarCorreoDisponible(correo, idUsuario);
+
+        Rol rol = buscarRolOFallar(request.getIdRol());
+        Profesion profesion = buscarProfesionOFallar(request.getIdProfesion());
+        Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
+
+        usuarioMapper.actualizarEntidadDesdeRequest(request, usuario);
+        usuario.setCorreoElectronico(correo);
+        usuario.setRol(rol);
+        usuario.setProfesion(profesion);
+        usuario.setEspecialidad(especialidad);
+        // La contraseña NO se toca aquí: eso será un endpoint dedicado
+        // de cambio de contraseña, junto con Login/JWT.
+
+        Usuario actualizado = usuarioRepository.save(usuario);
+
+        return usuarioMapper.toResponse(actualizado);
+    }
+
+    @Transactional
+    public UsuarioResponse cambiarEstado(Integer idUsuario, boolean activo) {
+        Usuario usuario = buscarOFallar(idUsuario);
+        usuario.setActivo(activo);
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        return usuarioMapper.toResponse(guardado);
+    }
+
+    private Usuario buscarOFallar(Integer idUsuario) {
+        return usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con id " + idUsuario + "."));
+    }
+
+    private Rol buscarRolOFallar(Integer idRol) {
+        return rolRepository.findById(idRol)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un rol con id " + idRol + "."));
+    }
+
+    private Profesion buscarProfesionOFallar(Integer idProfesion) {
+        return profesionRepository.findById(idProfesion)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe una profesión con id " + idProfesion + "."));
+    }
+
+    private Especialidad buscarEspecialidadOFallar(Integer idEspecialidad) {
+        return especialidadRepository.findById(idEspecialidad)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe una especialidad con id " + idEspecialidad + "."));
+    }
+
+    private void validarCodigoDisponible(String codigoUsuario, Integer idUsuarioActual) {
+        usuarioRepository.findByCodigoUsuario(codigoUsuario).ifPresent(existente -> {
+            if (idUsuarioActual == null || !existente.getIdUsuario().equals(idUsuarioActual)) {
+                throw new ConflictException(
+                        "Ya existe un usuario con el código '" + codigoUsuario + "'.");
+            }
+        });
+    }
+
+    private void validarIdentificacionDisponible(String numeroIdentificacion, Integer idUsuarioActual) {
+        usuarioRepository.findByNumeroIdentificacion(numeroIdentificacion).ifPresent(existente -> {
+            if (idUsuarioActual == null || !existente.getIdUsuario().equals(idUsuarioActual)) {
+                throw new ConflictException(
+                        "Ya existe un usuario con el número de identificación '" + numeroIdentificacion + "'.");
+            }
+        });
+    }
+
+    private void validarCorreoDisponible(String correoElectronico, Integer idUsuarioActual) {
+        usuarioRepository.findByCorreoElectronico(correoElectronico).ifPresent(existente -> {
+            if (idUsuarioActual == null || !existente.getIdUsuario().equals(idUsuarioActual)) {
+                throw new ConflictException(
+                        "Ya existe un usuario con el correo '" + correoElectronico + "'.");
+            }
+        });
+    }
+}
