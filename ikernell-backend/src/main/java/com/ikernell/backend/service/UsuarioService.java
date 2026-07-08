@@ -1,11 +1,14 @@
 package com.ikernell.backend.service;
 
+import com.ikernell.backend.dto.CambiarContrasenaRequest;
 import com.ikernell.backend.dto.UsuarioRequest;
 import com.ikernell.backend.dto.UsuarioResponse;
+import com.ikernell.backend.dto.UsuarioUpdateRequest;
 import com.ikernell.backend.entity.Especialidad;
 import com.ikernell.backend.entity.Profesion;
 import com.ikernell.backend.entity.Rol;
 import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.UsuarioMapper;
@@ -74,26 +77,26 @@ public class UsuarioService {
         return usuarioMapper.toResponse(buscarOFallar(idUsuario));
     }
 
+    /**
+     * Edición por parte del Coordinador. correoElectronico y contrasena
+     * NO están en UsuarioUpdateRequest, así que es estructuralmente
+     * imposible que esta operación los toque.
+     */
     @Transactional
-    public UsuarioResponse actualizar(Integer idUsuario, UsuarioRequest request) {
+    public UsuarioResponse actualizar(Integer idUsuario, UsuarioUpdateRequest request) {
         Usuario usuario = buscarOFallar(idUsuario);
-        String correo = request.getCorreoElectronico().toLowerCase();
 
         validarCodigoDisponible(request.getCodigoUsuario(), idUsuario);
         validarIdentificacionDisponible(request.getNumeroIdentificacion(), idUsuario);
-        validarCorreoDisponible(correo, idUsuario);
 
         Rol rol = buscarRolOFallar(request.getIdRol());
         Profesion profesion = buscarProfesionOFallar(request.getIdProfesion());
         Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
 
         usuarioMapper.actualizarEntidadDesdeRequest(request, usuario);
-        usuario.setCorreoElectronico(correo);
         usuario.setRol(rol);
         usuario.setProfesion(profesion);
         usuario.setEspecialidad(especialidad);
-        // La contraseña NO se toca aquí: eso será un endpoint dedicado
-        // de cambio de contraseña, junto con Login/JWT.
 
         Usuario actualizado = usuarioRepository.save(usuario);
 
@@ -107,6 +110,26 @@ public class UsuarioService {
         Usuario guardado = usuarioRepository.save(usuario);
 
         return usuarioMapper.toResponse(guardado);
+    }
+
+    /**
+     * Cambio de contraseña del propio usuario autenticado (no de un ID
+     * arbitrario en la URL). El correo viene del token JWT, no del body,
+     * así que nadie puede cambiarle la contraseña a otro usuario por aquí,
+     * ni siquiera el Coordinador — para eso no hay endpoint, a propósito.
+     */
+    @Transactional
+    public void cambiarMiContrasena(String correoElectronico, CambiarContrasenaRequest request) {
+        Usuario usuario = usuarioRepository.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoElectronico + "'."));
+
+        if (!passwordEncoder.matches(request.getContrasenaActual(), usuario.getHashContrasena())) {
+            throw new BusinessException("La contraseña actual no es correcta.");
+        }
+
+        usuario.setHashContrasena(passwordEncoder.encode(request.getContrasenaNueva()));
+        usuarioRepository.save(usuario);
     }
 
     private Usuario buscarOFallar(Integer idUsuario) {

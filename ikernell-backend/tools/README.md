@@ -4,11 +4,11 @@ Instalación (una sola vez)
 
 En Ubuntu 22.04, la forma más confiable es con apt (evita conflictos de pip):
 
-bashsudo apt install python3-yaml
+bash sudo apt install python3-yaml
 
 Alternativa si prefieres pip (solo si tu versión de pip soporta la bandera):
 
-bashpip3 install pyyaml --break-system-packages
+bash pip3 install pyyaml --break-system-packages
 # o, si eso falla por versión vieja de pip:
 pip3 install --user pyyaml
 
