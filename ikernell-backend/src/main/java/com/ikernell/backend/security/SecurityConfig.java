@@ -13,27 +13,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 import java.util.List;
 
 /**
- * Configuración definitiva de seguridad (reemplaza la temporal de la Fase 3).
- *
- * - /api/auth/** es público (login).
- * - Todo lo demás requiere un JWT válido en el header Authorization: Bearer <token>.
- * - Sesión STATELESS: cada petición se autentica solo con el token.
- *
- * IMPORTANTE: esta clase reemplaza a config/CorsConfig.java. Spring Security
- * corre antes que Spring MVC, así que la config de CORS declarada como
- * WebMvcConfigurer no la ve el filtro de seguridad, y bloquea el preflight
- * OPTIONS del navegador antes de que llegue a MVC. Por eso el CORS ahora
- * se define aquí, en un solo lugar, y se conecta directamente a HttpSecurity.
- * BORRA config/CorsConfig.java para no tener dos configuraciones distintas.
+ * - /api/auth/** es público (login, recuperación de contraseña).
+ * - POST /api/mensajes-contacto es público (RF-002: cliente anónimo envía
+ *   mensaje sin autenticación). El resto de ese controller SÍ requiere
+ *   autenticación (gestionado con @PreAuthorize a nivel de método).
+ * - Todo lo demás requiere un JWT válido.
  */
 @Configuration
 @RequiredArgsConstructor
-@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -47,6 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/mensajes-contacto").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

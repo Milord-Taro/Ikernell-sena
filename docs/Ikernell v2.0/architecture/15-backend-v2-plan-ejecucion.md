@@ -562,30 +562,30 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
 - [ X] Usuario
 - [ X] Login
 - [ X] JWT
-- [ ] Recuperación de contraseña
-- [ ] 🆕 Implementar `@PreAuthorize` / `hasRole` en:
-  - [ ] `UsuarioController`
-  - [ ] `RolController`
-  - [ ] `ProfesionController`
-  - [ ] `EspecialidadController`
+- [ X] Recuperación de contraseña
+- [ X] 🆕 Implementar `@PreAuthorize` / `hasRole` en:
+  - [ X] `UsuarioController`
+  - [ X] `RolController`
+  - [ X] `ProfesionController`
+  - [ X] `EspecialidadController`
 - [ ] 🆕 Implementar *rate limiting* o bloqueo tras intentos fallidos de inicio de sesión (RNF-001)
-- [ ] 🆕 Endpoint `PATCH /api/usuarios/{id}/contrasena` — cambio de contraseña autenticado, distinto de "Recuperación de contraseña" (esa es sin sesión). Autorización: solo el propio usuario dueño del recurso (`#id == authentication.principal.id`), ni siquiera el Coordinador.
-- [ ] 🆕 **REGLA CONFIRMADA:** el campo `correo_electronico` es inmutable tras la creación del Usuario. `PUT /api/usuarios/{id}` no debe permitir modificarlo (ignorar el campo si llega en el request, o excluirlo del `UsuarioRequest` de actualización). Si el correo está mal, se inhabilita el usuario y se crea uno nuevo.
+- [ X] 🆕 Endpoint `PATCH /api/usuarios/{id}/contrasena` — cambio de contraseña autenticado, distinto de "Recuperación de contraseña" (esa es sin sesión). Autorización: solo el propio usuario dueño del recurso (`#id == authentication.principal.id`), ni siquiera el Coordinador.
+- [ X] 🆕 **REGLA CONFIRMADA:** el campo `correo_electronico` es inmutable tras la creación del Usuario. `PUT /api/usuarios/{id}` no debe permitir modificarlo (ignorar el campo si llega en el request, o excluirlo del `UsuarioRequest` de actualización). Si el correo está mal, se inhabilita el usuario y se crea uno nuevo.
 
 ---
 
 # Sprint 3 — Gestión de Proyectos
 
-- [ ] Proyecto
-- [ ] Asignación de Proyecto (equipo del proyecto / membresía activa) — RF-007, RF-017
+- [ X] Proyecto
+- [ X] Asignación de Proyecto (equipo del proyecto / membresía activa) — RF-007, RF-017
 - [ ] 🆕 Auditoría básica activada desde esta entidad en adelante (evitar deuda retroactiva)
 
 ---
 
 # Sprint 4 — Planeación
 
-- [ ] Etapa
-- [ ] Actividad
+- [ X] Etapa
+- [ X] Actividad
 
 ---
 
