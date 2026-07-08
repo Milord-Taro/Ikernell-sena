@@ -14,6 +14,10 @@ packages:
   - mapper
   - security
   - exception
+  - audit
+  - converter
+  - enums
+  - constants
 
 # Entidades planeadas según el dominio (para detectar faltantes/sobrantes)
 entities:
@@ -33,12 +37,32 @@ entities:
   - Notificacion
   - Trazabilidad
 
+# Componentes de seguridad que deben existir en el proyecto (se verifica
+# que exista un archivo <Nombre>.java en algún lugar del source_root)
 required_security:
   - SecurityConfig
   - JwtService
   - JwtAuthenticationFilter
   - CustomUserDetailsService
   - AuthController
+
+# Controllers donde una cobertura de @PreAuthorize < 100% es una decisión
+# de diseño aceptada, no un descuido. La clave debe coincidir EXACTAMENTE
+# con el nombre de archivo (incluyendo .java). Agrega aquí cualquier
+# Controller nuevo donde dejes GETs abiertos a propósito.
+preauthorize_exceptions:
+  AuthController.java: "Endpoints públicos por diseño (login, recuperación de contraseña)."
+  ProyectoController.java: "GET abierto a cualquier autenticado; solo escritura restringida a Líder de Proyecto."
+  UsuarioController.java: "GET individual y cambio de contraseña propia (/me/contrasena) abiertos por diseño."
+  AsignacionProyectoController.java: "GET abierto a cualquier autenticado; solo crear/desvincular restringido a Líder de Proyecto."
+  EtapaController.java: "GET abierto a cualquier autenticado; solo escritura restringida a Líder de Proyecto (mismo patrón que Proyecto)."
+  ActividadController.java: "GET y cambio de estado abiertos a cualquier autenticado (el propio desarrollador ejecuta su actividad); solo crear/editar/asignar restringido a Líder de Proyecto."
+  TipoErrorController.java: "GET abierto a cualquier autenticado (un Desarrollador elige el tipo al registrar un error); solo escritura restringida a Coordinador."
+  TipoInterrupcionController.java: "GET abierto a cualquier autenticado (mismo motivo que TipoErrorController); solo escritura restringida a Coordinador."
+  RegistroErrorController.java: "Log inmutable: crear y leer abiertos a cualquier autenticado por diseño, sin PUT ni cambio de estado."
+  InterrupcionController.java: "Log inmutable: crear y leer abiertos a cualquier autenticado por diseño, sin PUT ni cambio de estado."
+  MensajeContactoController.java: "POST público por diseño (RF-002, cliente anónimo); el resto (gestión/respuesta) restringido a Coordinador."
+  NotificacionController.java: "GET /me y marcar-leída abiertos a cualquier autenticado (patrón self-service, con verificación de propiedad en el Service); solo crear restringido a Coordinador."
 
 # Sufijos de DTO que deben llevar Bean Validation
 dto_request_suffixes:
@@ -58,10 +82,57 @@ validation_annotations:
   - "@Max"
   - "@Valid"
 
+# Palabras clave de nombre de columna/campo que sugieren "esto es un valor
+# tipo catálogo/estado, revisa si necesita enum + AttributeConverter".
+# Basado en el mapeo completo de CHECK constraints de ikernell_v2_FINAL.sql:
+# proyecto.estado, asignacion_proyecto.rol_proyecto, etapa.estado,
+# actividad.prioridad/estado, registro_error.severidad,
+# mensaje_contacto.estado, notificacion.tipo, trazabilidad.operacion.
+enum_candidate_keywords:
+  - estado
+  - tipo
+  - prioridad
+  - severidad
+  - operacion
+  - rol_proyecto
+
+# Palabras clave que, si aparecen en el nombre de un campo dentro de un
+# DTO *Response, ameritan revisión manual (posible dato sensible expuesto).
+sensitive_response_keywords:
+  - contrasena
+  - password
+  - hashcontrasena
+  - clave
+
+# Palabras clave de propiedad que, si tienen un valor literal (no
+# "${VARIABLE}") en application*.properties, se marcan como posible
+# secreto hardcodeado.
+secret_keywords:
+  - password
+  - secret
+  - contrasena
+
+# Marcadores en comentarios/Javadoc que indican trabajo pendiente o
+# alcance recortado a propósito -- se listan todos juntos en el reporte
+# para no perderlos entre cientos de líneas de código.
+#
+# NOTA: "PENDIENTE" se quitó a propósito de este default. Es un término de
+# negocio legítimo y muy frecuente en este dominio (estados llamados
+# "Pendiente" en Etapa, Actividad, MensajeContacto...), así que como
+# marcador genera puro ruido. Si necesitas señalar algo pendiente de
+# verdad, usa literalmente "TODO" o "ALCANCE ACTUAL" en el comentario.
+pending_markers:
+  - "TODO"
+  - "FIXME"
+  - "ALCANCE ACTUAL"
+
+# Carpeta donde viven los application*.properties, relativa a la raíz del proyecto
+properties_path: src/main/resources
+
 # Ruta opcional a un dump de esquema (pg_dump --schema-only > schema.sql)
 # Si no existe, esa sección del reporte se omite con una nota.
 schema_sql_path: schema.sql
 
-# Carpeta donde se guardan los reportes generados
+# Carpetas donde se guardan los reportes generados
 output_dir: tools/output
 history_dir: tools/output/history

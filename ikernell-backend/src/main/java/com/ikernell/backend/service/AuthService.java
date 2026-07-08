@@ -1,8 +1,10 @@
 package com.ikernell.backend.service;
 
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.LoginRequest;
 import com.ikernell.backend.dto.LoginResponse;
 import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.exception.UnauthorizedException;
 import com.ikernell.backend.mapper.UsuarioMapper;
 import com.ikernell.backend.repository.UsuarioRepository;
@@ -21,7 +23,9 @@ public class AuthService {
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final TrazabilidadService trazabilidadService;
 
+    @Transactional
     public LoginResponse login(LoginRequest request) {
         String correo = request.getCorreoElectronico().toLowerCase();
 
@@ -40,6 +44,13 @@ public class AuthService {
         }
 
         String token = jwtService.generarToken(usuario.getCorreoElectronico(), usuario.getRol().getCodigoRol());
+
+        trazabilidadService.registrar(
+                usuario,
+                "Usuario",
+                usuario.getCodigoUsuario(),
+                OperacionTrazabilidad.AUTENTICAR,
+                "Inicio de sesión exitoso.");
 
         return LoginResponse.builder()
                 .token(token)
