@@ -13,15 +13,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Catálogo de uso exclusivo del Coordinador. Líder/Desarrollador nunca lo
+ * consultan directamente: lo ven ya anidado dentro de su propio
+ * UsuarioResponse. Por eso el @PreAuthorize va a nivel de clase, igual
+ * que en RolController.
+ */
 @RestController
 @RequestMapping("/api/especialidades")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
 public class EspecialidadController {
 
     private final EspecialidadService especialidadService;
 
     @PostMapping
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> crear(@Valid @RequestBody EspecialidadRequest request) {
         EspecialidadResponse creada = especialidadService.crear(request);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -42,7 +48,6 @@ public class EspecialidadController {
     }
 
     @PutMapping("/{idEspecialidad}")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> actualizar(
             @PathVariable Integer idEspecialidad, @Valid @RequestBody EspecialidadRequest request) {
         EspecialidadResponse actualizada = especialidadService.actualizar(idEspecialidad, request);
@@ -50,7 +55,6 @@ public class EspecialidadController {
     }
 
     @PatchMapping("/{idEspecialidad}/estado")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> cambiarEstado(
             @PathVariable Integer idEspecialidad, @RequestParam boolean activo) {
         EspecialidadResponse actualizada = especialidadService.cambiarEstado(idEspecialidad, activo);

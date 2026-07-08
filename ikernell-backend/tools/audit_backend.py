@@ -206,15 +206,42 @@ def check_preauthorize_coverage(root: Path) -> list[dict]:
         endpoints = sum(code.count(a) for a in endpoint_annotations)
         # RequestMapping a nivel de clase no cuenta como endpoint individual;
         # se resta 1 si aparece justo antes de "class "
-        class_level = len(re.findall(r"@RequestMapping[^\n]*\n\s*(?:public\s+)?class\s", code))
-        endpoints = max(endpoints - class_level, 0)
-        preauth = code.count("@PreAuthorize")
-        coverage = round((preauth / endpoints) * 100, 1) if endpoints else None
+        class_level_reqmap = len(re.findall(r"@RequestMapping[^\n]*\n\s*(?:public\s+)?class\s", code))
+        endpoints = max(endpoints - class_level_reqmap, 0)
+
+        total_preauth = code.count("@PreAuthorize")
+
+        # Detectar @PreAuthorize a nivel de CLASE.
+        # Enfoque robusto: en vez de intentar hacer match de paréntesis
+        # balanceados con regex (falla con expresiones SpEL anidadas como
+        # hasRole(T(...).COORDINADOR)), tomamos todo el texto entre el
+        # último `import` y la declaración de la clase. En Java, ese tramo
+        # solo puede contener anotaciones de clase — es imposible que
+        # contenga otra cosa sintácticamente válida.
+        class_decl_match = re.search(r"\bclass\s+\w+", code)
+        class_level_preauth = False
+        if class_decl_match:
+            before_class = code[: class_decl_match.start()]
+            last_import = list(re.finditer(r"^\s*import\s+[^\n]+;", before_class, re.MULTILINE))
+            annotation_region = before_class[last_import[-1].end():] if last_import else before_class
+            class_level_preauth = "@PreAuthorize" in annotation_region
+
+        if class_level_preauth:
+            # Un @PreAuthorize de clase protege TODOS los endpoints del controller,
+            # sin importar si además hay anotaciones @PreAuthorize por método.
+            coverage = 100.0 if endpoints else None
+            note = "Protegido a nivel de clase (cubre todos los endpoints)"
+        else:
+            coverage = round((total_preauth / endpoints) * 100, 1) if endpoints else None
+            note = None
+
         results.append({
             "file": str(f),
             "endpoints": endpoints,
-            "preauthorize_count": preauth,
+            "preauthorize_count": total_preauth,
+            "class_level_preauth": class_level_preauth,
             "coverage_pct": coverage,
+            "note": note,
         })
     return results
 
@@ -369,8 +396,8 @@ def render_markdown(config: dict, results: dict, diff_section: str, timestamp: s
 
     if e["db_cross_check"] is None:
         lines.append(f"> Cruce con base de datos omitido: no se encontró "
-                      f"`{config.get('schema_sql_path')}`. Genera un dump con "
-                      f"`pg_dump --schema-only tu_bd > schema.sql` para habilitarlo.")
+                     f"`{config.get('schema_sql_path')}`. Genera un dump con "
+                     f"`pg_dump --schema-only tu_bd > schema.sql` para habilitarlo.")
     else:
         dbc = e["db_cross_check"]
         lines.append(f"**Cruce con esquema** (`{dbc['schema_source']}`):")
@@ -400,12 +427,13 @@ def render_markdown(config: dict, results: dict, diff_section: str, timestamp: s
 
     # 4. PreAuthorize
     lines.append("## 4. Cobertura de @PreAuthorize por Controller")
-    lines.append("| Controller | Endpoints | @PreAuthorize | Cobertura |")
-    lines.append("|---|---|---|---|")
+    lines.append("| Controller | Endpoints | @PreAuthorize | Cobertura | Nota |")
+    lines.append("|---|---|---|---|---|")
     for r in results["preauthorize_coverage"]:
         cov = f"{r['coverage_pct']}%" if r["coverage_pct"] is not None else "N/A (0 endpoints)"
         flag = " 🔴" if (r["coverage_pct"] or 0) < 100 else " ✅"
-        lines.append(f"| `{Path(r['file']).name}` | {r['endpoints']} | {r['preauthorize_count']} | {cov}{flag} |")
+        note = r.get("note") or ""
+        lines.append(f"| `{Path(r['file']).name}` | {r['endpoints']} | {r['preauthorize_count']} | {cov}{flag} | {note} |")
     lines.append("")
 
     # 5. DTO validation
@@ -494,15 +522,14 @@ def main():
     report = render_markdown(config, results, diff_section, timestamp)
 
     (output_dir / "latest.md").write_text(report, encoding="utf-8")
-    (history_dir / f"{ts_slug}.md").write_text(report, encoding="utf-8")
-    (history_dir / f"{ts_slug}.json").write_text(
+    (history_dir / f"audit_{ts_slug}.md").write_text(report, encoding="utf-8")
+    (history_dir / f"audit_{ts_slug}.json").write_text(
         json.dumps(current_snapshot, indent=2, ensure_ascii=False), encoding="utf-8"
     )
 
     print(f"Reporte generado: {output_dir / 'latest.md'}")
-    print(f"Histórico guardado en: {history_dir / (ts_slug + '.md')}")
+    print(f"Histórico guardado en: {history_dir / ('audit_' + ts_slug + '.md')}")
 
 
 if __name__ == "__main__":
     main()
-
