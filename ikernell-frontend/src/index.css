@@ -6,6 +6,7 @@
   --background:       #F5F6F9;
   --surface:          #FFFFFF;
   --surface-elevated: #ECEEF3;
+  --section-alt:      #F0F3F8;
   --border:           #D8DCE8;
   --divider:          #E8EBF2;
   --text-primary:     #0C0F1A;
@@ -49,8 +50,10 @@
 /* ─── Semantic color tokens – Dark ──────────────────────────────────── */
 .dark {
   --background:       #0B0D12;
+  --footer-background: #10141D;
   --surface:          #13161F;
   --surface-elevated: #1A1E2B;
+  --section-alt:      #111722;
   --border:           #232838;
   --divider:          #1C2030;
   --text-primary:     #E4E7F0;
@@ -126,6 +129,7 @@ body {
 
 /* ─── Typography scale ───────────────────────────────────────────────── */
 .type-display   { font-family: var(--font-sans); font-size: 36px; line-height: 1.1; font-weight: 700; letter-spacing: -0.03em; }
+.type-hero      { font-family: var(--font-sans); font-size: clamp(2.25rem, 4.5vw, 3rem); line-height: 1.15; font-weight: 700; letter-spacing: -0.03em; }
 .type-h1        { font-family: var(--font-sans); font-size: 28px; line-height: 1.2; font-weight: 700; letter-spacing: -0.025em; }
 .type-h2        { font-family: var(--font-sans); font-size: 22px; line-height: 1.3; font-weight: 600; letter-spacing: -0.02em; }
 .type-h3        { font-family: var(--font-sans); font-size: 17px; line-height: 1.4; font-weight: 600; letter-spacing: -0.015em; }

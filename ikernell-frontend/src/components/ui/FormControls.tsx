@@ -4,36 +4,50 @@ import {
   type SelectHTMLAttributes,
   type ReactNode,
   forwardRef,
-} from 'react'
-import { ChevronDown, AlertCircle } from 'lucide-react'
+} from "react";
+import { ChevronDown, AlertCircle } from "lucide-react";
 
 /* ── shared ─────────────────────────────────────────────────────────── */
 const baseField =
-  'w-full font-sans text-[13.5px] bg-[var(--surface)] text-[var(--text-primary)] ' +
-  'border border-[var(--border)] rounded-[var(--radius-md)] ' +
-  'placeholder:text-[var(--text-tertiary)] ' +
-  'transition-colors duration-100 focus:outline-none ' +
-  'focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] ' +
-  'disabled:bg-[var(--muted)] disabled:text-[var(--text-tertiary)] disabled:cursor-not-allowed'
+  "w-full font-sans text-[13.5px] bg-[var(--surface)] text-[var(--text-primary)] " +
+  "border border-[var(--border)] rounded-[var(--radius-md)] " +
+  "placeholder:text-[var(--text-tertiary)] " +
+  "transition-colors duration-100 focus:outline-none " +
+  "focus:border-[var(--primary)] focus:ring-1 focus:ring-[var(--primary)] " +
+  "disabled:bg-[var(--muted)] disabled:text-[var(--text-tertiary)] disabled:cursor-not-allowed";
 
-const errorField = 'border-[var(--error)] focus:border-[var(--error)] focus:ring-[var(--error)]'
+const errorField =
+  "border-[var(--error)] focus:border-[var(--error)] focus:ring-[var(--error)]";
 
 /* ── FieldWrapper ────────────────────────────────────────────────────── */
 interface FieldWrapperProps {
-  label?: string
-  hint?: string
-  error?: string
-  required?: boolean
-  children: ReactNode
+  label?: string;
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  children: ReactNode;
 }
 
-export function FieldWrapper({ label, hint, error, required, children }: FieldWrapperProps) {
+export function FieldWrapper({
+  label,
+  hint,
+  error,
+  required,
+  children,
+}: FieldWrapperProps) {
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
         <label className="type-label text-[var(--text-secondary)]">
           {label}
-          {required && <span className="text-[var(--error)] ml-0.5">*</span>}
+          {required && (
+            <span
+              className="ml-1 font-semibold text-[var(--error)]"
+              aria-hidden="true"
+            >
+              *
+            </span>
+          )}
         </label>
       )}
       {children}
@@ -46,93 +60,118 @@ export function FieldWrapper({ label, hint, error, required, children }: FieldWr
         <span className="type-body-sm text-[var(--text-tertiary)]">{hint}</span>
       ) : null}
     </div>
-  )
+  );
 }
 
 /* ── Input ───────────────────────────────────────────────────────────── */
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  hint?: string
-  error?: string
-  prefix?: ReactNode
-  suffix?: ReactNode
+interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "prefix"
+> {
+  label?: string;
+  hint?: string;
+  error?: string;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, hint, error, prefix, suffix, className = '', ...props }, ref) => {
-    const hasWrap = prefix || suffix
+  ({ label, hint, error, prefix, suffix, className = "", ...props }, ref) => {
+    const hasWrap = prefix || suffix;
     const inputEl = (
       <input
         ref={ref}
-        className={`${baseField} ${error ? errorField : ''} ${hasWrap ? 'rounded-none' : ''} h-8 px-3 ${className}`}
+        className={`${baseField} ${error ? errorField : ""} ${hasWrap ? "rounded-none" : ""} h-8 px-3 ${className}`}
         {...props}
       />
-    )
+    );
     const wrapped = hasWrap ? (
-      <div className={`flex border border-[var(--border)] rounded-[var(--radius-md)] overflow-hidden ${error ? 'border-[var(--error)]' : ''} focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)]`}>
+      <div
+        className={`flex border border-[var(--border)] rounded-[var(--radius-md)] overflow-hidden ${error ? "border-[var(--error)]" : ""} focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)]`}
+      >
         {prefix && (
           <span className="flex items-center px-2.5 bg-[var(--muted)] border-r border-[var(--border)] text-[var(--text-tertiary)] text-[12px] font-sans shrink-0">
             {prefix}
           </span>
         )}
-        <input ref={ref} className={`flex-1 h-8 px-3 bg-[var(--surface)] text-[var(--text-primary)] text-[13.5px] font-sans placeholder:text-[var(--text-tertiary)] border-0 focus:outline-none disabled:bg-[var(--muted)] disabled:cursor-not-allowed ${className}`} {...props} />
+        <input
+          ref={ref}
+          className={`flex-1 h-8 px-3 bg-[var(--surface)] text-[var(--text-primary)] text-[13.5px] font-sans placeholder:text-[var(--text-tertiary)] border-0 focus:outline-none disabled:bg-[var(--muted)] disabled:cursor-not-allowed ${className}`}
+          {...props}
+        />
         {suffix && (
           <span className="flex items-center px-2.5 bg-[var(--muted)] border-l border-[var(--border)] text-[var(--text-tertiary)] text-[12px] font-sans shrink-0">
             {suffix}
           </span>
         )}
       </div>
-    ) : inputEl
+    ) : (
+      inputEl
+    );
 
     return label || hint || error ? (
-      <FieldWrapper label={label} hint={hint} error={error}>
+      <FieldWrapper
+        label={label}
+        hint={hint}
+        error={error}
+        required={props.required}
+      >
         {wrapped}
       </FieldWrapper>
-    ) : wrapped
-  }
-)
-Input.displayName = 'Input'
+    ) : (
+      wrapped
+    );
+  },
+);
+Input.displayName = "Input";
 
 /* ── Textarea ────────────────────────────────────────────────────────── */
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label?: string
-  hint?: string
-  error?: string
+  label?: string;
+  hint?: string;
+  error?: string;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, hint, error, className = '', ...props }, ref) => {
+  ({ label, hint, error, className = "", ...props }, ref) => {
     const el = (
       <textarea
         ref={ref}
-        className={`${baseField} ${error ? errorField : ''} py-2 px-3 min-h-[88px] resize-y ${className}`}
+        className={`${baseField} ${error ? errorField : ""} py-2 px-3 min-h-[88px] resize-y ${className}`}
         {...props}
       />
-    )
+    );
     return label || hint || error ? (
-      <FieldWrapper label={label} hint={hint} error={error}>
+      <FieldWrapper
+        label={label}
+        hint={hint}
+        error={error}
+        required={props.required}
+      >
         {el}
       </FieldWrapper>
-    ) : el
-  }
-)
-Textarea.displayName = 'Textarea'
+    ) : (
+      el
+    );
+  },
+);
+Textarea.displayName = "Textarea";
 
 /* ── Select ──────────────────────────────────────────────────────────── */
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-  label?: string
-  hint?: string
-  error?: string
-  children: ReactNode
+  label?: string;
+  hint?: string;
+  error?: string;
+  children: ReactNode;
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, hint, error, children, className = '', ...props }, ref) => {
+  ({ label, hint, error, children, className = "", ...props }, ref) => {
     const el = (
       <div className="relative">
         <select
           ref={ref}
-          className={`${baseField} ${error ? errorField : ''} h-8 pl-3 pr-8 appearance-none ${className}`}
+          className={`${baseField} ${error ? errorField : ""} h-8 pl-3 pr-8 appearance-none ${className}`}
           {...props}
         >
           {children}
@@ -142,23 +181,35 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none"
         />
       </div>
-    )
+    );
     return label || hint || error ? (
-      <FieldWrapper label={label} hint={hint} error={error}>
+      <FieldWrapper
+        label={label}
+        hint={hint}
+        error={error}
+        required={props.required}
+      >
         {el}
       </FieldWrapper>
-    ) : el
-  }
-)
-Select.displayName = 'Select'
+    ) : (
+      el
+    );
+  },
+);
+Select.displayName = "Select";
 
 /* ── Checkbox ────────────────────────────────────────────────────────── */
 interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  description?: string
+  label?: string;
+  description?: string;
 }
 
-export function Checkbox({ label, description, className = '', ...props }: CheckboxProps) {
+export function Checkbox({
+  label,
+  description,
+  className = "",
+  ...props
+}: CheckboxProps) {
   return (
     <label className="flex items-start gap-2.5 cursor-pointer group select-none">
       <input
@@ -168,21 +219,34 @@ export function Checkbox({ label, description, className = '', ...props }: Check
       />
       {(label || description) && (
         <span className="flex flex-col gap-0.5">
-          {label && <span className="type-body text-[var(--text-primary)]">{label}</span>}
-          {description && <span className="type-body-sm text-[var(--text-tertiary)]">{description}</span>}
+          {label && (
+            <span className="type-body text-[var(--text-primary)]">
+              {label}
+            </span>
+          )}
+          {description && (
+            <span className="type-body-sm text-[var(--text-tertiary)]">
+              {description}
+            </span>
+          )}
         </span>
       )}
     </label>
-  )
+  );
 }
 
 /* ── Radio ───────────────────────────────────────────────────────────── */
 interface RadioProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  description?: string
+  label?: string;
+  description?: string;
 }
 
-export function Radio({ label, description, className = '', ...props }: RadioProps) {
+export function Radio({
+  label,
+  description,
+  className = "",
+  ...props
+}: RadioProps) {
   return (
     <label className="flex items-start gap-2.5 cursor-pointer select-none">
       <input
@@ -192,26 +256,42 @@ export function Radio({ label, description, className = '', ...props }: RadioPro
       />
       {(label || description) && (
         <span className="flex flex-col gap-0.5">
-          {label && <span className="type-body text-[var(--text-primary)]">{label}</span>}
-          {description && <span className="type-body-sm text-[var(--text-tertiary)]">{description}</span>}
+          {label && (
+            <span className="type-body text-[var(--text-primary)]">
+              {label}
+            </span>
+          )}
+          {description && (
+            <span className="type-body-sm text-[var(--text-tertiary)]">
+              {description}
+            </span>
+          )}
         </span>
       )}
     </label>
-  )
+  );
 }
 
 /* ── Switch ──────────────────────────────────────────────────────────── */
 interface SwitchProps {
-  checked?: boolean
-  onChange?: (checked: boolean) => void
-  disabled?: boolean
-  label?: string
-  description?: string
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  disabled?: boolean;
+  label?: string;
+  description?: string;
 }
 
-export function Switch({ checked = false, onChange, disabled = false, label, description }: SwitchProps) {
+export function Switch({
+  checked = false,
+  onChange,
+  disabled = false,
+  label,
+  description,
+}: SwitchProps) {
   return (
-    <label className={`flex items-start gap-2.5 select-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+    <label
+      className={`flex items-start gap-2.5 select-none ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+    >
       <button
         role="switch"
         aria-checked={checked}
@@ -219,22 +299,32 @@ export function Switch({ checked = false, onChange, disabled = false, label, des
         onClick={() => onChange?.(!checked)}
         className={`
           relative inline-flex items-center shrink-0 mt-0.5 w-9 h-5 rounded-full border transition-colors duration-150 focus-ring
-          ${checked
-            ? 'bg-[var(--primary)] border-[var(--primary)]'
-            : 'bg-[var(--muted)] border-[var(--border)]'}
-          ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}
+          ${
+            checked
+              ? "bg-[var(--primary)] border-[var(--primary)]"
+              : "bg-[var(--muted)] border-[var(--border)]"
+          }
+          ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
         `}
       >
         <span
-          className={`absolute left-0.5 size-4 rounded-full bg-white shadow-sm transition-transform duration-150 ${checked ? 'translate-x-4' : 'translate-x-0'}`}
+          className={`absolute left-0.5 size-4 rounded-full bg-white shadow-sm transition-transform duration-150 ${checked ? "translate-x-4" : "translate-x-0"}`}
         />
       </button>
       {(label || description) && (
         <span className="flex flex-col gap-0.5">
-          {label && <span className="type-body text-[var(--text-primary)]">{label}</span>}
-          {description && <span className="type-body-sm text-[var(--text-tertiary)]">{description}</span>}
+          {label && (
+            <span className="type-body text-[var(--text-primary)]">
+              {label}
+            </span>
+          )}
+          {description && (
+            <span className="type-body-sm text-[var(--text-tertiary)]">
+              {description}
+            </span>
+          )}
         </span>
       )}
     </label>
-  )
+  );
 }
