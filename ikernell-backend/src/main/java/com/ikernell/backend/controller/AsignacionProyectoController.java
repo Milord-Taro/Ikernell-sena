@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Igual que Proyecto: asignar/desvincular es tarea del Líder de Proyecto
- * (ROL-002), según el caso de estudio original. GET abierto a cualquier
- * autenticado (un Desarrollador ve en qué proyectos está asignado).
+ * CORREGIDO: gate de rol amplía a Coordinador + Líder de Proyecto. El
+ * ownership real (¿es el líder de ESE proyecto?) lo valida el Service.
  */
 @RestController
 @RequestMapping("/api/asignaciones-proyecto")
@@ -33,10 +33,12 @@ public class AsignacionProyectoController {
     private final AsignacionProyectoService asignacionProyectoService;
 
     @PostMapping
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<AsignacionProyectoResponse>> crear(
-            @Valid @RequestBody AsignacionProyectoRequest request) {
-        AsignacionProyectoResponse creada = asignacionProyectoService.crear(request);
+            @Valid @RequestBody AsignacionProyectoRequest request, Authentication authentication) {
+        AsignacionProyectoResponse creada = asignacionProyectoService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Asignación creada correctamente.", creada));
     }
@@ -59,10 +61,13 @@ public class AsignacionProyectoController {
     }
 
     @PatchMapping("/{idAsignacionProyecto}/desvincular")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<AsignacionProyectoResponse>> desvincular(
-            @PathVariable Integer idAsignacionProyecto) {
-        AsignacionProyectoResponse actualizada = asignacionProyectoService.desvincular(idAsignacionProyecto);
+            @PathVariable Integer idAsignacionProyecto, Authentication authentication) {
+        AsignacionProyectoResponse actualizada =
+                asignacionProyectoService.desvincular(idAsignacionProyecto, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Usuario desvinculado del proyecto correctamente.", actualizada));
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Gestionar etapas es tarea del Líder de Proyecto (caso de estudio: "gestionar
- * etapas del proyecto pudiendo: registrar, modificar etapas"). GET abierto a
- * cualquier autenticado.
+ * CORREGIDO: gate de rol amplía a Coordinador + Líder de Proyecto. El
+ * ownership real (¿es el líder de ESE proyecto?) lo valida el Service
+ * vía AutorizacionProyectoService.
  */
 @RestController
 @RequestMapping("/api/etapas")
@@ -34,9 +35,12 @@ public class EtapaController {
     private final EtapaService etapaService;
 
     @PostMapping
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
-    public ResponseEntity<ApiResponse<EtapaResponse>> crear(@Valid @RequestBody EtapaRequest request) {
-        EtapaResponse creada = etapaService.crear(request);
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    public ResponseEntity<ApiResponse<EtapaResponse>> crear(
+            @Valid @RequestBody EtapaRequest request, Authentication authentication) {
+        EtapaResponse creada = etapaService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Etapa creada correctamente.", creada));
     }
@@ -53,18 +57,23 @@ public class EtapaController {
     }
 
     @PutMapping("/{idEtapa}")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<EtapaResponse>> actualizar(
-            @PathVariable Integer idEtapa, @Valid @RequestBody EtapaRequest request) {
-        EtapaResponse actualizada = etapaService.actualizar(idEtapa, request);
+            @PathVariable Integer idEtapa, @Valid @RequestBody EtapaRequest request,
+            Authentication authentication) {
+        EtapaResponse actualizada = etapaService.actualizar(idEtapa, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Etapa actualizada correctamente.", actualizada));
     }
 
     @PatchMapping("/{idEtapa}/estado")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<EtapaResponse>> cambiarEstado(
-            @PathVariable Integer idEtapa, @RequestParam String estado) {
-        EtapaResponse actualizada = etapaService.cambiarEstado(idEtapa, estado);
+            @PathVariable Integer idEtapa, @RequestParam String estado, Authentication authentication) {
+        EtapaResponse actualizada = etapaService.cambiarEstado(idEtapa, estado, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Estado de la etapa actualizado correctamente.", actualizada));
     }
 }

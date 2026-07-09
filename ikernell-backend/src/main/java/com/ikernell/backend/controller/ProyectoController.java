@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,11 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * CORREGIDO: según el caso de estudio original, registrar/gestionar
- * proyectos es tarea del Líder de Proyecto (ROL-002), NO del Coordinador.
- * El Coordinador gestiona perfiles de desarrolladores (Usuario), no
- * proyectos. GET sigue abierto a cualquier autenticado (un Desarrollador
- * necesita ver los proyectos en los que participa).
+ * CORREGIDO: el gate de rol ahora permite Coordinador Y Líder de Proyecto
+ * (antes solo Líder). Dentro del Service, AutorizacionProyectoService
+ * decide con más detalle: Coordinador siempre puede; un Líder SOLO si es
+ * el líder vigente de ESE proyecto puntual (ownership real, no solo rol).
  */
 @RestController
 @RequestMapping("/api/proyectos")
@@ -36,9 +36,12 @@ public class ProyectoController {
     private final ProyectoService proyectoService;
 
     @PostMapping
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
-    public ResponseEntity<ApiResponse<ProyectoResponse>> crear(@Valid @RequestBody ProyectoRequest request) {
-        ProyectoResponse creado = proyectoService.crear(request);
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    public ResponseEntity<ApiResponse<ProyectoResponse>> crear(
+            @Valid @RequestBody ProyectoRequest request, Authentication authentication) {
+        ProyectoResponse creado = proyectoService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Proyecto creado correctamente.", creado));
     }
@@ -60,18 +63,23 @@ public class ProyectoController {
     }
 
     @PutMapping("/{idProyecto}")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<ProyectoResponse>> actualizar(
-            @PathVariable Integer idProyecto, @Valid @RequestBody ProyectoRequest request) {
-        ProyectoResponse actualizado = proyectoService.actualizar(idProyecto, request);
+            @PathVariable Integer idProyecto, @Valid @RequestBody ProyectoRequest request,
+            Authentication authentication) {
+        ProyectoResponse actualizado = proyectoService.actualizar(idProyecto, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Proyecto actualizado correctamente.", actualizado));
     }
 
     @PatchMapping("/{idProyecto}/estado")
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<ProyectoResponse>> cambiarEstado(
-            @PathVariable Integer idProyecto, @RequestParam String estado) {
-        ProyectoResponse actualizado = proyectoService.cambiarEstado(idProyecto, estado);
+            @PathVariable Integer idProyecto, @RequestParam String estado, Authentication authentication) {
+        ProyectoResponse actualizado = proyectoService.cambiarEstado(idProyecto, estado, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Estado del proyecto actualizado correctamente.", actualizado));
     }
 }

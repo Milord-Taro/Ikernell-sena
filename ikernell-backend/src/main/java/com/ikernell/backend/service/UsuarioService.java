@@ -78,10 +78,19 @@ public class UsuarioService {
     }
 
     /**
-     * Edición por parte del Coordinador. correoElectronico y contrasena
-     * NO están en UsuarioUpdateRequest, así que es estructuralmente
-     * imposible que esta operación los toque.
+     * "Quién soy yo": resuelve el perfil completo a partir del correo que
+     * viene del token JWT. Necesario porque el JWT solo lleva correo+rol
+     * en sus claims, no el idUsuario -- sin esto, el frontend no tendría
+     * forma de recuperar el perfil propio después de un refresh de página.
      */
+    public UsuarioResponse obtenerMiPerfil(String correoElectronico) {
+        Usuario usuario = usuarioRepository.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoElectronico + "'."));
+
+        return usuarioMapper.toResponse(usuario);
+    }
+
     @Transactional
     public UsuarioResponse actualizar(Integer idUsuario, UsuarioUpdateRequest request) {
         Usuario usuario = buscarOFallar(idUsuario);
@@ -112,12 +121,6 @@ public class UsuarioService {
         return usuarioMapper.toResponse(guardado);
     }
 
-    /**
-     * Cambio de contraseña del propio usuario autenticado (no de un ID
-     * arbitrario en la URL). El correo viene del token JWT, no del body,
-     * así que nadie puede cambiarle la contraseña a otro usuario por aquí,
-     * ni siquiera el Coordinador — para eso no hay endpoint, a propósito.
-     */
     @Transactional
     public void cambiarMiContrasena(String correoElectronico, CambiarContrasenaRequest request) {
         Usuario usuario = usuarioRepository.findByCorreoElectronico(correoElectronico)

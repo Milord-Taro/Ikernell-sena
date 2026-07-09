@@ -28,10 +28,14 @@ public class ActividadService {
     private final EtapaRepository etapaRepository;
     private final UsuarioRepository usuarioRepository;
     private final ActividadMapper actividadMapper;
+    private final AutorizacionProyectoService autorizacionProyectoService;
 
     @Transactional
-    public ActividadResponse crear(ActividadRequest request) {
+    public ActividadResponse crear(ActividadRequest request, String correoSolicitante) {
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, etapa.getProyecto().getIdProyecto());
+
         validarCodigoDisponible(request.getCodigoActividad(), null);
         validarFechas(request);
 
@@ -69,13 +73,12 @@ public class ActividadService {
         return actividadMapper.toResponse(buscarOFallar(idActividad));
     }
 
-    /**
-     * Edita datos descriptivos únicamente. NO toca usuario ni estado --
-     * para eso están asignar() y cambiarEstado().
-     */
     @Transactional
-    public ActividadResponse actualizar(Integer idActividad, ActividadRequest request) {
+    public ActividadResponse actualizar(Integer idActividad, ActividadRequest request, String correoSolicitante) {
         Actividad actividad = buscarOFallar(idActividad);
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
+
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
 
         validarCodigoDisponible(request.getCodigoActividad(), idActividad);
@@ -89,14 +92,11 @@ public class ActividadService {
         return actividadMapper.toResponse(actualizada);
     }
 
-    /**
-     * Asigna un desarrollador a una actividad sin asignar. Solo válido si
-     * el estado actual es PENDIENTE_DE_ASIGNACION (garantiza la regla
-     * cruzada estado<->usuario de la tabla).
-     */
     @Transactional
-    public ActividadResponse asignar(Integer idActividad, Integer idUsuario) {
+    public ActividadResponse asignar(Integer idActividad, Integer idUsuario, String correoSolicitante) {
         Actividad actividad = buscarOFallar(idActividad);
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
         if (actividad.getEstado() != EstadoActividad.PENDIENTE_DE_ASIGNACION) {
             throw new BusinessException(
@@ -113,9 +113,9 @@ public class ActividadService {
     }
 
     /**
-     * Cambia el estado entre PENDIENTE / EN_DESARROLLO / FINALIZADA / CANCELADA.
-     * PENDIENTE_DE_ASIGNACION nunca se fija manualmente aquí -- solo se
-     * llega a él al crear sin desarrollador.
+     * SIN CAMBIOS respecto al diseño anterior: sigue abierto a cualquier
+     * autenticado (el propio desarrollador ejecuta su actividad, sin
+     * importar quién sea el líder del proyecto).
      */
     @Transactional
     public ActividadResponse cambiarEstado(Integer idActividad, String estadoTexto) {
