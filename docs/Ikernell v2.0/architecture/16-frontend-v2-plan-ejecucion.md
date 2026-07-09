@@ -24,16 +24,16 @@ Sigue el orden ya definido en tus propios documentos:
 
 # Fase 0 — Bootstrap del proyecto
 
-- [ ] Crear el proyecto real en `ikernell-frontend/` (Vite + React 19 + TypeScript + Tailwind v4), si no existe ya.
-- [ ] Copiar del shell de Figma Make al proyecto real:
-  - [ ] `src/index.css` (tokens + tipografía)
-  - [ ] `src/context/ThemeContext.tsx` (toggle light/dark)
-  - [ ] `src/components/ui/*` (Button, Card, FormControls, Badge, Table, DataDisplay, Feedback, Modal)
-  - [ ] `src/components/layout/*` (Topbar, Sidebar, Navigation) — se ajustan en Fase 3, no se usan tal cual todavía
-- [ ] Descartar del shell: `TokensPage.tsx`, `ComponentsPage.tsx`, `ExamplePage.tsx` (eran solo la vitrina de Figma, no vistas reales)
-- [ ] Instalar dependencias adicionales necesarias: `react-router-dom`, cliente HTTP (fetch nativo o axios — decidir), manejo de formularios (decidir: react-hook-form o controlado a mano)
-- [ ] Configurar `.env` con la URL base del backend (`VITE_API_URL`)
-- [ ] Confirmar que `npm run dev` corre y se ve el toggle de tema funcionando
+- [ X] Crear el proyecto real en `ikernell-frontend/` (Vite + React 19 + TypeScript + Tailwind v4), si no existe ya.
+- [ X] Copiar del shell de Figma Make al proyecto real:
+  - [ X] `src/index.css` (tokens + tipografía)
+  - [ X] `src/context/ThemeContext.tsx` (toggle light/dark)
+  - [ X] `src/components/ui/*` (Button, Card, FormControls, Badge, Table, DataDisplay, Feedback, Modal)
+  - [ X] `src/components/layout/*` (Topbar, Sidebar, Navigation) — se ajustan en Fase 3, no se usan tal cual todavía
+- [ X] Descartar del shell: `TokensPage.tsx`, `ComponentsPage.tsx`, `ExamplePage.tsx` (eran solo la vitrina de Figma, no vistas reales)
+- [ X] Instalar dependencias adicionales necesarias: `react-router-dom`, cliente HTTP (fetch nativo o axios — decidir), manejo de formularios (decidir: react-hook-form o controlado a mano)
+- [ X] Configurar `.env` con la URL base del backend (`VITE_API_URL`)
+- [ X] Confirmar que `npm run dev` corre y se ve el toggle de tema funcionando
 
 ---
 
@@ -41,10 +41,10 @@ Sigue el orden ya definido en tus propios documentos:
 
 > Antes de cualquier pantalla, la app necesita poder hablar con la API que ya construimos.
 
-- [ ] `services/api.ts` — cliente HTTP base (maneja `Authorization: Bearer`, parsea `ApiResponse`/`ApiError`, maneja 401 global)
-- [ ] `services/auth.ts` — login, logout, guardar/leer JWT
-- [ ] `types/` — interfaces TypeScript que reflejen los DTOs reales del backend (`UsuarioResponse`, `ProyectoResponse`, etc.)
-- [ ] Confirmar con un `POST /api/auth/login` real desde el navegador (no Postman) que la conexión funciona
+- [ X] `services/api.ts` — cliente HTTP base (maneja `Authorization: Bearer`, parsea `ApiResponse`/`ApiError`, maneja 401 global)
+- [ X] `services/auth.ts` — login, logout, guardar/leer JWT
+- [ X] `types/` — interfaces TypeScript que reflejen los DTOs reales del backend (`UsuarioResponse`, `ProyectoResponse`, etc.)
+- [ X] Confirmar con un `POST /api/auth/login` real desde el navegador (no Postman) que la conexión funciona
 
 ---
 
@@ -52,32 +52,32 @@ Sigue el orden ya definido en tus propios documentos:
 
 > RF-001 del caso de estudio: información empresarial visible para cualquier anónimo. Es la pantalla más simple y ejercita casi todos los componentes UI base de una vez.
 
-- [ ] `layouts/LandingLayout.tsx`
-- [ ] Secciones (contenido/estructura de referencia: V1, estilos: Design System nuevo):
-  - [ ] Navbar (con botón "Iniciar sesión")
-  - [ ] Hero
-  - [ ] Lineamientos (misión/visión/valores)
-  - [ ] Servicios / Portafolio
-  - [ ] Noticias
-  - [ ] Links de interés
-  - [ ] FAQ
-  - [ ] Formulario de contacto → conecta a `POST /api/mensajes-contacto` (público, ya existe en backend)
-  - [ ] Footer
-- [ ] Modal/página de login accesible desde el Navbar
-- [ ] Responsive básico (desktop primero, según tu Design System)
-- [ ] Toggle de tema visible y funcional en esta pantalla
+- [ X] `layouts/LandingLayout.tsx`
+- [ X] Secciones (contenido/estructura de referencia: V1, estilos: Design System nuevo):
+  - [ X] Navbar (con botón "Iniciar sesión")
+  - [ X] Hero
+  - [ X] Lineamientos (misión/visión/valores)
+  - [ X] Servicios / Portafolio
+  - [ X] Noticias
+  - [ X] Links de interés
+  - [ X] FAQ
+  - [ X] Formulario de contacto → conecta a `POST /api/mensajes-contacto` (público, ya existe en backend)
+  - [ X] Footer
+- [ X] Modal/página de login accesible desde el Navbar
+- [ X] Responsive básico (desktop primero, según tu Design System)
+- [ X] Toggle de tema visible y funcional en esta pantalla
 
 ---
 
 # Fase 3 — Autenticación y layout autenticado (EP-01)
 
-- [ ] Página o modal de Login → `POST /api/auth/login`, guarda JWT
-- [ ] Logout
-- [ ] `ProtectedRoute` (requiere sesión válida)
-- [ ] `RoleRoute` (requiere rol específico — Coordinador / Líder de Proyecto / Desarrollador)
-- [ ] `DashboardLayout` real (Sidebar + Topbar + área de contenido), adaptando el `Sidebar`/`Topbar`/`Navigation` del shell de Figma Make
-- [ ] Sidebar dinámico según rol del usuario logueado (ej. Desarrollador no ve "Usuarios")
-- [ ] Endpoint "quién soy" (`GET /api/usuarios/me`) conectado al cargar la app, para poblar el estado de sesión tras un refresh
+- [ X] Página o modal de Login → `POST /api/auth/login`, guarda JWT
+- [ X] Logout
+- [ X] `ProtectedRoute` (requiere sesión válida)
+- [ X] `RoleRoute` (requiere rol específico — Coordinador / Líder de Proyecto / Desarrollador)
+- [ X] `DashboardLayout` real (Sidebar + Topbar + área de contenido), adaptando el `Sidebar`/`Topbar`/`Navigation` del shell de Figma Make
+- [ X] Sidebar dinámico según rol del usuario logueado (ej. Desarrollador no ve "Usuarios")
+- [ X] Endpoint "quién soy" (`GET /api/usuarios/me`) conectado al cargar la app, para poblar el estado de sesión tras un refresh
 
 ---
 
