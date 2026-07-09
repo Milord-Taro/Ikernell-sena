@@ -18,6 +18,7 @@ packages:
   - converter
   - enums
   - constants
+  - report
 
 # Entidades planeadas según el dominio (para detectar faltantes/sobrantes)
 entities:
@@ -52,11 +53,11 @@ required_security:
 # Controller nuevo donde dejes GETs abiertos a propósito.
 preauthorize_exceptions:
   AuthController.java: "Endpoints públicos por diseño (login, recuperación de contraseña)."
-  ProyectoController.java: "GET abierto a cualquier autenticado; solo escritura restringida a Líder de Proyecto."
-  UsuarioController.java: "GET individual y cambio de contraseña propia (/me/contrasena) abiertos por diseño."
-  AsignacionProyectoController.java: "GET abierto a cualquier autenticado; solo crear/desvincular restringido a Líder de Proyecto."
-  EtapaController.java: "GET abierto a cualquier autenticado; solo escritura restringida a Líder de Proyecto (mismo patrón que Proyecto)."
-  ActividadController.java: "GET y cambio de estado abiertos a cualquier autenticado (el propio desarrollador ejecuta su actividad); solo crear/editar/asignar restringido a Líder de Proyecto."
+  ProyectoController.java: "GET abierto a cualquier autenticado. Escritura permite Coordinador Y Líder de Proyecto a nivel de rol; AutorizacionProyectoService valida además que el Líder sea el líder VIGENTE de ese proyecto específico (ownership real, no solo rol)."
+  UsuarioController.java: "GET individual, GET /me (perfil propio) y cambio de contraseña propia (/me/contrasena) abiertos por diseño. GET listar permite Coordinador Y Líder de Proyecto (este último necesita ver desarrolladores para poder asignarlos a proyectos)."
+  AsignacionProyectoController.java: "GET abierto a cualquier autenticado. Crear/desvincular permite Coordinador Y Líder de Proyecto a nivel de rol; AutorizacionProyectoService valida ownership del proyecto específico."
+  EtapaController.java: "GET abierto a cualquier autenticado. Escritura permite Coordinador Y Líder de Proyecto a nivel de rol; AutorizacionProyectoService valida ownership del proyecto específico (vía Etapa->Proyecto)."
+  ActividadController.java: "GET y cambio de estado abiertos a cualquier autenticado (el propio desarrollador ejecuta su actividad). Crear/editar/asignar permite Coordinador Y Líder de Proyecto a nivel de rol; AutorizacionProyectoService valida ownership del proyecto específico (vía Actividad->Etapa->Proyecto)."
   TipoErrorController.java: "GET abierto a cualquier autenticado (un Desarrollador elige el tipo al registrar un error); solo escritura restringida a Coordinador."
   TipoInterrupcionController.java: "GET abierto a cualquier autenticado (mismo motivo que TipoErrorController); solo escritura restringida a Coordinador."
   RegistroErrorController.java: "Log inmutable: crear y leer abiertos a cualquier autenticado por diseño, sin PUT ni cambio de estado."

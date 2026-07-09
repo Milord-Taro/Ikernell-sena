@@ -28,9 +28,12 @@ public class AsignacionProyectoService {
     private final UsuarioRepository usuarioRepository;
     private final ProyectoRepository proyectoRepository;
     private final AsignacionProyectoMapper asignacionProyectoMapper;
+    private final AutorizacionProyectoService autorizacionProyectoService;
 
     @Transactional
-    public AsignacionProyectoResponse crear(AsignacionProyectoRequest request) {
+    public AsignacionProyectoResponse crear(AsignacionProyectoRequest request, String correoSolicitante) {
+        autorizacionProyectoService.verificarPuedeGestionar(correoSolicitante, request.getIdProyecto());
+
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con id " + request.getIdUsuario() + "."));
@@ -71,10 +74,13 @@ public class AsignacionProyectoService {
     }
 
     @Transactional
-    public AsignacionProyectoResponse desvincular(Integer idAsignacionProyecto) {
+    public AsignacionProyectoResponse desvincular(Integer idAsignacionProyecto, String correoSolicitante) {
         AsignacionProyecto asignacion = asignacionProyectoRepository.findById(idAsignacionProyecto)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe una asignación con id " + idAsignacionProyecto + "."));
+
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, asignacion.getProyecto().getIdProyecto());
 
         if (asignacion.getFechaDesvinculacion() != null) {
             throw new BusinessException("Esta asignación ya fue desvinculada anteriormente.");

@@ -25,9 +25,12 @@ public class EtapaService {
     private final EtapaRepository etapaRepository;
     private final ProyectoRepository proyectoRepository;
     private final EtapaMapper etapaMapper;
+    private final AutorizacionProyectoService autorizacionProyectoService;
 
     @Transactional
-    public EtapaResponse crear(EtapaRequest request) {
+    public EtapaResponse crear(EtapaRequest request, String correoSolicitante) {
+        autorizacionProyectoService.verificarPuedeGestionar(correoSolicitante, request.getIdProyecto());
+
         Proyecto proyecto = buscarProyectoOFallar(request.getIdProyecto());
 
         validarCodigoDisponible(request.getCodigoEtapa(), null);
@@ -54,9 +57,18 @@ public class EtapaService {
         return etapaMapper.toResponse(buscarOFallar(idEtapa));
     }
 
+    /**
+     * El chequeo de ownership se hace contra el proyecto ACTUAL de la
+     * etapa (antes de aplicar el request), no contra el idProyecto que
+     * venga en el body -- así no se puede "mover" una etapa de un
+     * proyecto ajeno usando el propio idProyecto en el payload.
+     */
     @Transactional
-    public EtapaResponse actualizar(Integer idEtapa, EtapaRequest request) {
+    public EtapaResponse actualizar(Integer idEtapa, EtapaRequest request, String correoSolicitante) {
         Etapa etapa = buscarOFallar(idEtapa);
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, etapa.getProyecto().getIdProyecto());
+
         Proyecto proyecto = buscarProyectoOFallar(request.getIdProyecto());
 
         validarCodigoDisponible(request.getCodigoEtapa(), idEtapa);
@@ -72,8 +84,11 @@ public class EtapaService {
     }
 
     @Transactional
-    public EtapaResponse cambiarEstado(Integer idEtapa, String estadoTexto) {
+    public EtapaResponse cambiarEstado(Integer idEtapa, String estadoTexto, String correoSolicitante) {
         Etapa etapa = buscarOFallar(idEtapa);
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, etapa.getProyecto().getIdProyecto());
+
         EstadoEtapa nuevoEstado = parsearEstado(estadoTexto);
 
         etapa.setEstado(nuevoEstado);

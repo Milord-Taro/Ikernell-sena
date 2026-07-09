@@ -1,13 +1,18 @@
 package com.ikernell.backend.service;
 
+import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.ProyectoRequest;
 import com.ikernell.backend.dto.ProyectoResponse;
+import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.entity.Proyecto;
+import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoProyecto;
+import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.ProyectoMapper;
+import com.ikernell.backend.repository.AsignacionProyectoRepository;
 import com.ikernell.backend.repository.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,20 +26,39 @@ import java.util.List;
 public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
+    private final AsignacionProyectoRepository asignacionProyectoRepository;
     private final ProyectoMapper proyectoMapper;
+    private final AutorizacionProyectoService autorizacionProyectoService;
 
+    /**
+     * Cualquiera con el rol organizacional Líder de Proyecto o Coordinador
+     * puede crear un proyecto (el @PreAuthorize del Controller ya filtra
+     * esto). Si quien crea es Líder de Proyecto, queda auto-vinculado como
+     * el Líder de ESTE proyecto en AsignacionProyecto -- así desde el
+     * primer momento hay un dueño claro y nadie más puede tocarlo salvo
+     * Coordinador. Si quien crea es Coordinador, no se autovincula (el
+     * Coordinador ya puede gestionar cualquier proyecto sin necesitar
+     * estar en AsignacionProyecto).
+     */
     @Transactional
-    public ProyectoResponse crear(ProyectoRequest request) {
+    public ProyectoResponse crear(ProyectoRequest request, String correoCreador) {
         validarCodigoDisponible(request.getCodigoProyecto(), null);
         validarFechas(request);
 
-        Proyecto proyecto = proyectoMapper.toEntity(request);
-        // El estado inicial siempre es PLANEACION (default del builder de la
-        // entidad se pisaría con null si no se fija explícitamente aquí,
-        // porque toEntity() lo ignora a propósito).
-        proyecto.setEstado(EstadoProyecto.PLANEACION);
+        Usuario creador = autorizacionProyectoService.buscarUsuarioOFallar(correoCreador);
 
+        Proyecto proyecto = proyectoMapper.toEntity(request);
+        proyecto.setEstado(EstadoProyecto.PLANEACION);
         Proyecto guardado = proyectoRepository.save(proyecto);
+
+        if (RolConstantes.LIDER_PROYECTO.equals(creador.getRol().getCodigoRol())) {
+            AsignacionProyecto asignacion = AsignacionProyecto.builder()
+                    .usuario(creador)
+                    .proyecto(guardado)
+                    .rolProyecto(RolProyecto.LIDER)
+                    .build();
+            asignacionProyectoRepository.save(asignacion);
+        }
 
         return proyectoMapper.toResponse(guardado);
     }
@@ -60,7 +84,9 @@ public class ProyectoService {
     }
 
     @Transactional
-    public ProyectoResponse actualizar(Integer idProyecto, ProyectoRequest request) {
+    public ProyectoResponse actualizar(Integer idProyecto, ProyectoRequest request, String correoSolicitante) {
+        autorizacionProyectoService.verificarPuedeGestionar(correoSolicitante, idProyecto);
+
         Proyecto proyecto = buscarOFallar(idProyecto);
 
         validarCodigoDisponible(request.getCodigoProyecto(), idProyecto);
@@ -74,7 +100,9 @@ public class ProyectoService {
     }
 
     @Transactional
-    public ProyectoResponse cambiarEstado(Integer idProyecto, String nuevoEstadoTexto) {
+    public ProyectoResponse cambiarEstado(Integer idProyecto, String nuevoEstadoTexto, String correoSolicitante) {
+        autorizacionProyectoService.verificarPuedeGestionar(correoSolicitante, idProyecto);
+
         Proyecto proyecto = buscarOFallar(idProyecto);
         EstadoProyecto nuevoEstado = parsearEstado(nuevoEstadoTexto);
 

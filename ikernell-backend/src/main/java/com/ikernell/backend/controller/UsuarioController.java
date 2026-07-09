@@ -31,20 +31,32 @@ public class UsuarioController {
                 .body(ApiResponse.of("Usuario creado correctamente.", creado));
     }
 
-    // Enumerar la nómina completa es una operación administrativa: solo
-    // Coordinador. Distinto de ver un perfil puntual (abajo), que sí puede
-    // hacer cualquier trabajador (ej. click en el nombre de un colega).
+    /**
+     * CORREGIDO: además de Coordinador, el Líder de Proyecto también
+     * necesita listar usuarios -- según el caso de estudio, el Líder
+     * "asigna desarrolladores al proyecto", lo cual es imposible sin
+     * poder ver primero qué desarrolladores existen.
+     */
     @GetMapping
-    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<List<UsuarioResponse>>> listar(
             @RequestParam(name = "soloActivos", defaultValue = "false") boolean soloActivos) {
         List<UsuarioResponse> usuarios = soloActivos ? usuarioService.listarActivos() : usuarioService.listarTodos();
         return ResponseEntity.ok(ApiResponse.of(usuarios));
     }
 
-    // Abierto a cualquier trabajador autenticado: ver el perfil puntual de
-    // un colega (ej. desde un proyecto compartido), no es información
-    // sensible a nivel individual.
+    /**
+     * NUEVO: "quién soy yo". El JWT solo lleva correo+rol en sus claims,
+     * no el idUsuario -- sin este endpoint, el frontend no tiene forma de
+     * recuperar el perfil propio completo después de un refresh de página.
+     */
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UsuarioResponse>> miPerfil(Authentication authentication) {
+        return ResponseEntity.ok(ApiResponse.of(usuarioService.obtenerMiPerfil(authentication.getName())));
+    }
+
     @GetMapping("/{idUsuario}")
     public ResponseEntity<ApiResponse<UsuarioResponse>> obtenerPorId(@PathVariable Integer idUsuario) {
         return ResponseEntity.ok(ApiResponse.of(usuarioService.obtenerPorId(idUsuario)));
@@ -71,9 +83,7 @@ public class UsuarioController {
     public ResponseEntity<ApiResponse<Void>> cambiarMiContrasena(
             Authentication authentication,
             @Valid @RequestBody CambiarContrasenaRequest request) {
-
         usuarioService.cambiarMiContrasena(authentication.getName(), request);
-
         return ResponseEntity.ok(ApiResponse.of("Contraseña actualizada correctamente."));
     }
 }

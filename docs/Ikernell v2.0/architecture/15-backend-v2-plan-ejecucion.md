@@ -591,14 +591,14 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
 
 # Sprint 5 — Seguimiento
 
-- [ ] Registro de Error (FK → Tipo de Error)
-- [ ] Interrupción (FK → Tipo de Interrupción)
+- [ X] Registro de Error (FK → Tipo de Error)
+- [ X] Interrupción (FK → Tipo de Interrupción)
 
 ---
 
 # Sprint 6 — Comunicación
 
-- [ ] Mensaje de Contacto
+- [ X] Mensaje de Contacto
 
   > Flujo confirmado:
   >
@@ -606,26 +606,26 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
   > - Coordinador gestiona y responde (RF-014 / HU-14).
   > - Un solo módulo, dos consumidores del mismo endpoint y entidad.
 
-- [ ] Notificación (generación)
-- [ ] Implementación completa de Trazabilidad (auditoría sobre todas las entidades)
+- [ X] Notificación (generación)
+- [ X] Implementación completa de Trazabilidad (auditoría sobre todas las entidades)
 
 ---
 
 # Sprint 7 — Reportes
 
-- [ ] TXT
-- [ ] CSV
-- [ ] PDF
-- [ ] Excel
+- [ X] TXT
+- [ X] CSV
+- [ X] PDF
+- [ X] Excel
 
 ---
 
 # Sprint 8 — Calidad
 
-- [ ] Pruebas funcionales
-- [ ] Pruebas de seguridad
-- [ ] Optimización
-- [ ] Revisión final
+- [ X] Pruebas funcionales
+- [ X] Pruebas de seguridad
+- [ X] Optimización
+- [ X] Revisión final
 
 ---
 
@@ -657,7 +657,18 @@ Solo cuando una entidad esté completamente terminada se iniciará la siguiente.
   - Normalmente corresponde a infraestructura y operaciones, no únicamente al código.
   - Debe quedar documentado.
 
-
+- [ ] 🔵 **IDEA FUTURA (fuera de alcance del caso de estudio):** permitir que el
+  Desarrollador cree y se autoasigne sus propias actividades (patrón tipo
+  Jira/DevOps), en vez de que toda actividad deba ser registrada
+  previamente por el Líder de Proyecto.
+  - Descartado para esta entrega: el enunciado original especifica
+    explícitamente que las actividades "deben de estar registradas con
+    anterioridad por el líder del proyecto" — el Desarrollador solo
+    ejecuta, no crea.
+  - Costo estimado si se retoma: bajo (una tarde). Requiere permitir el
+    rol Desarrollador en `POST /api/actividades` y forzar en
+    `ActividadService.crear` que `idUsuario` del request sea igual al
+    usuario autenticado (no puede autoasignarse a otro).
 
 ---
 
