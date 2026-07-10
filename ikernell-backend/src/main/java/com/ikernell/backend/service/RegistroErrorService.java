@@ -5,6 +5,8 @@ import com.ikernell.backend.dto.RegistroErrorResponse;
 import com.ikernell.backend.entity.Actividad;
 import com.ikernell.backend.entity.RegistroError;
 import com.ikernell.backend.entity.TipoError;
+import com.ikernell.backend.enums.EstadoRegistroError;
+import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.RegistroErrorMapper;
@@ -42,6 +44,9 @@ public class RegistroErrorService {
         RegistroError registroError = registroErrorMapper.toEntity(request);
         registroError.setActividad(actividad);
         registroError.setTipoError(tipoError);
+        // NUEVO: todo registro nace Abierto -- nunca se crea ya
+        // Resuelto/Descartado, eso solo se llega ahí vía cambiarEstado().
+        registroError.setEstado(EstadoRegistroError.ABIERTO);
 
         RegistroError guardado = registroErrorRepository.save(registroError);
 
@@ -60,11 +65,39 @@ public class RegistroErrorService {
     }
 
     public RegistroErrorResponse obtenerPorId(Integer idRegistroError) {
-        RegistroError registroError = registroErrorRepository.findById(idRegistroError)
+        RegistroError registroError = buscarOFallar(idRegistroError);
+        return registroErrorMapper.toResponse(registroError);
+    }
+
+    /**
+     * NUEVO: sin restricción de rol, igual que ActividadService.cambiarEstado()
+     * -- el propio Desarrollador que detectó el error lo puede marcar
+     * En progreso/Resuelto, y Coordinador/Líder también pueden hacerlo
+     * desde la vista de supervisión (Errores).
+     */
+    @Transactional
+    public RegistroErrorResponse cambiarEstado(Integer idRegistroError, String estadoTexto) {
+        RegistroError registroError = buscarOFallar(idRegistroError);
+        EstadoRegistroError nuevoEstado = parsearEstado(estadoTexto);
+
+        registroError.setEstado(nuevoEstado);
+        RegistroError guardado = registroErrorRepository.save(registroError);
+
+        return registroErrorMapper.toResponse(guardado);
+    }
+
+    private EstadoRegistroError parsearEstado(String estadoTexto) {
+        try {
+            return EstadoRegistroError.desdeValor(estadoTexto);
+        } catch (IllegalArgumentException ex) {
+            throw new BusinessException(ex.getMessage());
+        }
+    }
+
+    private RegistroError buscarOFallar(Integer idRegistroError) {
+        return registroErrorRepository.findById(idRegistroError)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un registro de error con id " + idRegistroError + "."));
-
-        return registroErrorMapper.toResponse(registroError);
     }
 
     private void validarCodigoDisponible(String codigo) {

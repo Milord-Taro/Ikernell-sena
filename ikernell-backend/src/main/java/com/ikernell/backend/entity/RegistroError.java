@@ -1,6 +1,8 @@
 package com.ikernell.backend.entity;
 
+import com.ikernell.backend.converter.EstadoRegistroErrorConverter;
 import com.ikernell.backend.converter.NivelCriticidadConverter;
+import com.ikernell.backend.enums.EstadoRegistroError;
 import com.ikernell.backend.enums.NivelCriticidad;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -54,6 +56,11 @@ public class RegistroError {
     @Convert(converter = NivelCriticidadConverter.class)
     @Column(name = "severidad", nullable = false, length = 20)
     private NivelCriticidad severidad;
+
+    /** NUEVO: ciclo de vida Abierto -> En progreso -> Resuelto/Descartado. */
+    @Convert(converter = EstadoRegistroErrorConverter.class)
+    @Column(name = "estado", nullable = false, length = 30)
+    private EstadoRegistroError estado;
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     @Builder.Default

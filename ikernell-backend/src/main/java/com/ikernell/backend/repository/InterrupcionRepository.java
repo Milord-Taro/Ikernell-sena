@@ -11,4 +11,9 @@ public interface InterrupcionRepository extends JpaRepository<Interrupcion, Inte
     Optional<Interrupcion> findByCodigoInterrupcion(String codigoInterrupcion);
 
     List<Interrupcion> findByActividad_IdActividad(Integer idActividad);
+
+    // NUEVO: para ReporteInterrupcionesService -- mismo patrón de
+    // navegación de asociaciones que ActividadRepository.findByEtapa_Proyecto_IdProyecto,
+    // solo que un nivel más profundo (Interrupcion -> Actividad -> Etapa -> Proyecto).
+    List<Interrupcion> findByActividad_Etapa_Proyecto_IdProyecto(Integer idProyecto);
 }

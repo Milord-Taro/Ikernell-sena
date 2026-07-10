@@ -70,6 +70,10 @@ public class Actividad {
     @Builder.Default
     private EstadoActividad estado = EstadoActividad.PENDIENTE_DE_ASIGNACION;
 
+    /** NUEVO: se llena solo cuando cambiarEstado() mueve la actividad a Finalizada. */
+    @Column(name = "fecha_finalizacion")
+    private LocalDateTime fechaFinalizacion;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime fechaCreacion = LocalDateTime.now();
