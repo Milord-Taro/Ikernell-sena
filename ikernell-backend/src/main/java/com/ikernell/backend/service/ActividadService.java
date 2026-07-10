@@ -25,6 +25,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -66,6 +67,19 @@ public class ActividadService {
         Actividad guardada = actividadRepository.save(actividad);
 
         return actividadMapper.toResponse(guardada);
+    }
+
+    /**
+     * NUEVO: por consistencia con RegistroErrorService/InterrupcionService
+     * (donde "sin filtro" = listar todo). Antes, sin idEtapa ni idUsuario,
+     * el Controller devolvía lista vacía -- eso hacía imposible calcular
+     * KPIs "org-wide" o "de mis proyectos" sin un fan-out etapa por etapa.
+     */
+    public List<ActividadResponse> listarTodas() {
+        return actividadRepository.findAll()
+                .stream()
+                .map(actividadMapper::toResponse)
+                .toList();
     }
 
     public List<ActividadResponse> listarPorEtapa(Integer idEtapa) {
@@ -160,6 +174,12 @@ public class ActividadService {
         }
 
         actividad.setEstado(nuevoEstado);
+        // NUEVO: se llena solo al llegar a Finalizada; si por algún motivo
+        // se corrige hacia otro estado después, se limpia -- no debe
+        // quedar una fecha de finalización "fantasma" en algo que ya no
+        // está finalizado.
+        actividad.setFechaFinalizacion(
+                nuevoEstado == EstadoActividad.FINALIZADA ? LocalDateTime.now() : null);
         Actividad guardada = actividadRepository.save(actividad);
 
         return actividadMapper.toResponse(guardada);

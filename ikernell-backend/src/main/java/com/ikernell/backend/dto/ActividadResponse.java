@@ -28,5 +28,6 @@ public class ActividadResponse {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private EstadoActividad estado;
+    private LocalDateTime fechaFinalizacion;
     private LocalDateTime fechaCreacion;
 }

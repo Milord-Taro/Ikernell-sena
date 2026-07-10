@@ -1,5 +1,6 @@
 package com.ikernell.backend.dto;
 
+import com.ikernell.backend.enums.EstadoRegistroError;
 import com.ikernell.backend.enums.NivelCriticidad;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,6 @@ public class RegistroErrorResponse {
     private String titulo;
     private String descripcion;
     private NivelCriticidad severidad;
+    private EstadoRegistroError estado;
     private LocalDateTime fechaRegistro;
 }

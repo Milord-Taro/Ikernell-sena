@@ -57,7 +57,9 @@ public class ActividadController {
         } else if (idUsuario != null) {
             actividades = actividadService.listarPorUsuario(idUsuario);
         } else {
-            actividades = List.of();
+            // CORREGIDO: antes devolvía List.of() -- ahora, igual que
+            // RegistroErrorController, "sin filtro" significa "todo".
+            actividades = actividadService.listarTodas();
         }
 
         return ResponseEntity.ok(ApiResponse.of(actividades));

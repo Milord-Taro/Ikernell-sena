@@ -2,6 +2,7 @@ package com.ikernell.backend.controller;
 
 import com.ikernell.backend.report.FormatoReporte;
 import com.ikernell.backend.report.ReporteActividadesService;
+import com.ikernell.backend.report.ReporteInterrupcionesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReporteController {
 
     private final ReporteActividadesService reporteActividadesService;
+    private final ReporteInterrupcionesService reporteInterrupcionesService;
 
     @GetMapping("/actividades-por-proyecto/{idProyecto}")
     public ResponseEntity<byte[]> reporteActividadesPorProyecto(
@@ -38,6 +40,22 @@ public class ReporteController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(reporteActividadesService.contentType(formato)))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment().filename(nombreArchivo).build().toString())
+                .body(contenido);
+    }
+
+    /** NUEVO: segundo reporte pedido por el caso de estudio original. */
+    @GetMapping("/interrupciones-por-proyecto/{idProyecto}")
+    public ResponseEntity<byte[]> reporteInterrupcionesPorProyecto(
+            @PathVariable Integer idProyecto,
+            @RequestParam(name = "formato", defaultValue = "TXT") FormatoReporte formato) {
+
+        byte[] contenido = reporteInterrupcionesService.generar(idProyecto, formato);
+        String nombreArchivo = reporteInterrupcionesService.nombreArchivo(idProyecto, formato);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(reporteInterrupcionesService.contentType(formato)))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         ContentDisposition.attachment().filename(nombreArchivo).build().toString())
                 .body(contenido);

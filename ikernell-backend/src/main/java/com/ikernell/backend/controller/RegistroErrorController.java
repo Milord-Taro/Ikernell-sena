@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Sin @PreAuthorize específico: cualquier autenticado puede registrar y
- * leer (el propio Desarrollador registra sus errores; el Líder los lee
- * para sus reportes). Es un log, no tiene PUT ni cambio de estado.
+ * Sin @PreAuthorize específico: cualquier autenticado puede registrar,
+ * leer y cambiar el estado (el propio Desarrollador registra sus
+ * errores; el Líder/Coordinador los leen y también pueden actualizar el
+ * estado desde la vista de supervisión). No tiene PUT -- los campos del
+ * error no se editan, solo su estado.
  */
 @RestController
 @RequestMapping("/api/registros-error")
@@ -51,5 +54,12 @@ public class RegistroErrorController {
     public ResponseEntity<ApiResponse<RegistroErrorResponse>> obtenerPorId(
             @PathVariable Integer idRegistroError) {
         return ResponseEntity.ok(ApiResponse.of(registroErrorService.obtenerPorId(idRegistroError)));
+    }
+
+    @PatchMapping("/{idRegistroError}/estado")
+    public ResponseEntity<ApiResponse<RegistroErrorResponse>> cambiarEstado(
+            @PathVariable Integer idRegistroError, @RequestParam String estado) {
+        RegistroErrorResponse actualizado = registroErrorService.cambiarEstado(idRegistroError, estado);
+        return ResponseEntity.ok(ApiResponse.of("Estado del error actualizado correctamente.", actualizado));
     }
 }

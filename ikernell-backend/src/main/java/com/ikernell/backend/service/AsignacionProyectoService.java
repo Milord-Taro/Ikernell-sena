@@ -1,5 +1,6 @@
 package com.ikernell.backend.service;
 
+import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.AsignacionProyectoRequest;
 import com.ikernell.backend.dto.AsignacionProyectoResponse;
 import com.ikernell.backend.entity.AsignacionProyecto;
@@ -42,6 +43,25 @@ public class AsignacionProyectoService {
         Proyecto proyecto = proyectoRepository.findById(request.getIdProyecto())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un proyecto con id " + request.getIdProyecto() + "."));
+
+        // CERRADO: el Coordinador nunca es parte del equipo de un
+        // proyecto puntual (gestiona por su rol organizacional). Antes
+        // solo el frontend lo ocultaba de la lista; ahora también lo
+        // rechaza el backend si alguien lo intenta vía API directa.
+        if (usuario.getRol().getCodigoRol().equals(RolConstantes.COORDINADOR)) {
+            throw new BusinessException("El Coordinador no puede ser miembro del equipo de un proyecto.");
+        }
+
+        // CERRADO: solo alguien con rol organizacional "Líder de
+        // Proyecto" puede ocupar el puesto de Líder EN un proyecto. Un
+        // Desarrollador sí puede terminar como Desarrollador en varios
+        // proyectos, pero no como Líder de ninguno -- eso es un cambio
+        // de rol organizacional, no una asignación de equipo.
+        if (request.getRolProyecto() == RolProyecto.LIDER
+                && !usuario.getRol().getCodigoRol().equals(RolConstantes.LIDER_PROYECTO)) {
+            throw new BusinessException(
+                    "Solo un usuario con rol organizacional 'Líder de Proyecto' puede asignarse como líder de un proyecto.");
+        }
 
         asignacionProyectoRepository
                 .findByUsuario_IdUsuarioAndProyecto_IdProyectoAndFechaDesvinculacionIsNull(
