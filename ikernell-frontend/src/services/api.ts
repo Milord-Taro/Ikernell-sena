@@ -3,10 +3,9 @@ import { ApiRequestError } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 const TOKEN_KEY = 'ikernell_token';
+const SESION_EXPIRADA_KEY = 'ikernell_sesion_expirada';
 
 if (!API_URL) {
-  // Falla rápido y claro en vez de que cada request falle con un error
-  // críptico de "fetch failed" contra "undefined/api/...".
   throw new Error(
     'VITE_API_URL no está definida. Crea un archivo .env en la raíz del ' +
       'proyecto con: VITE_API_URL=http://localhost:8080/api',
@@ -36,15 +35,17 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   const response = await fetch(`${API_URL}${path}`, { ...options, headers });
 
-  // 401: el token expiró o es inválido. Se limpia y se avisa a toda la
-  // app (ej. para redirigir a login) sin que cada llamada tenga que
-  // manejarlo por separado.
   if (response.status === 401) {
+    // CORREGIDO: antes solo se limpiaba la sesión y se avisaba a
+    // AuthContext, pero nadie le decía al usuario POR QUÉ desapareció su
+    // sesión -- se sentía como "me sacó sin avisar". Ahora se deja una
+    // marca en sessionStorage que la landing revisa al montar, para
+    // mostrar un aviso explícito una sola vez.
     borrarToken();
+    sessionStorage.setItem(SESION_EXPIRADA_KEY, '1');
     window.dispatchEvent(new Event('ikernell-unauthorized'));
   }
 
-  // 204 No Content no trae body -- evita intentar parsear JSON vacío.
   if (response.status === 204) {
     return undefined as T;
   }
@@ -81,3 +82,14 @@ export const api = {
 
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };
+
+/** La landing (u otra pantalla pública) llama esto al montar para saber
+ * si debe mostrar el aviso de "tu sesión expiró". Se borra la marca al
+ * leerla, para que no vuelva a aparecer en visitas futuras. */
+export function consumirAvisoSesionExpirada(): boolean {
+  const habia = sessionStorage.getItem(SESION_EXPIRADA_KEY) === '1';
+  if (habia) {
+    sessionStorage.removeItem(SESION_EXPIRADA_KEY);
+  }
+  return habia;
+}

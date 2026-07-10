@@ -14,6 +14,7 @@ import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.ikernell.backend.util.GeneradorCodigos;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -103,6 +104,6 @@ public class MensajeContactoService {
     }
 
     private String generarCodigo() {
-        return "MSG-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        return GeneradorCodigos.generar("MSG");
     }
 }

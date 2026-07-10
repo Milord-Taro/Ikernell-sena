@@ -4,8 +4,9 @@ import {
   type SelectHTMLAttributes,
   type ReactNode,
   forwardRef,
+  useState,
 } from "react";
-import { ChevronDown, AlertCircle } from "lucide-react";
+import { ChevronDown, AlertCircle, Eye, EyeOff } from "lucide-react";
 
 /* ── shared ─────────────────────────────────────────────────────────── */
 const baseField =
@@ -64,10 +65,7 @@ export function FieldWrapper({
 }
 
 /* ── Input ───────────────────────────────────────────────────────────── */
-interface InputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "prefix"
-> {
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> {
   label?: string;
   hint?: string;
   error?: string;
@@ -76,11 +74,50 @@ interface InputProps extends Omit<
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, hint, error, prefix, suffix, className = "", ...props }, ref) => {
+  ({ label, hint, error, prefix, suffix, className = "", type, ...props }, ref) => {
+    const [mostrarClave, setMostrarClave] = useState(false);
+    const esPassword = type === "password";
+
+    // CORREGIDO: el ojo de contraseña ya NO usa el patrón de prefix/suffix
+    // (esa caja con fondo gris y borde separado es para unidades tipo
+    // "$"/"kg", se veía "metida" para un ícono). Ahora flota encima del
+    // input, con el input mismo dándole espacio a la derecha (pr-9).
+    if (esPassword) {
+      const contenido = (
+        <div className="relative">
+          <input
+            ref={ref}
+            type={mostrarClave ? "text" : "password"}
+            className={`${baseField} ${error ? errorField : ""} h-8 pl-3 pr-9 ${className}`}
+            {...props}
+          />
+          <button
+            type="button"
+            tabIndex={-1}
+            onClick={() => setMostrarClave((v) => !v)}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center justify-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
+            aria-label={mostrarClave ? "Ocultar contraseña" : "Mostrar contraseña"}
+          >
+            {mostrarClave ? <EyeOff size={14} /> : <Eye size={14} />}
+          </button>
+        </div>
+      );
+
+      return label || hint || error ? (
+        <FieldWrapper label={label} hint={hint} error={error} required={props.required}>
+          {contenido}
+        </FieldWrapper>
+      ) : (
+        contenido
+      );
+    }
+
+    // Resto de tipos de Input: comportamiento original sin cambios.
     const hasWrap = prefix || suffix;
     const inputEl = (
       <input
         ref={ref}
+        type={type}
         className={`${baseField} ${error ? errorField : ""} ${hasWrap ? "rounded-none" : ""} h-8 px-3 ${className}`}
         {...props}
       />
@@ -96,6 +133,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           ref={ref}
+          type={type}
           className={`flex-1 h-8 px-3 bg-[var(--surface)] text-[var(--text-primary)] text-[13.5px] font-sans placeholder:text-[var(--text-tertiary)] border-0 focus:outline-none disabled:bg-[var(--muted)] disabled:cursor-not-allowed ${className}`}
           {...props}
         />

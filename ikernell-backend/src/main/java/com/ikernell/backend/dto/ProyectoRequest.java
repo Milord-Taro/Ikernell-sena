@@ -37,4 +37,13 @@ public class ProyectoRequest {
 
     @NotNull(message = "La fecha de fin es obligatoria.")
     private LocalDate fechaFin;
+
+    /**
+     * NUEVO: opcional. Solo tiene efecto si quien crea es Coordinador --
+     * le permite elegir de una vez quién será el Líder del proyecto. Si
+     * quien crea es Líder de Proyecto, este campo se ignora (se
+     * autovincula a sí mismo, como ya funcionaba). Debe apuntar a un
+     * usuario con rol Líder de Proyecto, o el Service lo rechaza.
+     */
+    private Integer idLiderInicial;
 }

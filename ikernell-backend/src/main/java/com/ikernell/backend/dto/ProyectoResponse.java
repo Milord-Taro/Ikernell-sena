@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ProyectoResponse {
-
     private Integer idProyecto;
     private String codigoProyecto;
     private String nombreProyecto;
@@ -25,4 +24,10 @@ public class ProyectoResponse {
     private LocalDate fechaFin;
     private EstadoProyecto estado;
     private LocalDateTime fechaCreacion;
+
+    // NUEVO: quién es el Líder VIGENTE de este proyecto ahora mismo (o
+    // null si nadie está asignado como líder todavía). Se calcula en
+    // ProyectoService, no lo pone el mapper -- por eso @Setter es
+    // necesario aquí, no solo @Builder.
+    private UsuarioResponse liderActual;
 }
