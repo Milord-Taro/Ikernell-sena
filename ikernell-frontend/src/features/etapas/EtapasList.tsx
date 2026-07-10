@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Plus, Pencil, ListChecks } from 'lucide-react';
+import { Plus, Pencil, ListChecks, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Select } from '../../components/ui/FormControls';
-import { Alert } from '../../components/ui/Feedback';
+import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { EtapaFormModal } from './EtapaFormModal';
 import { ActividadesEtapaModal } from '../actividades/ActividadesEtapaModal';
 import { useAuth } from '../../context/AuthContext';
@@ -15,6 +15,7 @@ import {
   crearEtapa,
   actualizarEtapa,
   cambiarEstadoEtapa,
+  eliminarEtapa,
 } from '../../services/etapas';
 import { ESTADOS_ETAPA } from '../../types/etapa';
 import type { EtapaResponse, EtapaRequest, EstadoEtapa } from '../../types/etapa';
@@ -40,6 +41,7 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
   const [etapaEditando, setEtapaEditando] = useState<EtapaResponse | null>(null);
   const [etapaActividades, setEtapaActividades] = useState<EtapaResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [etapaAEliminar, setEtapaAEliminar] = useState<EtapaResponse | null>(null);
 
   const cargar = async () => {
     setCargando(true);
@@ -76,6 +78,23 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
       await cargar();
     } catch (err) {
       setError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado.');
+    }
+  };
+
+  const alEliminar = (etapa: EtapaResponse) => {
+    setError(null);
+    setEtapaAEliminar(etapa);
+  };
+
+  const confirmarEliminar = async () => {
+    if (!etapaAEliminar) return;
+    try {
+      await eliminarEtapa(etapaAEliminar.idEtapa);
+      setEtapaAEliminar(null);
+      await cargar();
+    } catch (err) {
+      setError(err instanceof ApiRequestError ? err.message : 'No se pudo eliminar la etapa.');
+      setEtapaAEliminar(null);
     }
   };
 
@@ -152,6 +171,12 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
                       <Pencil size={14} />
                     </Button>
                   )}
+
+                  {puedeGestionar && (
+                    <Button variant="ghost" size="sm" onClick={() => alEliminar(etapa)}>
+                      <Trash2 size={14} />
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -182,6 +207,16 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
           onClose={() => setEtapaActividades(null)}
         />
       )}
+
+      <ConfirmDialog
+        open={Boolean(etapaAEliminar)}
+        title={`¿Eliminar la etapa "${etapaAEliminar?.nombreEtapa}"?`}
+        description="Esta acción no se puede deshacer."
+        confirmLabel="Eliminar"
+        variant="destructive"
+        onConfirm={confirmarEliminar}
+        onCancel={() => setEtapaAEliminar(null)}
+      />
     </div>
   );
 }

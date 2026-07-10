@@ -10,11 +10,19 @@ import { ApiRequestError } from '../../types/api';
 import { NIVELES_CRITICIDAD } from '../../types/actividad';
 import type { ActividadResponse, NivelCriticidad } from '../../types/actividad';
 import type { TipoErrorResponse, TipoInterrupcionResponse } from '../../types/usuario';
-import type { RegistroErrorResponse, RegistroErrorRequest } from '../../types/registroError';
+import type { RegistroErrorResponse, RegistroErrorRequest, EstadoRegistroError } from '../../types/registroError';
+import { ESTADOS_REGISTRO_ERROR } from '../../types/registroError';
 import type { InterrupcionResponse, InterrupcionRequest } from '../../types/interrupcion';
 import { tiposErrorService, tiposInterrupcionService } from '../../services/catalogos';
-import { listarRegistrosErrorPorActividad, crearRegistroError } from '../../services/registrosError';
+import { listarRegistrosErrorPorActividad, crearRegistroError, cambiarEstadoRegistroError } from '../../services/registrosError';
 import { listarInterrupcionesPorActividad, crearInterrupcion } from '../../services/interrupciones';
+
+const variantePorEstadoError: Record<EstadoRegistroError, 'default' | 'success' | 'info' | 'warning'> = {
+  'Abierto': 'warning',
+  'En progreso': 'info',
+  'Resuelto': 'success',
+  'Descartado': 'default',
+};
 
 const variantePorSeveridad: Record<NivelCriticidad, 'default' | 'warning' | 'error' | 'info'> = {
   'Baja': 'default',
@@ -227,7 +235,10 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                     <span className="type-caption text-[var(--text-tertiary)]">Título</span>
                     <span className="type-body text-[var(--text-primary)]">{r.titulo}</span>
                   </div>
-                  <Badge variant={variantePorSeveridad[r.severidad]} size="sm">{r.severidad}</Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={variantePorEstadoError[r.estado]} size="sm">{r.estado}</Badge>
+                    <Badge variant={variantePorSeveridad[r.severidad]} size="sm">{r.severidad}</Badge>
+                  </div>
                 </div>
                 <div className="flex flex-col">
                   <span className="type-caption text-[var(--text-tertiary)]">Tipo de error</span>
@@ -237,6 +248,23 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                   <span className="type-caption text-[var(--text-tertiary)]">Descripción</span>
                   <p className="type-body-sm text-[var(--text-secondary)]">{r.descripcion}</p>
                 </div>
+                <Select
+                  label="Estado"
+                  value={r.estado}
+                  onChange={async (e) => {
+                    onError(null);
+                    try {
+                      await cambiarEstadoRegistroError(r.idRegistroError, e.target.value as EstadoRegistroError);
+                      await onRegistrado();
+                    } catch (err) {
+                      onError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado.');
+                    }
+                  }}
+                >
+                  {ESTADOS_REGISTRO_ERROR.map((estado) => (
+                    <option key={estado} value={estado}>{estado}</option>
+                  ))}
+                </Select>
                 <span className="type-caption text-[var(--text-tertiary)]">
                   Registrado: {r.fechaRegistro}
                 </span>

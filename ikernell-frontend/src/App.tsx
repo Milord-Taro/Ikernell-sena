@@ -10,6 +10,7 @@ import MisActividadesPage from './pages/MisActividadesPage';
 import ErroresPage from './pages/ErroresPage';
 import InterrupcionesPage from './pages/InterrupcionesPage';
 import MensajesPage from './pages/MensajesPage';
+import ConfiguracionPage from './pages/ConfiguracionPage';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { RoleRoute } from './routes/RoleRoute';
@@ -94,6 +95,10 @@ function App() {
             </RoleRoute>
           }
         />
+
+        {/* Abierta a cualquier autenticado -- cambiar la propia
+            contraseña no depende del rol. */}
+        <Route path="configuracion" element={<ConfiguracionPage />} />
       </Route>
     </Routes>
   );

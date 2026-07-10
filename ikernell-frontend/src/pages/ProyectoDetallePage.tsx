@@ -9,11 +9,14 @@ import { Alert } from '../components/ui/Feedback';
 import { Tabs } from '../components/layout/Navigation';
 import { ProyectoFormModal } from '../features/proyectos/ProyectoFormModal';
 import { EquipoProyecto } from '../features/proyectos/EquipoProyecto';
+import { ReportesProyecto } from '../features/proyectos/ReportesProyecto';
 import { EtapasList } from '../features/etapas/EtapasList';
 import { obtenerProyectoPorId, actualizarProyecto, cambiarEstadoProyecto } from '../services/proyectos';
 import { ApiRequestError } from '../types/api';
 import { ESTADOS_PROYECTO } from '../types/proyecto';
 import type { ProyectoResponse, EstadoProyecto } from '../types/proyecto';
+import { useAuth } from '../context/AuthContext';
+import { CODIGO_ROL } from '../types/usuario';
 
 const variantePorEstado: Record<EstadoProyecto, 'info' | 'success' | 'default' | 'warning' | 'error'> = {
   'Planeación': 'info',
@@ -26,6 +29,7 @@ const variantePorEstado: Record<EstadoProyecto, 'info' | 'success' | 'default' |
 export default function ProyectoDetallePage() {
   const { idProyecto } = useParams<{ idProyecto: string }>();
   const navigate = useNavigate();
+  const { usuario } = useAuth();
   const [proyecto, setProyecto] = useState<ProyectoResponse | null>(null);
   const [cargando, setCargando] = useState(true);
   const [tabActiva, setTabActiva] = useState('etapas');
@@ -95,10 +99,15 @@ export default function ProyectoDetallePage() {
                 <p className="type-body text-[var(--text-secondary)] mt-1">{proyecto.descripcion}</p>
               )}
             </div>
-            <Button variant="outline" size="sm" onClick={() => setModalEdicionAbierto(true)}>
-              <Pencil size={14} />
-              Editar
-            </Button>
+            <div className="flex items-start gap-2 shrink-0">
+              {usuario?.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO && (
+                <ReportesProyecto idProyecto={proyecto.idProyecto} />
+              )}
+              <Button variant="outline" size="sm" onClick={() => setModalEdicionAbierto(true)}>
+                <Pencil size={14} />
+                Editar
+              </Button>
+            </div>
           </div>
 
           <div className="flex items-center gap-6 pt-2 border-t border-[var(--border)] flex-wrap">

@@ -57,10 +57,17 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
 
   // CORREGIDO: el Coordinador gestiona todo por su rol organizacional,
   // no participa como miembro de equipo de un proyecto puntual -- no
-  // debe aparecer como opción seleccionable aquí.
-  const usuariosDisponibles = usuarios.filter(
-    (u) => !idsYaAsignados.has(u.idUsuario) && u.rol.codigoRol !== CODIGO_ROL.COORDINADOR,
-  );
+  // debe aparecer como opción seleccionable aquí. CERRADO: además, si el
+  // rol elegido en el proyecto es "Líder", solo se puede elegir entre
+  // usuarios cuyo ROL ORGANIZACIONAL ya es "Líder de Proyecto" -- un
+  // Desarrollador puede terminar siendo Desarrollador en varios
+  // proyectos, pero no Líder de ninguno.
+  const usuariosDisponibles = usuarios.filter((u) => {
+    if (idsYaAsignados.has(u.idUsuario)) return false;
+    if (u.rol.codigoRol === CODIGO_ROL.COORDINADOR) return false;
+    if (rolNuevo === 'Líder') return u.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO;
+    return true;
+  });
 
   const yaHayLiderYSeEligeLider = rolNuevo === 'Líder' && Boolean(liderVigente);
 
@@ -153,20 +160,25 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
             label="Rol en el proyecto"
             required
             value={rolNuevo}
-            onChange={(e) => setRolNuevo(e.target.value as RolProyecto)}
+            onChange={(e) => {
+              // Al cambiar de rol, el usuario elegido puede dejar de ser
+              // válido para la nueva opción (ej. un Desarrollador elegido
+              // bajo "Desarrollador" ya no aplica si se cambia a "Líder").
+              setRolNuevo(e.target.value as RolProyecto);
+              setIdUsuarioNuevo('');
+            }}
           >
             <option value="Desarrollador">Desarrollador</option>
             <option value="Líder">Líder</option>
           </Select>
 
-          {/* NOTA: hasta que el backend implemente "reemplazar, no
-              acumular" líder (punto pendiente), esta advertencia es
-              solo informativa -- el backend hoy permitiría 2 líderes
-              a la vez, que es justo lo que vamos a corregir. */}
+          {/* CERRADO: el backend ya reemplaza automáticamente al líder
+              anterior (desvinculación automática) -- esto es solo un
+              aviso informativo de lo que va a pasar, no una advertencia
+              de bug pendiente. */}
           {yaHayLiderYSeEligeLider && liderVigente && (
-            <Alert variant="warning" title="Ya hay un líder asignado">
-              {liderVigente.usuario.nombres} {liderVigente.usuario.apellidos} es el líder actual. Esto debería
-              reemplazarlo (pendiente de confirmar en el backend).
+            <Alert variant="info" title="Esto reemplazará al líder actual">
+              {liderVigente.usuario.nombres} {liderVigente.usuario.apellidos} dejará de ser líder de este proyecto.
             </Alert>
           )}
 
