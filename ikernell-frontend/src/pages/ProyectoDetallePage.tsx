@@ -9,6 +9,7 @@ import { Alert } from '../components/ui/Feedback';
 import { Tabs } from '../components/layout/Navigation';
 import { ProyectoFormModal } from '../features/proyectos/ProyectoFormModal';
 import { EquipoProyecto } from '../features/proyectos/EquipoProyecto';
+import { EtapasList } from '../features/etapas/EtapasList';
 import { obtenerProyectoPorId, actualizarProyecto, cambiarEstadoProyecto } from '../services/proyectos';
 import { ApiRequestError } from '../types/api';
 import { ESTADOS_PROYECTO } from '../types/proyecto';
@@ -27,7 +28,7 @@ export default function ProyectoDetallePage() {
   const navigate = useNavigate();
   const [proyecto, setProyecto] = useState<ProyectoResponse | null>(null);
   const [cargando, setCargando] = useState(true);
-  const [tabActiva, setTabActiva] = useState('resumen');
+  const [tabActiva, setTabActiva] = useState('etapas');
   const [modalEdicionAbierto, setModalEdicionAbierto] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -137,19 +138,15 @@ export default function ProyectoDetallePage() {
 
       <Tabs
         tabs={[
-          { id: 'resumen', label: 'Resumen' },
+          { id: 'etapas', label: 'Etapas' },
           { id: 'equipo', label: 'Equipo' },
         ]}
         active={tabActiva}
         onChange={setTabActiva}
       />
 
+      {tabActiva === 'etapas' && <EtapasList idProyecto={proyecto.idProyecto} />}
       {tabActiva === 'equipo' && <EquipoProyecto idProyecto={proyecto.idProyecto} />}
-      {tabActiva === 'resumen' && (
-        <p className="type-body-sm text-[var(--text-tertiary)]">
-          Etapas y actividades se agregan aquí en la próxima fase.
-        </p>
-      )}
 
       <ProyectoFormModal
         open={modalEdicionAbierto}

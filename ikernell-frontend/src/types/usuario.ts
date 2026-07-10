@@ -30,6 +30,24 @@ export interface EspecialidadResponse {
   fechaCreacion: string;
 }
 
+export interface TipoErrorResponse {
+  idTipoError: number;
+  codigoTipoError: string;
+  nombreTipoError: string;
+  descripcion: string | null;
+  activo: boolean;
+  fechaCreacion: string;
+}
+
+export interface TipoInterrupcionResponse {
+  idTipoInterrupcion: number;
+  codigoTipoInterrupcion: string;
+  nombreTipoInterrupcion: string;
+  descripcion: string | null;
+  activo: boolean;
+  fechaCreacion: string;
+}
+
 export interface UsuarioResponse {
   idUsuario: number;
   codigoUsuario: string;

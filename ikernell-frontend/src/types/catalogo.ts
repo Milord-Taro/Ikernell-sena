@@ -15,3 +15,16 @@ export interface EspecialidadRequest {
   nombreEspecialidad: string;
   descripcion?: string;
 }
+
+export interface TipoErrorRequest {
+  codigoTipoError: string;
+  nombreTipoError: string;
+  descripcion?: string;
+}
+
+export interface TipoInterrupcionRequest {
+  codigoTipoInterrupcion: string;
+  nombreTipoInterrupcion: string;
+  descripcion?: string;
+}
+

@@ -1,6 +1,12 @@
 import { api } from './api';
-import type { RolResponse, ProfesionResponse, EspecialidadResponse } from '../types/usuario';
-import type { RolRequest, ProfesionRequest, EspecialidadRequest } from '../types/catalogo';
+import type {
+  RolResponse, ProfesionResponse, EspecialidadResponse,
+  TipoErrorResponse, TipoInterrupcionResponse,
+} from '../types/usuario';
+import type {
+  RolRequest, ProfesionRequest, EspecialidadRequest,
+  TipoErrorRequest, TipoInterrupcionRequest,
+} from '../types/catalogo';
 
 export interface ServicioCatalogo<TResponse, TRequest> {
   listar: () => Promise<TResponse[]>;
@@ -26,3 +32,10 @@ function crearServicioCatalogo<TResponse, TRequest>(basePath: string): ServicioC
 export const rolesService = crearServicioCatalogo<RolResponse, RolRequest>('roles');
 export const profesionesService = crearServicioCatalogo<ProfesionResponse, ProfesionRequest>('profesiones');
 export const especialidadesService = crearServicioCatalogo<EspecialidadResponse, EspecialidadRequest>('especialidades');
+
+// NUEVO (Fase 9): mismo molde de endpoints (GET/POST/PUT/PATCH .../estado)
+// que los otros 3 catálogos -- el backend solo difiere en que el GET es
+// abierto a cualquier autenticado (Desarrollador los necesita para
+// registrar errores/interrupciones), no solo Coordinador.
+export const tiposErrorService = crearServicioCatalogo<TipoErrorResponse, TipoErrorRequest>('tipos-error');
+export const tiposInterrupcionService = crearServicioCatalogo<TipoInterrupcionResponse, TipoInterrupcionRequest>('tipos-interrupcion');

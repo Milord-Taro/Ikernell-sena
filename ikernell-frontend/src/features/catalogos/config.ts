@@ -1,6 +1,9 @@
-import type { RolResponse, ProfesionResponse, EspecialidadResponse } from '../../types/usuario';
-import type { RolRequest, ProfesionRequest, EspecialidadRequest } from '../../types/catalogo';
-import { rolesService, profesionesService, especialidadesService } from '../../services/catalogos';
+import type { RolResponse, ProfesionResponse, EspecialidadResponse, TipoErrorResponse, TipoInterrupcionResponse } from '../../types/usuario';
+import type { RolRequest, ProfesionRequest, EspecialidadRequest, TipoErrorRequest, TipoInterrupcionRequest } from '../../types/catalogo';
+import {
+  rolesService, profesionesService, especialidadesService,
+  tiposErrorService, tiposInterrupcionService,
+} from '../../services/catalogos';
 import type { ServicioCatalogo } from '../../services/catalogos';
 
 /** Forma genérica que usan la tabla y el formulario, sin importar los
@@ -85,6 +88,42 @@ export const configEspecialidades: CatalogoConfig<EspecialidadResponse, Especial
   aRequest: (v) => ({
     codigoEspecialidad: v.codigo,
     nombreEspecialidad: v.nombre,
+    descripcion: v.descripcion || undefined,
+  }),
+};
+
+export const configTiposError: CatalogoConfig<TipoErrorResponse, TipoErrorRequest> = {
+  tituloSingular: 'Tipo de error',
+  tituloPlural: 'Tipos de error',
+  servicio: tiposErrorService,
+  aItem: (t) => ({
+    id: t.idTipoError,
+    codigo: t.codigoTipoError,
+    nombre: t.nombreTipoError,
+    descripcion: t.descripcion,
+    activo: t.activo,
+  }),
+  aRequest: (v) => ({
+    codigoTipoError: v.codigo,
+    nombreTipoError: v.nombre,
+    descripcion: v.descripcion || undefined,
+  }),
+};
+
+export const configTiposInterrupcion: CatalogoConfig<TipoInterrupcionResponse, TipoInterrupcionRequest> = {
+  tituloSingular: 'Tipo de interrupción',
+  tituloPlural: 'Tipos de interrupción',
+  servicio: tiposInterrupcionService,
+  aItem: (t) => ({
+    id: t.idTipoInterrupcion,
+    codigo: t.codigoTipoInterrupcion,
+    nombre: t.nombreTipoInterrupcion,
+    descripcion: t.descripcion,
+    activo: t.activo,
+  }),
+  aRequest: (v) => ({
+    codigoTipoInterrupcion: v.codigo,
+    nombreTipoInterrupcion: v.nombre,
     descripcion: v.descripcion || undefined,
   }),
 };

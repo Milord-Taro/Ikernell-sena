@@ -1,10 +1,15 @@
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import DashboardHome from './pages/DashboardHome';
+import MetricasPage from './pages/MetricasPage';
 import CatalogosPage from './pages/CatalogosPage';
 import UsuariosPage from './pages/UsuariosPage';
 import ProyectosPage from './pages/ProyectosPage';
 import ProyectoDetallePage from './pages/ProyectoDetallePage';
+import MisActividadesPage from './pages/MisActividadesPage';
+import ErroresPage from './pages/ErroresPage';
+import InterrupcionesPage from './pages/InterrupcionesPage';
+import MensajesPage from './pages/MensajesPage';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { RoleRoute } from './routes/RoleRoute';
@@ -24,6 +29,10 @@ function App() {
         }
       >
         <Route index element={<DashboardHome />} />
+
+        {/* Abierta a cualquier autenticado, igual que Proyectos/Actividades
+            -- los 3 roles tienen algo que ver aquí eventualmente. */}
+        <Route path="metricas" element={<MetricasPage />} />
 
         <Route
           path="catalogos"
@@ -51,7 +60,40 @@ function App() {
         <Route path="proyectos" element={<ProyectosPage />} />
         <Route path="proyectos/:idProyecto" element={<ProyectoDetallePage />} />
 
-        {/* Fase 7+: etapas, actividades, errores, interrupciones */}
+        {/* Vista global "mis actividades": abierta a cualquier autenticado,
+            igual que Proyectos -- un Líder también puede tener actividades
+            asignadas si quedó como desarrollador de otro proyecto. */}
+        <Route path="actividades" element={<MisActividadesPage />} />
+
+        {/* Solo lectura, pensadas para supervisión de Coordinador/Líder --
+            el Desarrollador registra y ve las suyas desde "Mis
+            actividades" (ActividadHistorialModal), no necesita esta
+            vista global. */}
+        <Route
+          path="errores"
+          element={
+            <RoleRoute rolesPermitidos={[CODIGO_ROL.COORDINADOR, CODIGO_ROL.LIDER_PROYECTO]}>
+              <ErroresPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="interrupciones"
+          element={
+            <RoleRoute rolesPermitidos={[CODIGO_ROL.COORDINADOR, CODIGO_ROL.LIDER_PROYECTO]}>
+              <InterrupcionesPage />
+            </RoleRoute>
+          }
+        />
+
+        <Route
+          path="mensajes"
+          element={
+            <RoleRoute rolesPermitidos={[CODIGO_ROL.COORDINADOR]}>
+              <MensajesPage />
+            </RoleRoute>
+          }
+        />
       </Route>
     </Routes>
   );

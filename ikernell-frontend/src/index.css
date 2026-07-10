@@ -18,6 +18,7 @@
   --primary-fg:       #FFFFFF;
   --secondary-bg:     #EEF2FB;
   --secondary-fg:     #2461E8;
+  --primary-subtle:   var(--secondary-bg);
 
   --success:          #15803D;
   --success-bg:       #F0FDF4;
@@ -154,4 +155,23 @@ body {
 .focus-ring:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+}
+
+/* ─── Dashboard welcome hero (bienvenida en /dashboard) ───────────────── */
+@keyframes ik-respirar {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 35%, transparent); }
+  50%      { box-shadow: 0 0 0 14px color-mix(in srgb, var(--primary) 0%, transparent); }
+}
+
+@keyframes ik-orbitar {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.ik-hero-icono { animation: ik-respirar 3.5s ease-in-out infinite; }
+.ik-hero-orbita { animation: ik-orbitar 14s linear infinite; }
+.ik-hero-orbita-lenta { animation: ik-orbitar 22s linear infinite reverse; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ik-hero-icono, .ik-hero-orbita, .ik-hero-orbita-lenta { animation: none; }
 }
