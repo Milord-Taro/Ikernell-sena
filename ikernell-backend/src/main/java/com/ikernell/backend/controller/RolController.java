@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,5 +55,12 @@ public class RolController {
         RolResponse actualizado = rolService.cambiarEstado(idRol, activo);
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Rol activado correctamente." : "Rol desactivado correctamente.", actualizado));
+    }
+
+    @DeleteMapping("/{idRol}")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idRol, Authentication authentication) {
+        rolService.eliminar(idRol, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Rol eliminado correctamente."));
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -75,5 +76,15 @@ public class EtapaController {
             @PathVariable Integer idEtapa, @RequestParam String estado, Authentication authentication) {
         EtapaResponse actualizada = etapaService.cambiarEstado(idEtapa, estado, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Estado de la etapa actualizado correctamente.", actualizada));
+    }
+
+    @DeleteMapping("/{idEtapa}")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idEtapa, Authentication authentication) {
+        etapaService.eliminar(idEtapa, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Etapa eliminada correctamente."));
     }
 }

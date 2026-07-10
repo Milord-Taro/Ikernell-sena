@@ -1,19 +1,27 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ActividadRequest;
 import com.ikernell.backend.dto.ActividadResponse;
 import com.ikernell.backend.entity.Actividad;
 import com.ikernell.backend.entity.Etapa;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoActividad;
+import com.ikernell.backend.enums.EstadoProyecto;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.ActividadMapper;
 import com.ikernell.backend.repository.ActividadRepository;
+import com.ikernell.backend.repository.AsignacionProyectoRepository;
 import com.ikernell.backend.repository.EtapaRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +37,10 @@ public class ActividadService {
     private final UsuarioRepository usuarioRepository;
     private final ActividadMapper actividadMapper;
     private final AutorizacionProyectoService autorizacionProyectoService;
+    private final AsignacionProyectoRepository asignacionProyectoRepository;
+    private final TrazabilidadService trazabilidadService;
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
     public ActividadResponse crear(ActividadRequest request, String correoSolicitante) {
@@ -43,6 +55,7 @@ public class ActividadService {
         actividad.setEtapa(etapa);
 
         if (request.getIdUsuario() != null) {
+            validarPerteneceAlEquipo(request.getIdUsuario(), etapa.getProyecto().getIdProyecto());
             Usuario usuario = buscarUsuarioOFallar(request.getIdUsuario());
             actividad.setUsuario(usuario);
             actividad.setEstado(EstadoActividad.PENDIENTE);
@@ -103,6 +116,7 @@ public class ActividadService {
                     "Esta actividad ya tiene un desarrollador asignado.");
         }
 
+        validarPerteneceAlEquipo(idUsuario, actividad.getEtapa().getProyecto().getIdProyecto());
         Usuario usuario = buscarUsuarioOFallar(idUsuario);
         actividad.setUsuario(usuario);
         actividad.setEstado(EstadoActividad.PENDIENTE);
@@ -113,9 +127,16 @@ public class ActividadService {
     }
 
     /**
-     * SIN CAMBIOS respecto al diseño anterior: sigue abierto a cualquier
-     * autenticado (el propio desarrollador ejecuta su actividad, sin
-     * importar quién sea el líder del proyecto).
+     * SIN CAMBIOS de rol respecto al diseño anterior: sigue abierto a
+     * cualquier autenticado (el propio desarrollador ejecuta su
+     * actividad, sin importar quién sea el líder del proyecto).
+     *
+     * CERRADO -- regla pendiente marcada en el plan de Fase 8: el
+     * Desarrollador solo puede ejecutar/cambiar el estado de una
+     * Actividad si el Proyecto padre está "En ejecución". Si el proyecto
+     * está en Planeación, Suspendido, Finalizado o Cancelado, se
+     * rechaza -- no tiene sentido seguir moviendo actividades de un
+     * proyecto que no está corriendo.
      */
     @Transactional
     public ActividadResponse cambiarEstado(Integer idActividad, String estadoTexto) {
@@ -130,11 +151,49 @@ public class ActividadService {
             throw new BusinessException(
                     "La actividad no tiene un desarrollador asignado todavía.");
         }
+        if (actividad.getEtapa().getProyecto().getEstado() != EstadoProyecto.EN_EJECUCION) {
+            throw new BusinessException(
+                    "No se puede cambiar el estado de la actividad: el proyecto '"
+                            + actividad.getEtapa().getProyecto().getNombreProyecto()
+                            + "' no está en ejecución (estado actual: "
+                            + actividad.getEtapa().getProyecto().getEstado().getValor() + ").");
+        }
 
         actividad.setEstado(nuevoEstado);
         Actividad guardada = actividadRepository.save(actividad);
 
         return actividadMapper.toResponse(guardada);
+    }
+
+    /**
+     * Delete físico, protegido por ON DELETE RESTRICT en BD
+     * (fk_registro_error_actividad, fk_interrupcion_actividad). Ownership
+     * validado igual que actualizar()/asignar(): contra el proyecto dueño de la
+     * etapa de la actividad. Si la actividad todavía tiene errores o
+     * interrupciones registradas, la BD rechaza el borrado y lo traducimos a un
+     * ConflictException legible. El snapshot (JSON del Response actual) queda en
+     * Trazabilidad.detalle antes de borrar la fila.
+     */
+    @Transactional
+    public void eliminar(Integer idActividad, String correoSolicitante) {
+        Actividad actividad = buscarOFallar(idActividad);
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
+
+        String detalle = construirDetalle(actividadMapper.toResponse(actividad));
+
+        try {
+            actividadRepository.delete(actividad);
+            actividadRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "No se puede eliminar la actividad '" + actividad.getNombreActividad()
+                            + "': tiene errores o interrupciones registradas.");
+        }
+
+        trazabilidadService.registrar(
+                solicitante, "Actividad", actividad.getCodigoActividad(),
+                OperacionTrazabilidad.ELIMINAR, detalle);
     }
 
     private EstadoActividad parsearEstado(String estadoTexto) {
@@ -145,9 +204,33 @@ public class ActividadService {
         }
     }
 
+    /**
+     * CERRADO: antes crear()/asignar() solo verificaban que el usuario
+     * existiera, no que fuera parte del equipo del proyecto dueño de la
+     * etapa. El frontend ya limitaba el selector al equipo vigente, pero
+     * la API en sí lo permitía igual si se llamaba directo.
+     */
+    private void validarPerteneceAlEquipo(Integer idUsuario, Integer idProyecto) {
+        boolean pertenece = asignacionProyectoRepository
+                .findByUsuario_IdUsuarioAndProyecto_IdProyectoAndFechaDesvinculacionIsNull(idUsuario, idProyecto)
+                .isPresent();
+        if (!pertenece) {
+            throw new BusinessException(
+                    "El usuario seleccionado no forma parte del equipo vigente de este proyecto.");
+        }
+    }
+
     private void validarFechas(ActividadRequest request) {
         if (request.getFechaFin().isBefore(request.getFechaInicio())) {
             throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+        }
+    }
+
+    private String construirDetalle(ActividadResponse response) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
         }
     }
 

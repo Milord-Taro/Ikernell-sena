@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,5 +68,13 @@ public class TipoInterrupcionController {
         TipoInterrupcionResponse actualizado = tipoInterrupcionService.cambiarEstado(idTipoInterrupcion, activo);
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Tipo de interrupción activado." : "Tipo de interrupción desactivado.", actualizado));
+    }
+
+    @DeleteMapping("/{idTipoInterrupcion}")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idTipoInterrupcion, Authentication authentication) {
+        tipoInterrupcionService.eliminar(idTipoInterrupcion, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Tipo de interrupción eliminado correctamente."));
     }
 }

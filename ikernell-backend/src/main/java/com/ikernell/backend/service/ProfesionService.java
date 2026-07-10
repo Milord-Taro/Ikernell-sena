@@ -1,13 +1,21 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ProfesionRequest;
 import com.ikernell.backend.dto.ProfesionResponse;
 import com.ikernell.backend.entity.Profesion;
+import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.ProfesionMapper;
 import com.ikernell.backend.repository.ProfesionRepository;
+import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +27,11 @@ import java.util.List;
 public class ProfesionService {
 
     private final ProfesionRepository profesionRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ProfesionMapper profesionMapper;
+    private final TrazabilidadService trazabilidadService;
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
     public ProfesionResponse crear(ProfesionRequest request) {
@@ -72,10 +84,51 @@ public class ProfesionService {
         return profesionMapper.toResponse(guardada);
     }
 
+    /**
+     * Delete físico, protegido por ON DELETE RESTRICT en BD (fk_usuario_profesion).
+     * Si algún usuario todavía tiene esta profesión, la BD rechaza el borrado y lo
+     * traducimos a un ConflictException legible. El snapshot (JSON del Response
+     * actual) queda en Trazabilidad.detalle antes de borrar la fila.
+     */
+    @Transactional
+    public void eliminar(Integer idProfesion, String correoSolicitante) {
+        Profesion profesion = buscarOFallar(idProfesion);
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
+
+        String detalle = construirDetalle(profesionMapper.toResponse(profesion));
+
+        try {
+            profesionRepository.delete(profesion);
+            profesionRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "No se puede eliminar la profesión '" + profesion.getNombreProfesion()
+                            + "': está en uso por uno o más usuarios.");
+        }
+
+        trazabilidadService.registrar(
+                solicitante, "Profesion", profesion.getCodigoProfesion(),
+                OperacionTrazabilidad.ELIMINAR, detalle);
+    }
+
     private Profesion buscarOFallar(Integer idProfesion) {
         return profesionRepository.findById(idProfesion)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe una profesión con id " + idProfesion + "."));
+    }
+
+    private Usuario buscarSolicitanteOFallar(String correoElectronico) {
+        return usuarioRepository.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoElectronico + "'."));
+    }
+
+    private String construirDetalle(ProfesionResponse response) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
     }
 
     private void validarCodigoDisponible(String codigoProfesion, Integer idProfesionActual) {

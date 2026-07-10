@@ -1,10 +1,16 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.EtapaRequest;
 import com.ikernell.backend.dto.EtapaResponse;
 import com.ikernell.backend.entity.Etapa;
 import com.ikernell.backend.entity.Proyecto;
+import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoEtapa;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -12,6 +18,7 @@ import com.ikernell.backend.mapper.EtapaMapper;
 import com.ikernell.backend.repository.EtapaRepository;
 import com.ikernell.backend.repository.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +33,9 @@ public class EtapaService {
     private final ProyectoRepository proyectoRepository;
     private final EtapaMapper etapaMapper;
     private final AutorizacionProyectoService autorizacionProyectoService;
+    private final TrazabilidadService trazabilidadService;
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
     public EtapaResponse crear(EtapaRequest request, String correoSolicitante) {
@@ -97,6 +107,36 @@ public class EtapaService {
         return etapaMapper.toResponse(guardada);
     }
 
+    /**
+     * Delete físico, protegido por ON DELETE RESTRICT en BD (fk_actividad_etapa).
+     * Ownership validado igual que actualizar()/cambiarEstado(): contra el
+     * proyecto ACTUAL de la etapa. Si la etapa todavía tiene actividades, la BD
+     * rechaza el borrado y lo traducimos a un ConflictException legible. El
+     * snapshot (JSON del Response actual) queda en Trazabilidad.detalle antes de
+     * borrar la fila.
+     */
+    @Transactional
+    public void eliminar(Integer idEtapa, String correoSolicitante) {
+        Etapa etapa = buscarOFallar(idEtapa);
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, etapa.getProyecto().getIdProyecto());
+
+        String detalle = construirDetalle(etapaMapper.toResponse(etapa));
+
+        try {
+            etapaRepository.delete(etapa);
+            etapaRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "No se puede eliminar la etapa '" + etapa.getNombreEtapa()
+                            + "': tiene actividades registradas.");
+        }
+
+        trazabilidadService.registrar(
+                solicitante, "Etapa", etapa.getCodigoEtapa(),
+                OperacionTrazabilidad.ELIMINAR, detalle);
+    }
+
     private EstadoEtapa parsearEstado(String estadoTexto) {
         try {
             return EstadoEtapa.desdeValor(estadoTexto);
@@ -108,6 +148,14 @@ public class EtapaService {
     private void validarFechas(EtapaRequest request) {
         if (request.getFechaFin().isBefore(request.getFechaInicio())) {
             throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+        }
+    }
+
+    private String construirDetalle(EtapaResponse response) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
         }
     }
 

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,5 +61,12 @@ public class EspecialidadController {
         EspecialidadResponse actualizada = especialidadService.cambiarEstado(idEspecialidad, activo);
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Especialidad activada correctamente." : "Especialidad desactivada correctamente.", actualizada));
+    }
+
+    @DeleteMapping("/{idEspecialidad}")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idEspecialidad, Authentication authentication) {
+        especialidadService.eliminar(idEspecialidad, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Especialidad eliminada correctamente."));
     }
 }

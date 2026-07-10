@@ -59,4 +59,30 @@ public class AuthService {
                 .usuario(usuarioMapper.toResponse(usuario))
                 .build();
     }
+
+    /**
+     * NUEVO: renueva el token de un usuario que YA está autenticado (el
+     * filtro JWT ya validó el token vigente antes de llegar aquí --
+     * SecurityConfig exige autenticación en este endpoint). No pide
+     * contraseña otra vez. Revalida que la cuenta siga activa, por si la
+     * inhabilitaron mientras la sesión estaba abierta.
+     */
+    @Transactional
+    public LoginResponse refrescar(String correoElectronico) {
+        Usuario usuario = usuarioRepository.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new UnauthorizedException("Correo o contraseña incorrectos."));
+
+        if (!usuario.getActivo()) {
+            throw new UnauthorizedException("El usuario se encuentra inactivo.");
+        }
+
+        String token = jwtService.generarToken(usuario.getCorreoElectronico(), usuario.getRol().getCodigoRol());
+
+        return LoginResponse.builder()
+                .token(token)
+                .tipoToken("Bearer")
+                .expiraEnMs(jwtService.getExpiracionMs())
+                .usuario(usuarioMapper.toResponse(usuario))
+                .build();
+    }
 }

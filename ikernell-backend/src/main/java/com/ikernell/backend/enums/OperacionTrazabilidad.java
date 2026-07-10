@@ -10,7 +10,8 @@ public enum OperacionTrazabilidad {
     CAMBIAR_ESTADO("Cambiar Estado"),
     ASIGNAR("Asignar"),
     DESASIGNAR("Desasignar"),
-    AUTENTICAR("Autenticar");
+    AUTENTICAR("Autenticar"),
+    ELIMINAR("Eliminar");
 
     private final String valor;
 
