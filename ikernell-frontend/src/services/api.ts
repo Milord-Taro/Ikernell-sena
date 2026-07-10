@@ -3,6 +3,7 @@ import { ApiRequestError } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL as string;
 const TOKEN_KEY = 'ikernell_token';
+const EXPIRA_KEY = 'ikernell_expira_en';
 const SESION_EXPIRADA_KEY = 'ikernell_sesion_expirada';
 
 if (!API_URL) {
@@ -22,6 +23,26 @@ export function guardarToken(token: string): void {
 
 export function borrarToken(): void {
   localStorage.removeItem(TOKEN_KEY);
+  borrarExpiracion();
+}
+
+/**
+ * NUEVO: guarda el timestamp ABSOLUTO (Date.now() + expiraEnMs) en vez
+ * del "faltan X ms" que manda el backend -- así el aviso de sesión por
+ * expirar (SessionExpiryModal) puede calcular "cuánto falta" en
+ * cualquier momento sin tener que recordar cuándo se hizo login.
+ */
+export function guardarExpiracion(expiraEnMs: number): void {
+  localStorage.setItem(EXPIRA_KEY, String(Date.now() + expiraEnMs));
+}
+
+export function obtenerExpiracionTimestamp(): number | null {
+  const valor = localStorage.getItem(EXPIRA_KEY);
+  return valor ? Number(valor) : null;
+}
+
+export function borrarExpiracion(): void {
+  localStorage.removeItem(EXPIRA_KEY);
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {

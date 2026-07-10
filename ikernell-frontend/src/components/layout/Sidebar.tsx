@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react'
 import {
-  LayoutDashboard, FolderKanban, Bug, Layers, Users,
-  Settings, ChevronLeft, ChevronRight, Activity, GitBranch, BookMarked,
+  LayoutDashboard, FolderKanban, Bug, Users,
+  Settings, ChevronLeft, ChevronRight, Activity, GitBranch, BookMarked, MessageSquare, BarChart3,
 } from 'lucide-react'
 import { Badge } from '../ui/Badge'
 import { CODIGO_ROL } from '../../types/usuario'
@@ -19,17 +19,27 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: 'dashboard',   label: 'Dashboard',    icon: <LayoutDashboard size={16} />, section: 'Principal' },
+  { id: 'metricas',    label: 'Métricas',     icon: <BarChart3       size={16} /> },
   { id: 'proyectos',   label: 'Proyectos',    icon: <FolderKanban    size={16} /> },
-  { id: 'etapas',      label: 'Etapas',       icon: <Layers          size={16} /> },
   { id: 'actividades', label: 'Actividades',  icon: <Activity        size={16} /> },
-  { id: 'errores',     label: 'Errores',      icon: <Bug             size={16} />, section: 'Seguimiento' },
-  { id: 'interrupciones', label: 'Interrupciones', icon: <GitBranch  size={16} /> },
+  {
+    id: 'errores', label: 'Errores', icon: <Bug size={16} />, section: 'Seguimiento',
+    rolesPermitidos: [CODIGO_ROL.COORDINADOR, CODIGO_ROL.LIDER_PROYECTO],
+  },
+  {
+    id: 'interrupciones', label: 'Interrupciones', icon: <GitBranch size={16} />,
+    rolesPermitidos: [CODIGO_ROL.COORDINADOR, CODIGO_ROL.LIDER_PROYECTO],
+  },
   {
     id: 'usuarios', label: 'Usuarios', icon: <Users size={16} />, section: 'Administración',
     rolesPermitidos: [CODIGO_ROL.COORDINADOR, CODIGO_ROL.LIDER_PROYECTO],
   },
   {
     id: 'catalogos', label: 'Catálogos', icon: <BookMarked size={16} />,
+    rolesPermitidos: [CODIGO_ROL.COORDINADOR],
+  },
+  {
+    id: 'mensajes', label: 'Mensajes', icon: <MessageSquare size={16} />,
     rolesPermitidos: [CODIGO_ROL.COORDINADOR],
   },
   { id: 'configuracion', label: 'Configuración', icon: <Settings size={16} /> },

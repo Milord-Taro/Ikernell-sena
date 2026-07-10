@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Sidebar } from '../components/layout/Sidebar';
 import { Topbar } from '../components/layout/Topbar';
+import { SessionExpiryModal } from '../components/SessionExpiryModal';
 import { useAuth } from '../context/AuthContext';
 
 export function DashboardLayout() {
@@ -25,6 +26,7 @@ export function DashboardLayout() {
 
   return (
     <div className="flex h-screen bg-[var(--background)] overflow-hidden">
+      <SessionExpiryModal />
       <Sidebar
         activeItem={idActivo}
         onItemClick={manejarClicItem}
