@@ -3,6 +3,7 @@ package com.ikernell.backend.service;
 import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.ProyectoRequest;
 import com.ikernell.backend.dto.ProyectoResponse;
+import com.ikernell.backend.dto.UsuarioResponse;
 import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.entity.Proyecto;
 import com.ikernell.backend.entity.Usuario;
@@ -12,8 +13,10 @@ import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.ProyectoMapper;
+import com.ikernell.backend.mapper.UsuarioMapper;
 import com.ikernell.backend.repository.AsignacionProyectoRepository;
 import com.ikernell.backend.repository.ProyectoRepository;
+import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +30,25 @@ public class ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
     private final AsignacionProyectoRepository asignacionProyectoRepository;
+    private final UsuarioRepository usuarioRepository;
     private final ProyectoMapper proyectoMapper;
+    private final UsuarioMapper usuarioMapper;
     private final AutorizacionProyectoService autorizacionProyectoService;
 
     /**
      * Cualquiera con el rol organizacional Líder de Proyecto o Coordinador
      * puede crear un proyecto (el @PreAuthorize del Controller ya filtra
-     * esto). Si quien crea es Líder de Proyecto, queda auto-vinculado como
-     * el Líder de ESTE proyecto en AsignacionProyecto -- así desde el
-     * primer momento hay un dueño claro y nadie más puede tocarlo salvo
-     * Coordinador. Si quien crea es Coordinador, no se autovincula (el
-     * Coordinador ya puede gestionar cualquier proyecto sin necesitar
-     * estar en AsignacionProyecto).
+     * esto).
+     *
+     * Si quien crea es Líder de Proyecto, queda auto-vinculado como el
+     * Líder de ESTE proyecto -- ignora idLiderInicial si por algún motivo
+     * viene en el request, ya que la autovinculación tiene prioridad.
+     *
+     * Si quien crea es Coordinador, NO se autovincula (el Coordinador ya
+     * gestiona cualquier proyecto sin necesitar estar en
+     * AsignacionProyecto), pero SÍ puede elegir un Líder inicial mediante
+     * idLiderInicial -- si no lo manda, el proyecto queda sin líder hasta
+     * que alguien lo asigne después desde "Equipo".
      */
     @Transactional
     public ProyectoResponse crear(ProyectoRequest request, String correoCreador) {
@@ -52,21 +62,27 @@ public class ProyectoService {
         Proyecto guardado = proyectoRepository.save(proyecto);
 
         if (RolConstantes.LIDER_PROYECTO.equals(creador.getRol().getCodigoRol())) {
-            AsignacionProyecto asignacion = AsignacionProyecto.builder()
-                    .usuario(creador)
-                    .proyecto(guardado)
-                    .rolProyecto(RolProyecto.LIDER)
-                    .build();
-            asignacionProyectoRepository.save(asignacion);
+            vincularLider(guardado, creador);
+        } else if (request.getIdLiderInicial() != null) {
+            Usuario liderElegido = usuarioRepository.findById(request.getIdLiderInicial())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "No existe un usuario con id " + request.getIdLiderInicial() + "."));
+
+            if (!RolConstantes.LIDER_PROYECTO.equals(liderElegido.getRol().getCodigoRol())) {
+                throw new BusinessException(
+                        "El usuario elegido como líder inicial no tiene el rol de Líder de Proyecto.");
+            }
+
+            vincularLider(guardado, liderElegido);
         }
 
-        return proyectoMapper.toResponse(guardado);
+        return enriquecerConLider(guardado);
     }
 
     public List<ProyectoResponse> listarTodos() {
         return proyectoRepository.findAll()
                 .stream()
-                .map(proyectoMapper::toResponse)
+                .map(this::enriquecerConLider)
                 .toList();
     }
 
@@ -75,12 +91,12 @@ public class ProyectoService {
 
         return proyectoRepository.findByEstado(estado)
                 .stream()
-                .map(proyectoMapper::toResponse)
+                .map(this::enriquecerConLider)
                 .toList();
     }
 
     public ProyectoResponse obtenerPorId(Integer idProyecto) {
-        return proyectoMapper.toResponse(buscarOFallar(idProyecto));
+        return enriquecerConLider(buscarOFallar(idProyecto));
     }
 
     @Transactional
@@ -96,7 +112,7 @@ public class ProyectoService {
 
         Proyecto actualizado = proyectoRepository.save(proyecto);
 
-        return proyectoMapper.toResponse(actualizado);
+        return enriquecerConLider(actualizado);
     }
 
     @Transactional
@@ -109,7 +125,33 @@ public class ProyectoService {
         proyecto.setEstado(nuevoEstado);
         Proyecto guardado = proyectoRepository.save(proyecto);
 
-        return proyectoMapper.toResponse(guardado);
+        return enriquecerConLider(guardado);
+    }
+
+    private void vincularLider(Proyecto proyecto, Usuario lider) {
+        AsignacionProyecto asignacion = AsignacionProyecto.builder()
+                .usuario(lider)
+                .proyecto(proyecto)
+                .rolProyecto(RolProyecto.LIDER)
+                .build();
+        asignacionProyectoRepository.save(asignacion);
+    }
+
+    /**
+     * Agrega el líder vigente (o null) a un ProyectoResponse ya mapeado.
+     * Centralizado aquí para no repetir la consulta en cada método.
+     */
+    private ProyectoResponse enriquecerConLider(Proyecto proyecto) {
+        ProyectoResponse response = proyectoMapper.toResponse(proyecto);
+        response.setLiderActual(obtenerLiderActual(proyecto.getIdProyecto()));
+        return response;
+    }
+
+    private UsuarioResponse obtenerLiderActual(Integer idProyecto) {
+        return asignacionProyectoRepository
+                .findByProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(idProyecto, RolProyecto.LIDER)
+                .map(asignacion -> usuarioMapper.toResponse(asignacion.getUsuario()))
+                .orElse(null);
     }
 
     private EstadoProyecto parsearEstado(String estadoTexto) {

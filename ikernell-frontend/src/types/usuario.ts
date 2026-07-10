@@ -47,6 +47,43 @@ export interface UsuarioResponse {
   fechaCreacion: string;
 }
 
+/**
+ * Creación (Coordinador): incluye correo y contraseña, ninguno de los
+ * dos editable después -- coincide con UsuarioRequest.java del backend.
+ */
+export interface UsuarioRequest {
+  codigoUsuario: string;
+  nombres: string;
+  apellidos: string;
+  tipoIdentificacion: TipoIdentificacion;
+  numeroIdentificacion: string;
+  fechaNacimiento: string;
+  correoElectronico: string;
+  contrasena: string;
+  ciudad: string;
+  idRol: number;
+  idProfesion: number;
+  idEspecialidad: number;
+}
+
+/**
+ * Edición (Coordinador): SIN correo ni contraseña -- coincide con
+ * UsuarioUpdateRequest.java del backend (correo inmutable, contraseña
+ * solo se cambia por el propio usuario vía /me/contrasena).
+ */
+export interface UsuarioUpdateRequest {
+  codigoUsuario: string;
+  nombres: string;
+  apellidos: string;
+  tipoIdentificacion: TipoIdentificacion;
+  numeroIdentificacion: string;
+  fechaNacimiento: string;
+  ciudad: string;
+  idRol: number;
+  idProfesion: number;
+  idEspecialidad: number;
+}
+
 // Códigos reales de RolConstantes.java -- usar estas constantes en vez de
 // strings sueltos al comparar rol.codigoRol en el frontend.
 export const CODIGO_ROL = {

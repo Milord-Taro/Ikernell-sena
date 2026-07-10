@@ -18,6 +18,9 @@ public interface AsignacionProyectoRepository extends JpaRepository<AsignacionPr
     Optional<AsignacionProyecto> findByUsuario_IdUsuarioAndProyecto_IdProyectoAndFechaDesvinculacionIsNull(
             Integer idUsuario, Integer idProyecto);
 
+    Optional<AsignacionProyecto> findByProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(
+            Integer idProyecto, RolProyecto rolProyecto);
+
     // Usado por AutorizacionProyectoService: ¿este usuario es el Líder
     // VIGENTE de ESTE proyecto puntual? (no de proyectos en general).
     boolean existsByUsuario_IdUsuarioAndProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(

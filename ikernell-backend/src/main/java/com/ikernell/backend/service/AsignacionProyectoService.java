@@ -5,6 +5,7 @@ import com.ikernell.backend.dto.AsignacionProyectoResponse;
 import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.entity.Proyecto;
 import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -49,6 +50,20 @@ public class AsignacionProyectoService {
                     throw new ConflictException(
                             "El usuario ya tiene una asignación vigente en este proyecto.");
                 });
+
+        // NUEVO: solo puede haber UN Líder vigente por proyecto. Si se
+        // está asignando un nuevo Líder y ya existe uno, se reemplaza
+        // (se desvincula automáticamente al anterior) en vez de acumular
+        // varios líderes simultáneos, que no tiene sentido de negocio.
+        if (request.getRolProyecto() == RolProyecto.LIDER) {
+            asignacionProyectoRepository
+                    .findByProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(
+                            request.getIdProyecto(), RolProyecto.LIDER)
+                    .ifPresent(liderAnterior -> {
+                        liderAnterior.setFechaDesvinculacion(LocalDate.now());
+                        asignacionProyectoRepository.save(liderAnterior);
+                    });
+        }
 
         AsignacionProyecto asignacion = asignacionProyectoMapper.toEntity(request);
         asignacion.setUsuario(usuario);

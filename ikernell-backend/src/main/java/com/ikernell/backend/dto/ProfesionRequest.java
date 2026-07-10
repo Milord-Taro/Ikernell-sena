@@ -18,12 +18,13 @@ import lombok.Setter;
 public class ProfesionRequest {
 
     @NotBlank(message = "El código de la profesión es obligatorio.")
-    @Size(max = 20, message = "El código de la profesión no puede superar los 20 caracteres.")
+    @Size(min = 3, max = 20, message = "El código de la profesión debe tener entre 3 y 20 caracteres.")
     private String codigoProfesion;
 
     @NotBlank(message = "El nombre de la profesión es obligatorio.")
     @Size(min = 3, max = 100, message = "El nombre de la profesión debe tener entre 3 y 100 caracteres.")
     private String nombreProfesion;
 
+    @Size(max = 255, message = "La descripción no puede superar los 255 caracteres.")
     private String descripcion;
 }

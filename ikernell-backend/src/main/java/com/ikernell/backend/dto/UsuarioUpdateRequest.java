@@ -1,10 +1,8 @@
 package com.ikernell.backend.dto;
 
 import com.ikernell.backend.enums.TipoIdentificacion;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
+import com.ikernell.backend.validation.EdadMinima;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,10 +40,12 @@ public class UsuarioUpdateRequest {
 
     @NotBlank(message = "El número de identificación es obligatorio.")
     @Size(max = 30, message = "El número de identificación no puede superar los 30 caracteres.")
+    @Pattern(regexp = "\\d+", message = "El número de identificación solo puede contener dígitos.")
     private String numeroIdentificacion;
 
     @NotNull(message = "La fecha de nacimiento es obligatoria.")
     @PastOrPresent(message = "La fecha de nacimiento no puede ser futura.")
+    @EdadMinima(value = 18, message = "El usuario debe ser mayor de edad (18 años o más).")
     private LocalDate fechaNacimiento;
 
     @NotBlank(message = "La ciudad es obligatoria.")
