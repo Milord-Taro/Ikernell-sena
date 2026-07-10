@@ -13,6 +13,7 @@ export interface ServicioCatalogo<TResponse, TRequest> {
   crear: (request: TRequest) => Promise<TResponse>;
   actualizar: (id: number, request: TRequest) => Promise<TResponse>;
   cambiarEstado: (id: number, activo: boolean) => Promise<TResponse>;
+  eliminar: (id: number) => Promise<void>;
 }
 
 /**
@@ -26,6 +27,9 @@ function crearServicioCatalogo<TResponse, TRequest>(basePath: string): ServicioC
     crear: (request) => api.post<TResponse>(`/${basePath}`, request),
     actualizar: (id, request) => api.put<TResponse>(`/${basePath}/${id}`, request),
     cambiarEstado: (id, activo) => api.patch<TResponse>(`/${basePath}/${id}/estado?activo=${activo}`),
+    // NUEVO: el backend ya lo soportaba desde hace varias fases (protegido
+    // por ON DELETE RESTRICT) -- solo faltaba conectarlo del lado frontend.
+    eliminar: (id) => api.delete<void>(`/${basePath}/${id}`),
   };
 }
 

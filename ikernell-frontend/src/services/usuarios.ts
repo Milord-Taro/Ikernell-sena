@@ -1,5 +1,6 @@
 import { api } from './api';
 import type { UsuarioResponse, UsuarioRequest, UsuarioUpdateRequest } from '../types/usuario';
+import type { CambiarContrasenaRequest } from '../types/auth';
 
 export function obtenerMiPerfil(): Promise<UsuarioResponse> {
   return api.get<UsuarioResponse>('/usuarios/me');
@@ -23,4 +24,9 @@ export function actualizarUsuario(idUsuario: number, request: UsuarioUpdateReque
 
 export function cambiarEstadoUsuario(idUsuario: number, activo: boolean): Promise<UsuarioResponse> {
   return api.patch<UsuarioResponse>(`/usuarios/${idUsuario}/estado?activo=${activo}`);
+}
+
+// NUEVO (Fase 12): endpoint ya existía en el backend, sin usar en frontend.
+export function cambiarMiContrasena(request: CambiarContrasenaRequest): Promise<void> {
+  return api.patch<void>('/usuarios/me/contrasena', request);
 }

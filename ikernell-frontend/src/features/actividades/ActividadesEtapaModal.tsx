@@ -6,7 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/DataDisplay';
 import { Select } from '../../components/ui/FormControls';
-import { Alert } from '../../components/ui/Feedback';
+import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { ActividadFormModal } from './ActividadFormModal';
 import { ActividadHistorialModal } from '../registros/ActividadHistorialModal';
 import { useAuth } from '../../context/AuthContext';
@@ -66,6 +66,7 @@ export function ActividadesEtapaModal({
   const [actividadEditando, setActividadEditando] = useState<ActividadResponse | null>(null);
   const [actividadHistorial, setActividadHistorial] = useState<ActividadResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [actividadAEliminar, setActividadAEliminar] = useState<ActividadResponse | null>(null);
 
   const cargar = async () => {
     setCargando(true);
@@ -133,16 +134,20 @@ export function ActividadesEtapaModal({
     }
   };
 
-  const alEliminar = async (actividad: ActividadResponse) => {
-    if (!window.confirm(`¿Eliminar la actividad "${actividad.nombreActividad}"? Esta acción no se puede deshacer.`)) {
-      return;
-    }
+  const alEliminar = (actividad: ActividadResponse) => {
     setError(null);
+    setActividadAEliminar(actividad);
+  };
+
+  const confirmarEliminar = async () => {
+    if (!actividadAEliminar) return;
     try {
-      await eliminarActividad(actividad.idActividad);
+      await eliminarActividad(actividadAEliminar.idActividad);
+      setActividadAEliminar(null);
       await cargar();
     } catch (err) {
       setError(err instanceof ApiRequestError ? err.message : 'No se pudo eliminar la actividad.');
+      setActividadAEliminar(null);
     }
   };
 
@@ -356,6 +361,16 @@ export function ActividadesEtapaModal({
           onClose={() => setActividadHistorial(null)}
         />
       )}
+
+      <ConfirmDialog
+        open={Boolean(actividadAEliminar)}
+        title={`¿Eliminar la actividad "${actividadAEliminar?.nombreActividad}"?`}
+        description="Esta acción no se puede deshacer."
+        confirmLabel="Eliminar"
+        variant="destructive"
+        onConfirm={confirmarEliminar}
+        onCancel={() => setActividadAEliminar(null)}
+      />
     </>
   );
 }

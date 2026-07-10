@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-import { listarRegistrosError } from '../services/registrosError';
-import type { RegistroErrorResponse } from '../types/registroError';
+import { Select } from '../components/ui/FormControls';
+import { Alert } from '../components/ui/Feedback';
+import { listarRegistrosError, cambiarEstadoRegistroError } from '../services/registrosError';
+import { ESTADOS_REGISTRO_ERROR } from '../types/registroError';
+import type { RegistroErrorResponse, EstadoRegistroError } from '../types/registroError';
 import type { NivelCriticidad } from '../types/actividad';
+import { ApiRequestError } from '../types/api';
 
 const variantePorSeveridad: Record<NivelCriticidad, 'default' | 'warning' | 'error' | 'info'> = {
   'Baja': 'default',
@@ -12,16 +16,41 @@ const variantePorSeveridad: Record<NivelCriticidad, 'default' | 'warning' | 'err
   'Crítica': 'error',
 };
 
-/** Solo lectura -- registrar un error se hace desde "Mis actividades" (ActividadHistorialModal). */
+/**
+ * Registrar un error se sigue haciendo desde "Mis actividades"
+ * (ActividadHistorialModal). Esta vista es de supervisión para
+ * Coordinador/Líder: pueden ver todo y también actualizar el estado
+ * (Abierto/En progreso/Resuelto/Descartado) sin restricción de rol,
+ * igual que desde la propia actividad.
+ */
 export default function ErroresPage() {
   const [registros, setRegistros] = useState<RegistroErrorResponse[]>([]);
   const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const cargar = async () => {
+    setCargando(true);
+    try {
+      const resp = await listarRegistrosError();
+      setRegistros(resp);
+    } finally {
+      setCargando(false);
+    }
+  };
 
   useEffect(() => {
-    listarRegistrosError()
-      .then(setRegistros)
-      .finally(() => setCargando(false));
+    cargar();
   }, []);
+
+  const alCambiarEstado = async (registro: RegistroErrorResponse, estado: string) => {
+    setError(null);
+    try {
+      await cambiarEstadoRegistroError(registro.idRegistroError, estado as EstadoRegistroError);
+      await cargar();
+    } catch (err) {
+      setError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado.');
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -31,6 +60,8 @@ export default function ErroresPage() {
           Todos los errores registrados, en cualquier proyecto.
         </p>
       </div>
+
+      {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
       {cargando ? (
         <p className="type-body-sm text-[var(--text-tertiary)]">Cargando errores...</p>
@@ -83,7 +114,20 @@ export default function ErroresPage() {
                   <p className="type-body-sm text-[var(--text-secondary)]">{r.descripcion}</p>
                 </div>
 
-                <span className="type-caption text-[var(--text-tertiary)]">Registrado: {r.fechaRegistro}</span>
+                <div className="flex items-end justify-between gap-4">
+                  <span className="type-caption text-[var(--text-tertiary)]">Registrado: {r.fechaRegistro}</span>
+                  <div className="w-40">
+                    <Select
+                      label="Estado"
+                      value={r.estado}
+                      onChange={(e) => alCambiarEstado(r, e.target.value)}
+                    >
+                      {ESTADOS_REGISTRO_ERROR.map((estado) => (
+                        <option key={estado} value={estado}>{estado}</option>
+                      ))}
+                    </Select>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           ))}

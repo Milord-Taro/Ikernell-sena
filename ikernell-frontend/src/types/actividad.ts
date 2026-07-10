@@ -50,6 +50,8 @@ export interface ActividadResponse {
   fechaInicio: string;
   fechaFin: string;
   estado: EstadoActividad;
+  /** NUEVO: solo tiene valor si estado === 'Finalizada'. */
+  fechaFinalizacion: string | null;
   fechaCreacion: string;
 }
 

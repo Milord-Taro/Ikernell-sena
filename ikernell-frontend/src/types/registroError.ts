@@ -1,6 +1,12 @@
 import type { ActividadResponse, NivelCriticidad } from './actividad';
 import type { TipoErrorResponse } from './usuario';
 
+export type EstadoRegistroError = 'Abierto' | 'En progreso' | 'Resuelto' | 'Descartado';
+
+export const ESTADOS_REGISTRO_ERROR: EstadoRegistroError[] = [
+  'Abierto', 'En progreso', 'Resuelto', 'Descartado',
+];
+
 export interface RegistroErrorResponse {
   idRegistroError: number;
   codigoRegistroError: string;
@@ -9,14 +15,15 @@ export interface RegistroErrorResponse {
   titulo: string;
   descripcion: string;
   severidad: NivelCriticidad;
+  estado: EstadoRegistroError;
   fechaRegistro: string;
 }
 
 /**
  * NOTA: no hay campo "fase" separado -- la fase/etapa de un
  * RegistroError se deriva de actividad.etapa (la actividad ya pertenece
- * a una etapa). Decisión ya tomada en el DTO real del backend, no hay
- * que agregar nada extra aquí.
+ * a una etapa). "estado" tampoco se manda al crear -- el backend
+ * siempre nace en "Abierto"; se cambia después vía PATCH /estado.
  */
 export interface RegistroErrorRequest {
   codigoRegistroError: string;

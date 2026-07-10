@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Trash2 } from 'lucide-react';
 import { Table } from '../../components/ui/Table';
 import { Button } from '../../components/ui/Button';
 import { Switch } from '../../components/ui/FormControls';
+import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { CatalogoFormModal } from './CatalogoFormModal';
+import { ApiRequestError } from '../../types/api';
 import type { CatalogoConfig, CatalogoItem } from './config';
 
 interface CatalogoTableProps<TResponse, TRequest> {
@@ -16,6 +18,9 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
   const [busqueda, setBusqueda] = useState('');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [itemEditando, setItemEditando] = useState<CatalogoItem | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [itemAEliminar, setItemAEliminar] = useState<CatalogoItem | null>(null);
+  const [eliminando, setEliminando] = useState(false);
 
   const cargar = async () => {
     setCargando(true);
@@ -30,6 +35,7 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
   // Se vuelve a cargar cada vez que cambia de catálogo (al cambiar de tab).
   useEffect(() => {
     setBusqueda('');
+    setError(null);
     cargar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.tituloPlural]);
@@ -55,8 +61,32 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
     await cargar();
   };
 
+  const alEliminar = (item: CatalogoItem) => {
+    setError(null);
+    setItemAEliminar(item);
+  };
+
+  const confirmarEliminar = async () => {
+    if (!itemAEliminar) return;
+    setEliminando(true);
+    try {
+      await config.servicio.eliminar(itemAEliminar.id);
+      setItemAEliminar(null);
+      await cargar();
+    } catch (err) {
+      // El backend rechaza con 409 si el registro está en uso (protegido
+      // por ON DELETE RESTRICT) -- ese mensaje ya viene listo para mostrar.
+      setError(err instanceof ApiRequestError ? err.message : `No se pudo eliminar "${itemAEliminar.nombre}".`);
+      setItemAEliminar(null);
+    } finally {
+      setEliminando(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
+      {error && <Alert variant="error" title="No se pudo eliminar">{error}</Alert>}
+
       <div className="flex items-center justify-between gap-3">
         <div className="relative w-64">
           <Search
@@ -109,19 +139,24 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
           {
             key: 'acciones',
             header: '',
-            width: '90px',
+            width: '130px',
             align: 'right',
             render: (row) => (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setItemEditando(row);
-                  setModalAbierto(true);
-                }}
-              >
-                Editar
-              </Button>
+              <div className="flex items-center justify-end gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setItemEditando(row);
+                    setModalAbierto(true);
+                  }}
+                >
+                  Editar
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => alEliminar(row)}>
+                  <Trash2 size={14} />
+                </Button>
+              </div>
             ),
           },
         ]}
@@ -140,6 +175,16 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
           setItemEditando(null);
         }}
         onGuardar={alGuardar}
+      />
+
+      <ConfirmDialog
+        open={Boolean(itemAEliminar)}
+        title={`¿Eliminar "${itemAEliminar?.nombre}"?`}
+        description="Esta acción no se puede deshacer."
+        confirmLabel="Eliminar"
+        variant="destructive"
+        onConfirm={confirmarEliminar}
+        onCancel={() => setItemAEliminar(null)}
       />
     </div>
   );
