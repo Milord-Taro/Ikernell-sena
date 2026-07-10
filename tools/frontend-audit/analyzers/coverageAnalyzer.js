@@ -3,7 +3,7 @@ function stripApiPrefix(p) {
 }
 
 function normalizeForCompare(p) {
-    return stripApiPrefix(p.replace(/\{[^}]+\}/g, "{param}"));
+    return stripApiPrefix(p.replace(/\{[^}]+\}/g, "{param}").split("?")[0]);
 }
 
 function pathsMatch(a, b) {
