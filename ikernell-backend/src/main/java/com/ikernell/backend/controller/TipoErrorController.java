@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,5 +72,13 @@ public class TipoErrorController {
         TipoErrorResponse actualizado = tipoErrorService.cambiarEstado(idTipoError, activo);
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Tipo de error activado." : "Tipo de error desactivado.", actualizado));
+    }
+
+    @DeleteMapping("/{idTipoError}")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idTipoError, Authentication authentication) {
+        tipoErrorService.eliminar(idTipoError, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Tipo de error eliminado correctamente."));
     }
 }

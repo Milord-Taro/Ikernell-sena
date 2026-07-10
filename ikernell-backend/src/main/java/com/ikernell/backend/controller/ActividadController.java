@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,8 +25,8 @@ import java.util.List;
 
 /**
  * CORREGIDO: gate de rol amplía a Coordinador + Líder de Proyecto para
- * crear/editar/asignar. El ownership real (¿es el líder de ESE proyecto?)
- * lo valida el Service. cambiarEstado SIN CAMBIOS (sigue abierto).
+ * crear/editar/asignar/eliminar. El ownership real (¿es el líder de ESE
+ * proyecto?) lo valida el Service. cambiarEstado SIN CAMBIOS (sigue abierto).
  */
 @RestController
 @RequestMapping("/api/actividades")
@@ -94,5 +95,15 @@ public class ActividadController {
             @PathVariable Integer idActividad, @RequestParam String estado) {
         ActividadResponse actualizada = actividadService.cambiarEstado(idActividad, estado);
         return ResponseEntity.ok(ApiResponse.of("Estado de la actividad actualizado correctamente.", actualizada));
+    }
+
+    @DeleteMapping("/{idActividad}")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idActividad, Authentication authentication) {
+        actividadService.eliminar(idActividad, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Actividad eliminada correctamente."));
     }
 }

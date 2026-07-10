@@ -17,7 +17,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 /**
- * - /api/auth/** es público (login, recuperación de contraseña).
+ * - /api/auth/login, /api/auth/recuperar-contrasena y
+ *   /api/auth/restablecer-contrasena son públicos.
+ * - CORREGIDO: /api/auth/** completo YA NO es público -- el nuevo
+ *   /api/auth/refrescar necesita sesión vigente (extiende un token que
+ *   ya existe, no tiene sentido que alguien sin token lo llame). Antes
+ *   el wildcard lo habría dejado público por accidente.
  * - POST /api/mensajes-contacto es público (RF-002: cliente anónimo envía
  *   mensaje sin autenticación). El resto de ese controller SÍ requiere
  *   autenticación (gestionado con @PreAuthorize a nivel de método).
@@ -37,7 +42,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/recuperar-contrasena",
+                                "/api/auth/restablecer-contrasena")
+                        .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/mensajes-contacto").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

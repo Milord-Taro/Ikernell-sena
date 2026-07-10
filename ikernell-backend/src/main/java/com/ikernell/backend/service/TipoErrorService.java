@@ -1,13 +1,21 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoErrorRequest;
 import com.ikernell.backend.dto.TipoErrorResponse;
 import com.ikernell.backend.entity.TipoError;
+import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.TipoErrorMapper;
 import com.ikernell.backend.repository.TipoErrorRepository;
+import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +27,11 @@ import java.util.List;
 public class TipoErrorService {
 
     private final TipoErrorRepository tipoErrorRepository;
+    private final UsuarioRepository usuarioRepository;
     private final TipoErrorMapper tipoErrorMapper;
+    private final TrazabilidadService trazabilidadService;
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
     public TipoErrorResponse crear(TipoErrorRequest request) {
@@ -66,10 +78,51 @@ public class TipoErrorService {
         return tipoErrorMapper.toResponse(guardado);
     }
 
+    /**
+     * Delete físico, protegido por ON DELETE RESTRICT en BD (fk_registro_error_tipo).
+     * Si algún RegistroError todavía usa este tipo, la BD rechaza el borrado y lo
+     * traducimos a un ConflictException legible. El snapshot (JSON del Response
+     * actual) queda en Trazabilidad.detalle antes de borrar la fila.
+     */
+    @Transactional
+    public void eliminar(Integer idTipoError, String correoSolicitante) {
+        TipoError tipoError = buscarOFallar(idTipoError);
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
+
+        String detalle = construirDetalle(tipoErrorMapper.toResponse(tipoError));
+
+        try {
+            tipoErrorRepository.delete(tipoError);
+            tipoErrorRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "No se puede eliminar el tipo de error '" + tipoError.getNombreTipoError()
+                            + "': está en uso por uno o más registros de error.");
+        }
+
+        trazabilidadService.registrar(
+                solicitante, "TipoError", tipoError.getCodigoTipoError(),
+                OperacionTrazabilidad.ELIMINAR, detalle);
+    }
+
     private TipoError buscarOFallar(Integer idTipoError) {
         return tipoErrorRepository.findById(idTipoError)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un tipo de error con id " + idTipoError + "."));
+    }
+
+    private Usuario buscarSolicitanteOFallar(String correoElectronico) {
+        return usuarioRepository.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoElectronico + "'."));
+    }
+
+    private String construirDetalle(TipoErrorResponse response) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
     }
 
     private void validarCodigoDisponible(String codigo, Integer idActual) {
