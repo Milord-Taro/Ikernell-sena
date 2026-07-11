@@ -1,16 +1,21 @@
 package com.ikernell.backend.service;
 
+import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.dto.RegistroErrorRequest;
 import com.ikernell.backend.dto.RegistroErrorResponse;
 import com.ikernell.backend.entity.Actividad;
 import com.ikernell.backend.entity.RegistroError;
 import com.ikernell.backend.entity.TipoError;
 import com.ikernell.backend.enums.EstadoRegistroError;
+import com.ikernell.backend.enums.NivelCriticidad;
+import com.ikernell.backend.enums.RolProyecto;
+import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.RegistroErrorMapper;
 import com.ikernell.backend.repository.ActividadRepository;
+import com.ikernell.backend.repository.AsignacionProyectoRepository;
 import com.ikernell.backend.repository.RegistroErrorRepository;
 import com.ikernell.backend.repository.TipoErrorRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +33,8 @@ public class RegistroErrorService {
     private final ActividadRepository actividadRepository;
     private final TipoErrorRepository tipoErrorRepository;
     private final RegistroErrorMapper registroErrorMapper;
+    private final AsignacionProyectoRepository asignacionProyectoRepository;
+    private final NotificacionService notificacionService;
 
     @Transactional
     public RegistroErrorResponse crear(RegistroErrorRequest request) {
@@ -49,6 +56,20 @@ public class RegistroErrorService {
         registroError.setEstado(EstadoRegistroError.ABIERTO);
 
         RegistroError guardado = registroErrorRepository.save(registroError);
+
+        // NUEVO: solo Alta/Crítica notifica -- Baja/Media son ruido para
+        // el Líder, se ven igual en la vista de supervisión de Errores.
+        if (guardado.getSeveridad() == NivelCriticidad.ALTA || guardado.getSeveridad() == NivelCriticidad.CRITICA) {
+            Integer idProyecto = actividad.getEtapa().getProyecto().getIdProyecto();
+            asignacionProyectoRepository
+                    .findByProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(idProyecto, RolProyecto.LIDER)
+                    .ifPresent(asignacionLider -> notificacionService.crear(new NotificacionRequest(
+                            asignacionLider.getUsuario().getIdUsuario(),
+                            "Error " + guardado.getSeveridad().getValor().toLowerCase() + " registrado",
+                            guardado.getTitulo() + " -- " + actividad.getNombreActividad(),
+                            TipoNotificacion.ERROR,
+                            "/dashboard/proyectos/" + idProyecto)));
+        }
 
         return registroErrorMapper.toResponse(guardado);
     }

@@ -9,20 +9,12 @@ import { Alert } from '../../components/ui/Feedback';
 import { ApiRequestError } from '../../types/api';
 import { NIVELES_CRITICIDAD } from '../../types/actividad';
 import type { ActividadResponse, NivelCriticidad } from '../../types/actividad';
-import type { TipoErrorResponse, TipoInterrupcionResponse } from '../../types/usuario';
-import type { RegistroErrorResponse, RegistroErrorRequest, EstadoRegistroError } from '../../types/registroError';
-import { ESTADOS_REGISTRO_ERROR } from '../../types/registroError';
-import type { InterrupcionResponse, InterrupcionRequest } from '../../types/interrupcion';
-import { tiposErrorService, tiposInterrupcionService } from '../../services/catalogos';
-import { listarRegistrosErrorPorActividad, crearRegistroError, cambiarEstadoRegistroError } from '../../services/registrosError';
-import { listarInterrupcionesPorActividad, crearInterrupcion } from '../../services/interrupciones';
-
-const variantePorEstadoError: Record<EstadoRegistroError, 'default' | 'success' | 'info' | 'warning'> = {
-  'Abierto': 'warning',
-  'En progreso': 'info',
-  'Resuelto': 'success',
-  'Descartado': 'default',
-};
+import type { TipoErrorResponse } from '../../types/usuario';
+import type { RegistroErrorResponse, RegistroErrorRequest } from '../../types/registroError';
+import type { InterrupcionResponse } from '../../types/interrupcion';
+import { tiposErrorService } from '../../services/catalogos';
+import { listarRegistrosErrorPorActividad, crearRegistroError } from '../../services/registrosError';
+import { listarInterrupcionesPorActividad } from '../../services/interrupciones';
 
 const variantePorSeveridad: Record<NivelCriticidad, 'default' | 'warning' | 'error' | 'info'> = {
   'Baja': 'default',
@@ -45,12 +37,18 @@ interface ActividadHistorialModalProps {
 /**
  * REGLA DE UI: cada dato lleva su etiqueta textual explícita -- nada se
  * infiere solo por posición (ver memoria de patrones del proyecto).
+ *
+ * CORREGIDO: "Interrupciones" pasó a ser solo consulta aquí -- una
+ * interrupción no pertenece de forma natural a UNA actividad puntual (a
+ * diferencia de un error, que sí es "de" lo que estabas haciendo). El
+ * registro ahora se hace desde el modal de la Etapa
+ * (RegistrarInterrupcionModal), donde se elige a cuál(es) actividad(es)
+ * afectó.
  */
 export function ActividadHistorialModal({ open, actividad, onClose }: ActividadHistorialModalProps) {
   const [tab, setTab] = useState('errores');
 
   const [tiposError, setTiposError] = useState<TipoErrorResponse[]>([]);
-  const [tiposInterrupcion, setTiposInterrupcion] = useState<TipoInterrupcionResponse[]>([]);
   const [registrosError, setRegistrosError] = useState<RegistroErrorResponse[]>([]);
   const [interrupciones, setInterrupciones] = useState<InterrupcionResponse[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -59,14 +57,12 @@ export function ActividadHistorialModal({ open, actividad, onClose }: ActividadH
   const cargar = async () => {
     setCargando(true);
     try {
-      const [tiposErrorResp, tiposInterrupcionResp, registrosResp, interrupcionesResp] = await Promise.all([
+      const [tiposErrorResp, registrosResp, interrupcionesResp] = await Promise.all([
         tiposErrorService.listar(),
-        tiposInterrupcionService.listar(),
         listarRegistrosErrorPorActividad(actividad.idActividad),
         listarInterrupcionesPorActividad(actividad.idActividad),
       ]);
       setTiposError(tiposErrorResp.filter((t) => t.activo));
-      setTiposInterrupcion(tiposInterrupcionResp.filter((t) => t.activo));
       setRegistrosError(registrosResp);
       setInterrupciones(interrupcionesResp);
     } finally {
@@ -102,13 +98,7 @@ export function ActividadHistorialModal({ open, actividad, onClose }: ActividadH
             onRegistrado={cargar}
           />
         ) : (
-          <SeccionInterrupciones
-            idActividad={actividad.idActividad}
-            tiposInterrupcion={tiposInterrupcion}
-            registros={interrupciones}
-            onError={setError}
-            onRegistrado={cargar}
-          />
+          <SeccionInterrupciones registros={interrupciones} />
         )}
       </div>
     </Modal>
@@ -167,7 +157,7 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
   return (
     <div className="flex flex-col gap-4">
       <form onSubmit={alEnviar} className="flex flex-col gap-3">
-        <div className="grid grid-cols-[1fr_1fr] gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] gap-3">
           <Input
             label="Código del registro"
             required
@@ -235,10 +225,7 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                     <span className="type-caption text-[var(--text-tertiary)]">Título</span>
                     <span className="type-body text-[var(--text-primary)]">{r.titulo}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant={variantePorEstadoError[r.estado]} size="sm">{r.estado}</Badge>
-                    <Badge variant={variantePorSeveridad[r.severidad]} size="sm">{r.severidad}</Badge>
-                  </div>
+                  <Badge variant={variantePorSeveridad[r.severidad]} size="sm">{r.severidad}</Badge>
                 </div>
                 <div className="flex flex-col">
                   <span className="type-caption text-[var(--text-tertiary)]">Tipo de error</span>
@@ -248,23 +235,6 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                   <span className="type-caption text-[var(--text-tertiary)]">Descripción</span>
                   <p className="type-body-sm text-[var(--text-secondary)]">{r.descripcion}</p>
                 </div>
-                <Select
-                  label="Estado"
-                  value={r.estado}
-                  onChange={async (e) => {
-                    onError(null);
-                    try {
-                      await cambiarEstadoRegistroError(r.idRegistroError, e.target.value as EstadoRegistroError);
-                      await onRegistrado();
-                    } catch (err) {
-                      onError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado.');
-                    }
-                  }}
-                >
-                  {ESTADOS_REGISTRO_ERROR.map((estado) => (
-                    <option key={estado} value={estado}>{estado}</option>
-                  ))}
-                </Select>
                 <span className="type-caption text-[var(--text-tertiary)]">
                   Registrado: {r.fechaRegistro}
                 </span>
@@ -277,140 +247,53 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
   );
 }
 
-/* ── Interrupciones ──────────────────────────────────────────────────── */
+/* ── Interrupciones (solo consulta) ──────────────────────────────────── */
 
 interface SeccionInterrupcionesProps {
-  idActividad: number;
-  tiposInterrupcion: TipoInterrupcionResponse[];
   registros: InterrupcionResponse[];
-  onError: (mensaje: string | null) => void;
-  onRegistrado: () => Promise<void>;
 }
 
-function SeccionInterrupciones({
-  idActividad,
-  tiposInterrupcion,
-  registros,
-  onError,
-  onRegistrado,
-}: SeccionInterrupcionesProps) {
-  const [codigo, setCodigo] = useState('');
-  const [idTipoInterrupcion, setIdTipoInterrupcion] = useState('');
-  const [motivo, setMotivo] = useState('');
-  const [duracionMinutos, setDuracionMinutos] = useState('');
-  const [guardando, setGuardando] = useState(false);
-
-  const limpiar = () => {
-    setCodigo('');
-    setIdTipoInterrupcion('');
-    setMotivo('');
-    setDuracionMinutos('');
-  };
-
-  const alEnviar = async (evento: FormEvent) => {
-    evento.preventDefault();
-    onError(null);
-    setGuardando(true);
-    try {
-      const request: InterrupcionRequest = {
-        codigoInterrupcion: codigo,
-        idActividad,
-        idTipoInterrupcion: Number(idTipoInterrupcion),
-        motivo,
-        duracionMinutos: Number(duracionMinutos),
-      };
-      await crearInterrupcion(request);
-      limpiar();
-      await onRegistrado();
-    } catch (err) {
-      onError(err instanceof ApiRequestError ? err.message : 'No se pudo registrar la interrupción.');
-    } finally {
-      setGuardando(false);
-    }
-  };
-
+/**
+ * Sin formulario de creación -- eso vive ahora en RegistrarInterrupcionModal,
+ * a nivel de Etapa (ver ActividadesEtapaModal). Aquí solo se consulta el
+ * historial de ESTA actividad puntual.
+ */
+function SeccionInterrupciones({ registros }: SeccionInterrupcionesProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <form onSubmit={alEnviar} className="flex flex-col gap-3">
-        <div className="grid grid-cols-[1fr_1fr] gap-3">
-          <Input
-            label="Código de la interrupción"
-            required
-            maxLength={20}
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            placeholder="INT-001"
-          />
-          <Select
-            label="Tipo de interrupción"
-            required
-            value={idTipoInterrupcion}
-            onChange={(e) => setIdTipoInterrupcion(e.target.value)}
-          >
-            <option value="">Seleccionar...</option>
-            {tiposInterrupcion.map((t) => (
-              <option key={t.idTipoInterrupcion} value={t.idTipoInterrupcion}>
-                {t.nombreTipoInterrupcion}
-              </option>
-            ))}
-          </Select>
-        </div>
-
-        <Textarea
-          label="Motivo"
-          required
-          rows={3}
-          value={motivo}
-          onChange={(e) => setMotivo(e.target.value)}
-        />
-        <Input
-          label="Duración en minutos"
-          type="number"
-          min={1}
-          required
-          value={duracionMinutos}
-          onChange={(e) => setDuracionMinutos(e.target.value)}
-        />
-
-        <div className="flex justify-end">
-          <Button type="submit" size="sm" loading={guardando} disabled={!idTipoInterrupcion}>
-            Registrar interrupción
-          </Button>
-        </div>
-      </form>
-
-      <div className="flex flex-col gap-2">
-        <h4 className="type-label text-[var(--text-tertiary)]">Historial de interrupciones</h4>
-        {registros.length === 0 ? (
-          <p className="type-body-sm text-[var(--text-tertiary)]">Todavía no se han registrado interrupciones.</p>
-        ) : (
-          registros.map((r) => (
-            <Card key={r.idInterrupcion}>
-              <CardContent className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
+      <h4 className="type-label text-[var(--text-tertiary)]">Historial de interrupciones</h4>
+      <p className="type-body-sm text-[var(--text-tertiary)]">
+        Para registrar una interrupción nueva, usa el botón "Registrar interrupción" en la vista de la etapa.
+      </p>
+      {registros.length === 0 ? (
+        <p className="type-body-sm text-[var(--text-tertiary)]">Todavía no se han registrado interrupciones.</p>
+      ) : (
+        registros.map((r) => (
+          <Card key={r.idInterrupcion}>
+            <CardContent className="flex flex-col gap-1.5">
+              <div className="flex flex-col">
+                <span className="type-caption text-[var(--text-tertiary)]">Tipo de interrupción</span>
+                <span className="type-body text-[var(--text-primary)]">
+                  {r.tipoInterrupcion.nombreTipoInterrupcion}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="type-caption text-[var(--text-tertiary)]">Motivo</span>
+                <p className="type-body-sm text-[var(--text-secondary)]">{r.motivo}</p>
+              </div>
+              <div className="flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="type-caption text-[var(--text-tertiary)]">Tipo de interrupción</span>
-                  <span className="type-body text-[var(--text-primary)]">
-                    {r.tipoInterrupcion.nombreTipoInterrupcion}
-                  </span>
+                  <span className="type-caption text-[var(--text-tertiary)]">Duración</span>
+                  <span className="type-body-sm text-[var(--text-secondary)]">{r.duracionMinutos} minutos</span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="type-caption text-[var(--text-tertiary)]">Motivo</span>
-                  <p className="type-body-sm text-[var(--text-secondary)]">{r.motivo}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col">
-                    <span className="type-caption text-[var(--text-tertiary)]">Duración</span>
-                    <span className="type-body-sm text-[var(--text-secondary)]">{r.duracionMinutos} minutos</span>
-                  </div>
-                  <span className="type-caption text-[var(--text-tertiary)]">
-                    Registrado: {r.fechaRegistro}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+                <span className="type-caption text-[var(--text-tertiary)]">
+                  Registrado: {r.fechaRegistro}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      )}
     </div>
   );
 }

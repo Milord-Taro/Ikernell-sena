@@ -83,7 +83,7 @@ export default function ErroresPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="flex flex-col min-w-0">
                     <span className="type-caption text-[var(--text-tertiary)]">Proyecto</span>
                     <span className="type-body-sm text-[var(--text-secondary)] truncate">

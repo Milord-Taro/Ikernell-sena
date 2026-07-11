@@ -72,7 +72,7 @@ export function Tabs({ tabs, active, onChange, variant = 'underline', className 
             {tab.icon && <span className="shrink-0">{tab.icon}</span>}
             {tab.label}
             {tab.badge !== undefined && (
-              <span className={`type-id text-[10px] px-1 py-px rounded-sm ${active === tab.id ? 'bg-[var(--muted)] text-[var(--text-secondary)]' : 'text-[var(--text-tertiary)]'}`}>
+              <span className={`type-id text-[0.7143rem] px-1 py-px rounded-sm ${active === tab.id ? 'bg-[var(--muted)] text-[var(--text-secondary)]' : 'text-[var(--text-tertiary)]'}`}>
                 {tab.badge}
               </span>
             )}
@@ -99,7 +99,7 @@ export function Tabs({ tabs, active, onChange, variant = 'underline', className 
           {tab.icon && <span className="shrink-0">{tab.icon}</span>}
           {tab.label}
           {tab.badge !== undefined && (
-            <span className={`type-id text-[10px] px-1.5 py-px rounded-full ${active === tab.id ? 'bg-[var(--secondary-bg)] text-[var(--primary)]' : 'bg-[var(--muted)] text-[var(--text-tertiary)]'}`}>
+            <span className={`type-id text-[0.7143rem] px-1.5 py-px rounded-full ${active === tab.id ? 'bg-[var(--secondary-bg)] text-[var(--primary)]' : 'bg-[var(--muted)] text-[var(--text-tertiary)]'}`}>
               {tab.badge}
             </span>
           )}

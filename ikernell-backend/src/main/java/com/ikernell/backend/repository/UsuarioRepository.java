@@ -15,4 +15,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByNumeroIdentificacion(String numeroIdentificacion);
 
     List<Usuario> findByActivoTrue();
+
+    // NUEVO: para notificar a todos los Coordinadores activos cuando
+    // llega un mensaje de contacto nuevo.
+    List<Usuario> findByRol_CodigoRolAndActivoTrue(String codigoRol);
 }

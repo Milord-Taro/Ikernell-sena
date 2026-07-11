@@ -57,11 +57,11 @@ interface AvatarProps {
 }
 
 const avatarSizes: Record<AvatarSize, { container: string; text: string; status: string }> = {
-  xs: { container: 'size-6',  text: 'text-[9px]',    status: 'size-1.5 border' },
-  sm: { container: 'size-8',  text: 'text-[11px]',   status: 'size-2 border' },
-  md: { container: 'size-9',  text: 'text-[12px]',   status: 'size-2.5 border-[1.5px]' },
-  lg: { container: 'size-11', text: 'text-[14px]',   status: 'size-3 border-2' },
-  xl: { container: 'size-14', text: 'text-[18px]',   status: 'size-3.5 border-2' },
+  xs: { container: 'size-6',  text: 'text-[0.6429rem]',    status: 'size-1.5 border' },
+  sm: { container: 'size-8',  text: 'text-[0.7857rem]',   status: 'size-2 border' },
+  md: { container: 'size-9',  text: 'text-[0.8571rem]',   status: 'size-2.5 border-[1.5px]' },
+  lg: { container: 'size-11', text: 'text-[1rem]',   status: 'size-3 border-2' },
+  xl: { container: 'size-14', text: 'text-[1.2857rem]',   status: 'size-3.5 border-2' },
 }
 
 const statusColors: Record<string, string> = {

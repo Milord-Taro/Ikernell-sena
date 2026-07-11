@@ -159,7 +159,7 @@ export function ActividadFormModal({
           error={erroresCampo.descripcion}
         />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Select
             label="Prioridad"
             required
@@ -188,7 +188,7 @@ export function ActividadFormModal({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="Fecha de inicio"
             type="date"

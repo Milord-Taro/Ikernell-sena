@@ -11,6 +11,8 @@ import ErroresPage from './pages/ErroresPage';
 import InterrupcionesPage from './pages/InterrupcionesPage';
 import MensajesPage from './pages/MensajesPage';
 import ConfiguracionPage from './pages/ConfiguracionPage';
+import AuditoriaPage from './pages/AuditoriaPage';
+import NotificacionesPage from './pages/NotificacionesPage';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { RoleRoute } from './routes/RoleRoute';
@@ -99,6 +101,18 @@ function App() {
         {/* Abierta a cualquier autenticado -- cambiar la propia
             contraseña no depende del rol. */}
         <Route path="configuracion" element={<ConfiguracionPage />} />
+
+        <Route
+          path="auditoria"
+          element={
+            <RoleRoute rolesPermitidos={[CODIGO_ROL.COORDINADOR]}>
+              <AuditoriaPage />
+            </RoleRoute>
+          }
+        />
+
+        {/* Abierta a cualquier autenticado -- son las notificaciones de cada quien. */}
+        <Route path="notificaciones" element={<NotificacionesPage />} />
       </Route>
     </Routes>
   );

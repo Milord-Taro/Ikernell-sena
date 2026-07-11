@@ -125,7 +125,7 @@ export function EtapaFormModal({
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo guardar">{error}</Alert>}
 
-        <div className="grid grid-cols-[1fr_100px] gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_100px] gap-3">
           <Input
             label="Código de la etapa"
             required
@@ -163,7 +163,7 @@ export function EtapaFormModal({
           error={erroresCampo.descripcion}
         />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="Fecha de inicio"
             type="date"
