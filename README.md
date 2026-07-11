@@ -171,51 +171,41 @@ http://localhost:5173
 
 # Usuarios de prueba
 
+Los usuarios de prueba se crean al ejecutar `Seed_catalogos.sql` (ver "Restaurar la base de datos" arriba). Todos comparten la misma contraseña de prueba:
+
+Contraseña (todos)
+
+```
+test
+```
+
 ## Coordinador
 
-Correo
-
 ```
-test@test.com
+ana.martinez@ikernell.com
 ```
 
-Contraseña
-
-```
-Testing2026*
-```
+Hay un segundo coordinador disponible: `natalia.herrera@ikernell.com` (misma contraseña).
 
 ---
 
 ## Líder
 
-Correo
-
 ```
-diana.herrera@ikernell.com
-```
-
-Contraseña
-
-```
-test
+carlos.rodriguez@ikernell.com
 ```
 
 ---
 
 ## Desarrollador
 
-Correo
-
 ```
-testbcrypt@ikernell.com
+juan.perez@ikernell.com
 ```
 
-Contraseña
+---
 
-```
-test
-```
+> **Nota:** `Seed_catalogos.sql` también crea `mateo.salinas@ikernell.com` (rol Desarrollador) ya **inhabilitado** (`activo = false`), útil para probar el rechazo de login de cuentas inactivas.
 
 ---
 
