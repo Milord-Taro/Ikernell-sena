@@ -100,9 +100,8 @@ INSERT INTO tipo_interrupcion (codigo_tipo_interrupcion, nombre_tipo_interrupcio
 -- Descripción:
 -- Datos de prueba para la entidad usuario.
 -- Convención de código: USR-XXX
--- NOTA: hash_contrasena es un valor de prueba con formato BCrypt
--- (no corresponde a una contraseña real conocida). Para login
--- funcional real, generar el hash desde la aplicación.
+-- NOTA: hash_contrasena es el mismo hash BCrypt para todos los
+-- usuarios de prueba, correspondiente a la contraseña "test".
 -- ============================================================
 
 INSERT INTO usuario
