@@ -6,12 +6,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ActividadRequest;
 import com.ikernell.backend.dto.ActividadResponse;
+import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.entity.Actividad;
 import com.ikernell.backend.entity.Etapa;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoActividad;
 import com.ikernell.backend.enums.EstadoProyecto;
 import com.ikernell.backend.enums.OperacionTrazabilidad;
+import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -40,6 +42,7 @@ public class ActividadService {
     private final AutorizacionProyectoService autorizacionProyectoService;
     private final AsignacionProyectoRepository asignacionProyectoRepository;
     private final TrazabilidadService trazabilidadService;
+    private final NotificacionService notificacionService;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
@@ -65,6 +68,11 @@ public class ActividadService {
         }
 
         Actividad guardada = actividadRepository.save(actividad);
+        // NUEVO: si nace ya asignada, se notifica al desarrollador de una vez.
+        if (guardada.getUsuario() != null) {
+            notificarAsignacion(guardada);
+        }
+
 
         return actividadMapper.toResponse(guardada);
     }
@@ -136,6 +144,7 @@ public class ActividadService {
         actividad.setEstado(EstadoActividad.PENDIENTE);
 
         Actividad guardada = actividadRepository.save(actividad);
+        notificarAsignacion(guardada);
 
         return actividadMapper.toResponse(guardada);
     }
@@ -279,5 +288,20 @@ public class ActividadService {
                         "Ya existe una actividad con el código '" + codigoActividad + "'.");
             }
         });
+    }
+
+    /**
+     * NUEVO: notifica al desarrollador cuando se le asigna una actividad
+     * (al crearla ya asignada, o vía asignar()). urlDestino apunta al
+     * Proyecto -- no existe una página de detalle de Actividad propia.
+     */
+    private void notificarAsignacion(Actividad actividad) {
+        notificacionService.crear(new NotificacionRequest(
+                actividad.getUsuario().getIdUsuario(),
+                "Nueva actividad asignada",
+                "Se te asignó \"" + actividad.getNombreActividad() + "\" en la etapa "
+                        + actividad.getEtapa().getNombreEtapa() + ".",
+                TipoNotificacion.ACTIVIDAD,
+                "/dashboard/proyectos/" + actividad.getEtapa().getProyecto().getIdProyecto()));
     }
 }

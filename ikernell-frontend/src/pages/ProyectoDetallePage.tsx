@@ -11,6 +11,7 @@ import { ProyectoFormModal } from '../features/proyectos/ProyectoFormModal';
 import { EquipoProyecto } from '../features/proyectos/EquipoProyecto';
 import { ReportesProyecto } from '../features/proyectos/ReportesProyecto';
 import { EtapasList } from '../features/etapas/EtapasList';
+import { TimelineProyecto } from '../features/proyectos/TimelineProyecto';
 import { obtenerProyectoPorId, actualizarProyecto, cambiarEstadoProyecto } from '../services/proyectos';
 import { ApiRequestError } from '../types/api';
 import { ESTADOS_PROYECTO } from '../types/proyecto';
@@ -70,11 +71,11 @@ export default function ProyectoDetallePage() {
   };
 
   if (cargando) {
-    return <p className="type-body text-[var(--text-secondary)]">Cargando proyecto...</p>;
+    return <p className="type-body-sm text-[var(--text-tertiary)]">Cargando proyecto...</p>;
   }
 
   if (!proyecto) {
-    return <p className="type-body text-[var(--text-secondary)]">No se encontró el proyecto.</p>;
+    return <p className="type-body-sm text-[var(--text-tertiary)]">No se encontró el proyecto.</p>;
   }
 
   return (
@@ -149,6 +150,7 @@ export default function ProyectoDetallePage() {
         tabs={[
           { id: 'etapas', label: 'Etapas' },
           { id: 'equipo', label: 'Equipo' },
+          { id: 'timeline', label: 'Timeline' },
         ]}
         active={tabActiva}
         onChange={setTabActiva}
@@ -156,6 +158,7 @@ export default function ProyectoDetallePage() {
 
       {tabActiva === 'etapas' && <EtapasList idProyecto={proyecto.idProyecto} />}
       {tabActiva === 'equipo' && <EquipoProyecto idProyecto={proyecto.idProyecto} />}
+      {tabActiva === 'timeline' && <TimelineProyecto idProyecto={proyecto.idProyecto} />}
 
       <ProyectoFormModal
         open={modalEdicionAbierto}

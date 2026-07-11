@@ -224,7 +224,7 @@ export function UsuarioFormModal({
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo guardar">{error}</Alert>}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="Código de usuario"
             required
@@ -246,7 +246,7 @@ export function UsuarioFormModal({
           </Select>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="Nombres"
             required
@@ -267,7 +267,7 @@ export function UsuarioFormModal({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
             label="Número de identificación"
             required
@@ -304,7 +304,7 @@ export function UsuarioFormModal({
 
         {!esEdicion && (
           <>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Correo electrónico"
                 type="email"
@@ -324,7 +324,7 @@ export function UsuarioFormModal({
                 error={errorConfirmarCorreo}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 label="Contraseña"
                 type="password"
@@ -346,7 +346,7 @@ export function UsuarioFormModal({
           </>
         )}
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <Select
             label="Rol"
             required

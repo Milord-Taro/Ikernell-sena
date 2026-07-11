@@ -1,32 +1,70 @@
-# React + TypeScript + Vite
+# IKernell Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Interfaz web de IKernell Soluciones Software, construida con React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+Para una visión completa del proyecto (backend, base de datos, usuarios de prueba, documentación) revisa el [README de la raíz del repositorio](../README.md). Este archivo cubre solo lo específico de este paquete.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Requisitos
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js v22
+- npm
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## Configuración
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+1. Copia el archivo de variables de entorno de ejemplo:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Ajusta `VITE_API_URL` en `.env` si tu backend no corre en `http://localhost:8080`.
+
+El archivo `.env` no se sube a Git (está en `.gitignore`); cada máquina mantiene su propia copia.
+
+---
+
+## Ejecutar en desarrollo
+
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+La aplicación queda disponible en `http://localhost:5173`. Requiere que el backend (`ikernell-backend`) esté corriendo y accesible en la URL configurada en `VITE_API_URL`.
+
+---
+
+## Otros scripts disponibles
+
+```bash
+npm run build     # build de producción (tsc + vite build) en dist/
+npm run preview   # sirve localmente el build de producción
+npm run lint      # linting con Oxlint
+```
+
+---
+
+## Stack
+
+- React 19 + TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui
+
+---
+
+## Estructura relevante
+
+```
+src/
+├── pages/        # una página por ruta principal del dashboard
+├── features/     # lógica y componentes específicos de cada módulo (proyectos, actividades, etc.)
+├── components/    # componentes reutilizables (layout, ui, landing)
+├── context/       # contextos de React (accesibilidad, autenticación, etc.)
+├── services/      # llamadas a la API del backend
+└── layouts/       # layouts compartidos (dashboard, landing)
+```

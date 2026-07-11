@@ -10,7 +10,7 @@ import { ChevronDown, AlertCircle, Eye, EyeOff } from "lucide-react";
 
 /* ── shared ─────────────────────────────────────────────────────────── */
 const baseField =
-  "w-full font-sans text-[13.5px] bg-[var(--surface)] text-[var(--text-primary)] " +
+  "w-full font-sans text-[0.9643rem] bg-[var(--surface)] text-[var(--text-primary)] " +
   "border border-[var(--border)] rounded-[var(--radius-md)] " +
   "placeholder:text-[var(--text-tertiary)] " +
   "transition-colors duration-100 focus:outline-none " +
@@ -127,18 +127,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         className={`flex border border-[var(--border)] rounded-[var(--radius-md)] overflow-hidden ${error ? "border-[var(--error)]" : ""} focus-within:border-[var(--primary)] focus-within:ring-1 focus-within:ring-[var(--primary)]`}
       >
         {prefix && (
-          <span className="flex items-center px-2.5 bg-[var(--muted)] border-r border-[var(--border)] text-[var(--text-tertiary)] text-[12px] font-sans shrink-0">
+          <span className="flex items-center px-2.5 bg-[var(--muted)] border-r border-[var(--border)] text-[var(--text-tertiary)] text-[0.8571rem] font-sans shrink-0">
             {prefix}
           </span>
         )}
         <input
           ref={ref}
           type={type}
-          className={`flex-1 h-8 px-3 bg-[var(--surface)] text-[var(--text-primary)] text-[13.5px] font-sans placeholder:text-[var(--text-tertiary)] border-0 focus:outline-none disabled:bg-[var(--muted)] disabled:cursor-not-allowed ${className}`}
+          className={`flex-1 h-8 px-3 bg-[var(--surface)] text-[var(--text-primary)] text-[0.9643rem] font-sans placeholder:text-[var(--text-tertiary)] border-0 focus:outline-none disabled:bg-[var(--muted)] disabled:cursor-not-allowed ${className}`}
           {...props}
         />
         {suffix && (
-          <span className="flex items-center px-2.5 bg-[var(--muted)] border-l border-[var(--border)] text-[var(--text-tertiary)] text-[12px] font-sans shrink-0">
+          <span className="flex items-center px-2.5 bg-[var(--muted)] border-l border-[var(--border)] text-[var(--text-tertiary)] text-[0.8571rem] font-sans shrink-0">
             {suffix}
           </span>
         )}

@@ -118,13 +118,13 @@ export function ConfirmDialog({
         <div className="flex gap-2 justify-end">
           <button
             onClick={onCancel}
-            className="h-8 px-3.5 text-[13px] font-sans font-medium rounded-[var(--radius-md)] border border-[var(--border)] bg-transparent text-[var(--text-primary)] hover:bg-[var(--muted)] transition-colors"
+            className="h-8 px-3.5 text-[0.9286rem] font-sans font-medium rounded-[var(--radius-md)] border border-[var(--border)] bg-transparent text-[var(--text-primary)] hover:bg-[var(--muted)] transition-colors"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
-            className={`h-8 px-3.5 text-[13px] font-sans font-medium rounded-[var(--radius-md)] text-white transition-colors ${variant === 'destructive' ? 'bg-[var(--error)] hover:bg-red-700' : 'bg-[var(--primary)] hover:bg-[var(--primary-hover)]'}`}
+            className={`h-8 px-3.5 text-[0.9286rem] font-sans font-medium rounded-[var(--radius-md)] text-white transition-colors ${variant === 'destructive' ? 'bg-[var(--error)] hover:bg-red-700' : 'bg-[var(--primary)] hover:bg-[var(--primary-hover)]'}`}
           >
             {confirmLabel}
           </button>

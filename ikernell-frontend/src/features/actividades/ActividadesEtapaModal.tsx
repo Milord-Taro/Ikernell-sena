@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, UserCheck, History } from 'lucide-react';
+import { Plus, Pencil, Trash2, UserCheck, History, Zap } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -9,6 +9,7 @@ import { Select } from '../../components/ui/FormControls';
 import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { ActividadFormModal } from './ActividadFormModal';
 import { ActividadHistorialModal } from '../registros/ActividadHistorialModal';
+import { RegistrarInterrupcionModal } from '../registros/RegistrarInterrupcionModal';
 import { useAuth } from '../../context/AuthContext';
 import { CODIGO_ROL } from '../../types/usuario';
 import { ApiRequestError } from '../../types/api';
@@ -67,6 +68,7 @@ export function ActividadesEtapaModal({
   const [actividadHistorial, setActividadHistorial] = useState<ActividadResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [actividadAEliminar, setActividadAEliminar] = useState<ActividadResponse | null>(null);
+  const [interrupcionModalAbierto, setInterrupcionModalAbierto] = useState(false);
 
   const cargar = async () => {
     setCargando(true);
@@ -89,6 +91,13 @@ export function ActividadesEtapaModal({
 
   const mias = actividades.filter((a) => a.usuario?.idUsuario === usuario?.idUsuario);
   const puedeVerColumnaMias = mias.length > 0;
+
+  // NUEVO: elegibles para registrar una interrupción -- igual que valida
+  // el backend (InterrupcionService.crear()), una Finalizada o Cancelada
+  // queda fuera (no tiene sentido "interrumpir" algo que ya terminó).
+  const misElegiblesParaInterrupcion = mias.filter(
+    (a) => a.estado !== 'Finalizada' && a.estado !== 'Cancelada',
+  );
 
   // NUEVO: si ya se muestra la columna "mis actividades", la columna de
   // la derecha deja de repetirlas -- pasa a llamarse "Otras actividades"
@@ -193,7 +202,13 @@ export function ActividadesEtapaModal({
             <div className={`grid gap-4 ${puedeVerColumnaMias ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
               {puedeVerColumnaMias && (
                 <div className="flex flex-col gap-2 min-w-0">
-                  <h4 className="type-label text-[var(--text-tertiary)]">Mis actividades en esta etapa</h4>
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="type-label text-[var(--text-tertiary)]">Mis actividades en esta etapa</h4>
+                    <Button variant="ghost" size="sm" onClick={() => setInterrupcionModalAbierto(true)}>
+                      <Zap size={13} />
+                      Registrar interrupción
+                    </Button>
+                  </div>
                   {mias.map((actividad) => (
                     <Card key={actividad.idActividad}>
                       <CardContent className="flex flex-col gap-2.5">
@@ -370,6 +385,13 @@ export function ActividadesEtapaModal({
         variant="destructive"
         onConfirm={confirmarEliminar}
         onCancel={() => setActividadAEliminar(null)}
+      />
+
+      <RegistrarInterrupcionModal
+        open={interrupcionModalAbierto}
+        actividadesElegibles={misElegiblesParaInterrupcion}
+        onClose={() => setInterrupcionModalAbierto(false)}
+        onRegistrado={cargar}
       />
     </>
   );

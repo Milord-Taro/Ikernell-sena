@@ -15,9 +15,9 @@ const base =
   'inline-flex items-center justify-center gap-1.5 font-sans font-medium transition-colors duration-100 focus-ring select-none cursor-pointer disabled:cursor-not-allowed whitespace-nowrap'
 
 const sizes: Record<ButtonSize, string> = {
-  sm:  'h-7  px-3   text-[12px] tracking-[0.01em]',
-  md:  'h-8  px-3.5 text-[13px]',
-  lg:  'h-9  px-4   text-[14px]',
+  sm:  'h-7  px-3   text-[0.8571rem] tracking-[0.01em]',
+  md:  'h-8  px-3.5 text-[0.9286rem]',
+  lg:  'h-9  px-4   text-[1rem]',
 }
 
 const radius = 'rounded-[var(--radius-md)]'

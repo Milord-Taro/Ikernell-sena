@@ -63,7 +63,7 @@ export function MensajeDetalleModal({ open, mensaje, onClose, onActualizado }: M
       <div className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="flex flex-col">
             <span className="type-caption text-[var(--text-tertiary)]">Remitente</span>
             <span className="type-body-sm text-[var(--text-secondary)]">{mensaje.nombreRemitente}</span>

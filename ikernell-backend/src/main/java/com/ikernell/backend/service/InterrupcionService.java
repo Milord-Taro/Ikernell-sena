@@ -5,6 +5,8 @@ import com.ikernell.backend.dto.InterrupcionResponse;
 import com.ikernell.backend.entity.Actividad;
 import com.ikernell.backend.entity.Interrupcion;
 import com.ikernell.backend.entity.TipoInterrupcion;
+import com.ikernell.backend.enums.EstadoActividad;
+import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.InterrupcionMapper;
@@ -32,6 +34,18 @@ public class InterrupcionService {
         Actividad actividad = actividadRepository.findById(request.getIdActividad())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe una actividad con id " + request.getIdActividad() + "."));
+
+        // NUEVO: una interrupción implica que se estaba trabajando
+        // activamente en ese momento -- no tiene sentido registrar una
+        // sobre algo ya Finalizado o Cancelado. Un RegistroError SÍ se
+        // deja sin esta restricción a propósito (un bug puede
+        // descubrirse después de dar la actividad por terminada).
+        if (actividad.getEstado() == EstadoActividad.FINALIZADA
+                || actividad.getEstado() == EstadoActividad.CANCELADA) {
+            throw new BusinessException(
+                    "No se puede registrar una interrupción sobre una actividad '"
+                            + actividad.getEstado().getValor() + "'.");
+        }
 
         TipoInterrupcion tipoInterrupcion = tipoInterrupcionRepository.findById(request.getIdTipoInterrupcion())
                 .orElseThrow(() -> new ResourceNotFoundException(

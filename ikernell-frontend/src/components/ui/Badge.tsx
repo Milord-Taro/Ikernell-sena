@@ -30,8 +30,8 @@ const dotColors: Record<BadgeVariant, string> = {
 }
 
 const sizes: Record<BadgeSize, string> = {
-  sm: 'px-1.5 py-px text-[10.5px] gap-1',
-  md: 'px-2   py-0.5 text-[11.5px] gap-1.5',
+  sm: 'px-1.5 py-px text-[0.75rem] gap-1',
+  md: 'px-2   py-0.5 text-[0.8214rem] gap-1.5',
 }
 
 export function Badge({ variant = 'default', size = 'md', dot = false, children, className = '' }: BadgeProps) {

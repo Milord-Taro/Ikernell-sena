@@ -1,11 +1,14 @@
 package com.ikernell.backend.service;
 
+import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.MensajeContactoRequest;
 import com.ikernell.backend.dto.MensajeContactoResponse;
+import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.dto.RespuestaMensajeRequest;
 import com.ikernell.backend.entity.MensajeContacto;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoMensaje;
+import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.MensajeContactoMapper;
@@ -28,6 +31,7 @@ public class MensajeContactoService {
     private final MensajeContactoRepository mensajeContactoRepository;
     private final UsuarioRepository usuarioRepository;
     private final MensajeContactoMapper mensajeContactoMapper;
+    private final NotificacionService notificacionService;
 
     @Transactional
     public MensajeContactoResponse enviar(MensajeContactoRequest request) {
@@ -37,6 +41,17 @@ public class MensajeContactoService {
         mensaje.setEstado(EstadoMensaje.PENDIENTE);
 
         MensajeContacto guardado = mensajeContactoRepository.save(mensaje);
+
+        // NUEVO: notifica a TODOS los Coordinadores activos -- un mensaje
+        // de contacto público no tiene un destinatario único, cualquier
+        // Coordinador puede atenderlo.
+        usuarioRepository.findByRol_CodigoRolAndActivoTrue(RolConstantes.COORDINADOR)
+                .forEach(coordinador -> notificacionService.crear(new NotificacionRequest(
+                        coordinador.getIdUsuario(),
+                        "Nuevo mensaje de contacto",
+                        guardado.getAsunto() + " -- de " + guardado.getNombreRemitente(),
+                        TipoNotificacion.MENSAJE,
+                        "/dashboard/mensajes")));
 
         return mensajeContactoMapper.toResponse(guardado);
     }

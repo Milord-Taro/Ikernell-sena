@@ -1,14 +1,17 @@
 import { useState, type FormEvent } from 'react';
+import { Minus, Plus, Type } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/FormControls';
+import { Input, Switch } from '../components/ui/FormControls';
 import { Alert } from '../components/ui/Feedback';
 import { useAuth } from '../context/AuthContext';
+import { useAccesibilidad } from '../context/AccesibilidadContext';
 import { cambiarMiContrasena } from '../services/usuarios';
 import { ApiRequestError } from '../types/api';
 
 export default function ConfiguracionPage() {
   const { usuario } = useAuth();
+  const { nivel, aumentar, disminuir, porcentaje, altoContraste, toggleAltoContraste, reducirMovimiento, toggleReducirMovimiento } = useAccesibilidad();
 
   const [contrasenaActual, setContrasenaActual] = useState('');
   const [contrasenaNueva, setContrasenaNueva] = useState('');
@@ -44,12 +47,13 @@ export default function ConfiguracionPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6 max-w-xl">
+    <div className="flex flex-col gap-6">
       <div>
         <h1 className="type-h1 text-[var(--text-primary)]">Configuración</h1>
         <p className="type-body text-[var(--text-secondary)] mt-1">Tu perfil y preferencias de cuenta.</p>
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl">
       <Card>
         <CardContent className="flex flex-col gap-3">
           <h3 className="type-h4 text-[var(--text-primary)]">Mi perfil</h3>
@@ -115,6 +119,67 @@ export default function ConfiguracionPage() {
               </Button>
             </div>
           </form>
+        </CardContent>
+      </Card>
+      </div>
+
+      <Card className="max-w-4xl">
+        <CardContent className="flex flex-col gap-5">
+          <h3 className="type-h4 text-[var(--text-primary)]">Accesibilidad</h3>
+
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <Type size={16} className="text-[var(--text-tertiary)]" />
+              <div className="flex flex-col">
+                <span className="type-body text-[var(--text-primary)]">Tamaño de fuente</span>
+                <span className="type-body-sm text-[var(--text-tertiary)]">
+                  Se aplica a toda la aplicación.
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={disminuir}
+                disabled={nivel === 0}
+                aria-label="Reducir tamaño de fuente"
+              >
+                <Minus size={14} />
+              </Button>
+              <span className="type-body text-[var(--text-primary)] w-12 text-center tabular-nums">
+                {porcentaje}%
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={aumentar}
+                disabled={nivel === 4}
+                aria-label="Aumentar tamaño de fuente"
+              >
+                <Plus size={14} />
+              </Button>
+            </div>
+          </div>
+
+          <div className="border-t border-[var(--border)] pt-4">
+            <Switch
+              checked={altoContraste}
+              onChange={toggleAltoContraste}
+              label="Alto contraste"
+              description="Bordes y texto secundario más marcados."
+            />
+          </div>
+
+          <div className="border-t border-[var(--border)] pt-4">
+            <Switch
+              checked={reducirMovimiento}
+              onChange={toggleReducirMovimiento}
+              label="Reducir movimiento"
+              description="Apaga animaciones y transiciones en toda la app."
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react'
 import {
   LayoutDashboard, FolderKanban, Bug, Users,
-  Settings, ChevronLeft, ChevronRight, Activity, GitBranch, BookMarked, MessageSquare, BarChart3,
+  Settings, ChevronLeft, ChevronRight, Activity, GitBranch, BookMarked, MessageSquare, BarChart3, ShieldCheck,
 } from 'lucide-react'
 import { Badge } from '../ui/Badge'
 import { CODIGO_ROL } from '../../types/usuario'
@@ -42,6 +42,10 @@ const navItems: NavItem[] = [
     id: 'mensajes', label: 'Mensajes', icon: <MessageSquare size={16} />,
     rolesPermitidos: [CODIGO_ROL.COORDINADOR],
   },
+  {
+    id: 'auditoria', label: 'Auditoría', icon: <ShieldCheck size={16} />,
+    rolesPermitidos: [CODIGO_ROL.COORDINADOR],
+  },
   { id: 'configuracion', label: 'Configuración', icon: <Settings size={16} /> },
 ]
 
@@ -52,6 +56,9 @@ interface SidebarProps {
   onToggleCollapse?: () => void
   /** Código del rol del usuario logueado (rol.codigoRol) -- filtra los ítems. */
   rolUsuario?: string
+  /** Mobile (< md): controla si el drawer está abierto. En md+ se ignora -- el Sidebar siempre es la barra fija de escritorio. */
+  abiertoEnMobile?: boolean
+  onCerrarMobile?: () => void
 }
 
 export function Sidebar({
@@ -60,6 +67,8 @@ export function Sidebar({
   collapsed: controlledCollapsed,
   onToggleCollapse,
   rolUsuario,
+  abiertoEnMobile = false,
+  onCerrarMobile,
 }: SidebarProps) {
   const [internalCollapsed, setInternalCollapsed] = useState(false)
   const collapsed = controlledCollapsed ?? internalCollapsed
@@ -79,11 +88,23 @@ export function Sidebar({
   let lastSection: string | undefined
 
   return (
-    <aside
-      className={`flex flex-col bg-[var(--surface)] border-r border-[var(--border)] transition-all duration-200 shrink-0 ${collapsed ? 'w-14' : 'w-56'}`}
-    >
-      <nav className="flex-1 py-3 overflow-y-auto overflow-x-hidden">
-        {itemsVisibles.map((item) => {
+    <>
+      {/* Backdrop -- solo visible en mobile cuando el drawer está abierto. */}
+      {abiertoEnMobile && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          onClick={onCerrarMobile}
+          aria-hidden
+        />
+      )}
+
+      <aside
+        className={`flex flex-col bg-[var(--surface)] border-r border-[var(--border)] transition-all duration-200 shrink-0 fixed inset-y-0 left-0 z-50 md:relative md:z-auto md:translate-x-0 ${
+          abiertoEnMobile ? 'translate-x-0' : '-translate-x-full'
+        } ${collapsed ? 'w-14' : 'w-56'}`}
+      >
+        <nav className="flex-1 py-3 overflow-y-auto overflow-x-hidden">
+          {itemsVisibles.map((item) => {
           const showSection = !collapsed && item.section && item.section !== lastSection
           if (item.section) lastSection = item.section
           const isActive = activeItem === item.id
@@ -94,7 +115,10 @@ export function Sidebar({
                 <p className="px-3 mt-4 mb-1.5 type-label text-[var(--text-tertiary)]">{item.section}</p>
               )}
               <button
-                onClick={() => onItemClick?.(item.id)}
+                onClick={() => {
+                  onItemClick?.(item.id)
+                  onCerrarMobile?.()
+                }}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 mx-1.5 rounded-[var(--radius-md)] transition-colors ${
                   isActive
                     ? 'bg-[var(--secondary-bg)] text-[var(--primary)]'
@@ -121,11 +145,12 @@ export function Sidebar({
 
       <button
         onClick={handleToggle}
-        className="flex items-center justify-center h-9 border-t border-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--muted)] transition-colors"
+        className="hidden md:flex items-center justify-center h-9 border-t border-[var(--border)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--muted)] transition-colors"
         aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
       >
         {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
       </button>
     </aside>
+    </>
   )
 }

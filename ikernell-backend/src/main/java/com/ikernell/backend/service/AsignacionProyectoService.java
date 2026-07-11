@@ -3,10 +3,12 @@ package com.ikernell.backend.service;
 import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.AsignacionProyectoRequest;
 import com.ikernell.backend.dto.AsignacionProyectoResponse;
+import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.entity.Proyecto;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.RolProyecto;
+import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -31,6 +33,7 @@ public class AsignacionProyectoService {
     private final ProyectoRepository proyectoRepository;
     private final AsignacionProyectoMapper asignacionProyectoMapper;
     private final AutorizacionProyectoService autorizacionProyectoService;
+    private final NotificacionService notificacionService;
 
     @Transactional
     public AsignacionProyectoResponse crear(AsignacionProyectoRequest request, String correoSolicitante) {
@@ -90,6 +93,13 @@ public class AsignacionProyectoService {
         asignacion.setProyecto(proyecto);
 
         AsignacionProyecto guardada = asignacionProyectoRepository.save(asignacion);
+
+        notificacionService.crear(new NotificacionRequest(
+                usuario.getIdUsuario(),
+                "Te agregaron a un proyecto",
+                "Ahora eres " + request.getRolProyecto().getValor() + " en \"" + proyecto.getNombreProyecto() + "\".",
+                TipoNotificacion.PROYECTO,
+                "/dashboard/proyectos/" + proyecto.getIdProyecto()));
 
         return asignacionProyectoMapper.toResponse(guardada);
     }
