@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Sun, Moon, Bell, Search, ChevronDown, LogOut, User, Menu,
@@ -18,7 +18,7 @@ interface TopbarProps {
   onAbrirMenuMobile?: () => void
 }
 
-const iconoPorTipo: Record<TipoNotificacion, JSX.Element> = {
+const iconoPorTipo: Record<TipoNotificacion, ReactNode> = {
   Actividad: <Activity size={14} className="text-[var(--info)]" />,
   Proyecto: <FolderKanban size={14} className="text-[var(--primary)]" />,
   Error: <Bug size={14} className="text-[var(--error)]" />,

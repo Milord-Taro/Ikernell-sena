@@ -112,6 +112,14 @@ public class ActividadService {
         return actividadMapper.toResponse(buscarOFallar(idActividad));
     }
 
+    /**
+     * El chequeo de ownership se hace tanto contra el proyecto ACTUAL de
+     * la actividad (vía su etapa) como contra el proyecto DESTINO (vía la
+     * etapa que venga en el request) -- antes solo se validaba el actual,
+     * lo que permitía mover una actividad a la etapa de un proyecto ajeno
+     * con solo mandar su id en el payload. Mismo criterio que
+     * EtapaService.actualizar().
+     */
     @Transactional
     public ActividadResponse actualizar(Integer idActividad, ActividadRequest request, String correoSolicitante) {
         Actividad actividad = buscarOFallar(idActividad);
@@ -119,6 +127,8 @@ public class ActividadService {
                 correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
+        autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, etapa.getProyecto().getIdProyecto());
 
         validarCodigoDisponible(request.getCodigoActividad(), idActividad);
         validarFechas(request);

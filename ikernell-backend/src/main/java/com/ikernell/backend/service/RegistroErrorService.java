@@ -123,6 +123,32 @@ public class RegistroErrorService {
     }
 
     /**
+     * NUEVO: quien reportó el error se entera cuando se Resuelve o
+     * Descarta -- son los dos cierres de ciclo de vida que le interesan;
+     * "En progreso" es ruido para quien solo quiere saber si su reporte
+     * se atendió. Si el creador fue quien mismo cambió el estado (caso
+     * común: el propio desarrollador lo resuelve), no se le notifica a
+     * sí mismo.
+     */
+    private void notificarResolucionAlCreador(RegistroError registroError, EstadoRegistroError nuevoEstado, Usuario solicitante) {
+        if (nuevoEstado != EstadoRegistroError.RESUELTO && nuevoEstado != EstadoRegistroError.DESCARTADO) {
+            return;
+        }
+
+        Usuario creador = registroError.getUsuarioCreador();
+        if (creador == null || creador.getIdUsuario().equals(solicitante.getIdUsuario())) {
+            return;
+        }
+
+        notificacionService.crear(new NotificacionRequest(
+                creador.getIdUsuario(),
+                nuevoEstado == EstadoRegistroError.RESUELTO ? "Tu error fue resuelto" : "Tu error fue descartado",
+                registroError.getTitulo() + " -- " + registroError.getActividad().getNombreActividad(),
+                TipoNotificacion.ERROR,
+                "/dashboard/proyectos/" + registroError.getActividad().getEtapa().getProyecto().getIdProyecto()));
+    }
+
+    /**
      * NUEVO: sin restricción de rol, igual que ActividadService.cambiarEstado()
      * -- el propio Desarrollador que detectó el error lo puede marcar
      * En progreso/Resuelto, y Coordinador/Líder también pueden hacerlo
@@ -146,6 +172,7 @@ public class RegistroErrorService {
                 (nuevoEstado == EstadoRegistroError.RESUELTO || nuevoEstado == EstadoRegistroError.DESCARTADO)
                         ? notaResolucion : null);
         RegistroError guardado = registroErrorRepository.save(registroError);
+        notificarResolucionAlCreador(guardado, nuevoEstado, solicitante);
 
         RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(

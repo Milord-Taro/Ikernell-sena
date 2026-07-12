@@ -270,6 +270,11 @@ export function ActividadesEtapaModal({
                           <div className="flex flex-col">
                             <span className="type-caption text-[var(--text-tertiary)]">Qué se hizo</span>
                             <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
+                            {actividad.fechaFinalizacion && (
+                              <span className="type-caption text-[var(--text-tertiary)] mt-0.5">
+                                Finalizada: {actividad.fechaFinalizacion}
+                              </span>
+                            )}
                           </div>
                         )}
 
@@ -381,6 +386,11 @@ export function ActividadesEtapaModal({
                           <div className="flex flex-col">
                             <span className="type-caption text-[var(--text-tertiary)]">Qué se hizo</span>
                             <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
+                            {actividad.fechaFinalizacion && (
+                              <span className="type-caption text-[var(--text-tertiary)] mt-0.5">
+                                Finalizada: {actividad.fechaFinalizacion}
+                              </span>
+                            )}
                           </div>
                         )}
 

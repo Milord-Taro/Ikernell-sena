@@ -12,5 +12,9 @@ public interface EspecialidadRepository extends JpaRepository<Especialidad, Inte
 
     Optional<Especialidad> findByNombreEspecialidadIgnoreCase(String nombreEspecialidad);
 
-    List<Especialidad> findByActivoTrue();
+    // Orden explícito por PK: sin esto, un UPDATE de "activo" puede
+    // reubicar la fila y reordenar la tabla del catálogo en el frontend.
+    List<Especialidad> findByActivoTrueOrderByIdEspecialidadAsc();
+
+    List<Especialidad> findAllByOrderByIdEspecialidadAsc();
 }

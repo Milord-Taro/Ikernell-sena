@@ -49,14 +49,14 @@ public class ProfesionService {
     }
 
     public List<ProfesionResponse> listarTodas() {
-        return profesionRepository.findAll()
+        return profesionRepository.findAllByOrderByIdProfesionAsc()
                 .stream()
                 .map(profesionMapper::toResponse)
                 .toList();
     }
 
     public List<ProfesionResponse> listarActivas() {
-        return profesionRepository.findByActivoTrue()
+        return profesionRepository.findByActivoTrueOrderByIdProfesionAsc()
                 .stream()
                 .map(profesionMapper::toResponse)
                 .toList();

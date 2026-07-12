@@ -10,7 +10,10 @@ public interface EtapaRepository extends JpaRepository<Etapa, Integer> {
 
     Optional<Etapa> findByCodigoEtapa(String codigoEtapa);
 
-    List<Etapa> findByProyecto_IdProyecto(Integer idProyecto);
+    // Orden explícito por PK, por consistencia/defensa en profundidad --
+    // el frontend (EtapasList.tsx) ya reordena en cliente por "orden", pero
+    // no conviene depender de que cada consumidor futuro lo recuerde.
+    List<Etapa> findByProyecto_IdProyectoOrderByIdEtapaAsc(Integer idProyecto);
 
     Optional<Etapa> findByProyecto_IdProyectoAndOrden(Integer idProyecto, Integer orden);
 }

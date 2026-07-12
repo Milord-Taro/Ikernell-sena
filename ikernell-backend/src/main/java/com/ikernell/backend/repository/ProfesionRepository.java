@@ -12,5 +12,9 @@ public interface ProfesionRepository extends JpaRepository<Profesion, Integer> {
 
     Optional<Profesion> findByNombreProfesionIgnoreCase(String nombreProfesion);
 
-    List<Profesion> findByActivoTrue();
+    // Orden explícito por PK: sin esto, un UPDATE de "activo" puede
+    // reubicar la fila y reordenar la tabla del catálogo en el frontend.
+    List<Profesion> findByActivoTrueOrderByIdProfesionAsc();
+
+    List<Profesion> findAllByOrderByIdProfesionAsc();
 }

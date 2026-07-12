@@ -253,9 +253,14 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                     <p className="type-body-sm text-[var(--text-secondary)]">{r.notaResolucion}</p>
                   </div>
                 )}
-                <span className="type-caption text-[var(--text-tertiary)]">
-                  Registrado: {r.fechaRegistro}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="type-caption text-[var(--text-tertiary)]">
+                    Creado por: {r.usuarioCreador ? `${r.usuarioCreador.nombres} ${r.usuarioCreador.apellidos}` : '—'}
+                  </span>
+                  <span className="type-caption text-[var(--text-tertiary)]">
+                    Registrado: {r.fechaRegistro}
+                  </span>
+                </div>
               </CardContent>
             </Card>
           ))
@@ -308,6 +313,9 @@ function SeccionInterrupciones({ registros }: SeccionInterrupcionesProps) {
                   Registrado: {r.fechaRegistro}
                 </span>
               </div>
+              <span className="type-caption text-[var(--text-tertiary)]">
+                Creado por: {r.usuarioCreador ? `${r.usuarioCreador.nombres} ${r.usuarioCreador.apellidos}` : '—'}
+              </span>
             </CardContent>
           </Card>
         ))

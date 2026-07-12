@@ -63,12 +63,12 @@ public class MensajeContactoService {
     }
 
     public List<MensajeContactoResponse> listarTodos() {
-        return mensajeContactoRepository.findAll().stream().map(mensajeContactoMapper::toResponse).toList();
+        return mensajeContactoRepository.findAllByOrderByIdMensajeContactoAsc().stream().map(mensajeContactoMapper::toResponse).toList();
     }
 
     public List<MensajeContactoResponse> listarPorEstado(String estadoTexto) {
         EstadoMensaje estado = parsearEstado(estadoTexto);
-        return mensajeContactoRepository.findByEstado(estado)
+        return mensajeContactoRepository.findByEstadoOrderByIdMensajeContactoAsc(estado)
                 .stream()
                 .map(mensajeContactoMapper::toResponse)
                 .toList();

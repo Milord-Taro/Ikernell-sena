@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.CambiarContrasenaRequest;
+import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.dto.UsuarioRequest;
 import com.ikernell.backend.dto.UsuarioResponse;
 import com.ikernell.backend.dto.UsuarioUpdateRequest;
@@ -12,6 +13,7 @@ import com.ikernell.backend.entity.Profesion;
 import com.ikernell.backend.entity.Rol;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.OperacionTrazabilidad;
+import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -38,6 +40,7 @@ public class UsuarioService {
     private final EspecialidadRepository especialidadRepository;
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
+    private final NotificacionService notificacionService;
     private final TrazabilidadService trazabilidadService;
 
 
@@ -72,14 +75,14 @@ public class UsuarioService {
     }
 
     public List<UsuarioResponse> listarTodos() {
-        return usuarioRepository.findAll()
+        return usuarioRepository.findAllByOrderByIdUsuarioAsc()
                 .stream()
                 .map(usuarioMapper::toResponse)
                 .toList();
     }
 
     public List<UsuarioResponse> listarActivos() {
-        return usuarioRepository.findByActivoTrue()
+        return usuarioRepository.findByActivoTrueOrderByIdUsuarioAsc()
                 .stream()
                 .map(usuarioMapper::toResponse)
                 .toList();
@@ -111,6 +114,7 @@ public class UsuarioService {
         validarCodigoDisponible(request.getCodigoUsuario(), idUsuario);
         validarIdentificacionDisponible(request.getNumeroIdentificacion(), idUsuario);
 
+        Rol rolAnterior = usuario.getRol();
         Rol rol = buscarRolOFallar(request.getIdRol());
         Profesion profesion = buscarProfesionOFallar(request.getIdProfesion());
         Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
@@ -121,6 +125,7 @@ public class UsuarioService {
         usuario.setEspecialidad(especialidad);
 
         Usuario actualizado = usuarioRepository.save(usuario);
+        notificarCambioDeRol(actualizado, rolAnterior, solicitante);
 
         UsuarioResponse response = usuarioMapper.toResponse(actualizado);
         trazabilidadService.registrar(
@@ -128,6 +133,28 @@ public class UsuarioService {
                 OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
 
         return response;
+    }
+
+    /**
+     * NUEVO: un cambio de rol organizacional habilita/quita capacidades
+     * reales en la app (ej. ahora puede o no puede ser asignado como
+     * Líder de un proyecto), así que el propio usuario necesita saberlo.
+     * Se notifica solo si el rol realmente cambió -- no en cada
+     * actualización de perfil que no lo toque -- y no si el propio
+     * usuario se cambió el rol a sí mismo.
+     */
+    private void notificarCambioDeRol(Usuario usuario, Rol rolAnterior, Usuario solicitante) {
+        if (rolAnterior.getIdRol().equals(usuario.getRol().getIdRol())
+                || usuario.getIdUsuario().equals(solicitante.getIdUsuario())) {
+            return;
+        }
+
+        notificacionService.crear(new NotificacionRequest(
+                usuario.getIdUsuario(),
+                "Tu rol cambió",
+                "Ahora tienes el rol \"" + usuario.getRol().getNombreRol() + "\".",
+                TipoNotificacion.SISTEMA,
+                "/dashboard/configuracion"));
     }
 
     @Transactional

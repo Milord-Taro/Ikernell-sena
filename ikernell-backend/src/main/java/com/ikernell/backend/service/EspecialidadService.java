@@ -49,14 +49,14 @@ public class EspecialidadService {
     }
 
     public List<EspecialidadResponse> listarTodas() {
-        return especialidadRepository.findAll()
+        return especialidadRepository.findAllByOrderByIdEspecialidadAsc()
                 .stream()
                 .map(especialidadMapper::toResponse)
                 .toList();
     }
 
     public List<EspecialidadResponse> listarActivas() {
-        return especialidadRepository.findByActivoTrue()
+        return especialidadRepository.findByActivoTrueOrderByIdEspecialidadAsc()
                 .stream()
                 .map(especialidadMapper::toResponse)
                 .toList();

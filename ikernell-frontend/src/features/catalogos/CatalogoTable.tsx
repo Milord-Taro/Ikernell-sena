@@ -20,7 +20,6 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
   const [itemEditando, setItemEditando] = useState<CatalogoItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [itemAEliminar, setItemAEliminar] = useState<CatalogoItem | null>(null);
-  const [eliminando, setEliminando] = useState(false);
 
   const cargar = async () => {
     setCargando(true);
@@ -68,7 +67,6 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
 
   const confirmarEliminar = async () => {
     if (!itemAEliminar) return;
-    setEliminando(true);
     try {
       await config.servicio.eliminar(itemAEliminar.id);
       setItemAEliminar(null);
@@ -78,8 +76,6 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
       // por ON DELETE RESTRICT) -- ese mensaje ya viene listo para mostrar.
       setError(err instanceof ApiRequestError ? err.message : `No se pudo eliminar "${itemAEliminar.nombre}".`);
       setItemAEliminar(null);
-    } finally {
-      setEliminando(false);
     }
   };
 

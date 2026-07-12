@@ -21,21 +21,25 @@ public class RecuperacionContrasenaService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * SIMULADO: no envía correo real todavía (eso llega en el Sprint 6 con
-     * el módulo notification/). Por ahora solo registra el token en el log,
-     * simulando el enlace que se enviaría por correo.
+     * SIMULADO A PROPÓSITO (caso de estudio, sin proveedor de correo real
+     * como Outlook/Gmail detrás): en vez de enviar un correo, el código se
+     * devuelve directamente en la respuesta para que el frontend lo
+     * muestre en pantalla y el usuario lo copie/pegue en el siguiente
+     * paso. Esto es intencionalmente menos seguro que un flujo real (revela
+     * si el correo existe, y el "canal de entrega" es la propia respuesta
+     * HTTP) -- válido para esta demo, pero el día que haya envío de correo
+     * real esto debe volver a null/void y el código viajar solo por email.
      */
-    public void solicitarRecuperacion(String correoElectronico) {
+    public String solicitarRecuperacion(String correoElectronico) {
         String correo = correoElectronico.toLowerCase();
 
-        usuarioRepository.findByCorreoElectronico(correo).ifPresent(usuario -> {
-            String token = tokenStore.generarToken(correo);
-            log.info("[SIMULADO] Enlace de recuperación para {}: token={}", correo, token);
-        });
-
-        // Sin importar si el correo existe o no, la respuesta al cliente es
-        // siempre la misma (ver AuthController): evita que este endpoint se
-        // use para averiguar qué correos están registrados en el sistema.
+        return usuarioRepository.findByCorreoElectronico(correo)
+                .map(usuario -> {
+                    String token = tokenStore.generarToken(correo);
+                    log.info("[SIMULADO] Código de recuperación para {}: token={}", correo, token);
+                    return token;
+                })
+                .orElse(null);
     }
 
     @Transactional

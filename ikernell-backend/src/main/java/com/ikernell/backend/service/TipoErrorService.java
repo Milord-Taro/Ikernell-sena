@@ -49,11 +49,11 @@ public class TipoErrorService {
     }
 
     public List<TipoErrorResponse> listarTodos() {
-        return tipoErrorRepository.findAll().stream().map(tipoErrorMapper::toResponse).toList();
+        return tipoErrorRepository.findAllByOrderByIdTipoErrorAsc().stream().map(tipoErrorMapper::toResponse).toList();
     }
 
     public List<TipoErrorResponse> listarActivos() {
-        return tipoErrorRepository.findByActivoTrue().stream().map(tipoErrorMapper::toResponse).toList();
+        return tipoErrorRepository.findByActivoTrueOrderByIdTipoErrorAsc().stream().map(tipoErrorMapper::toResponse).toList();
     }
 
     public TipoErrorResponse obtenerPorId(Integer idTipoError) {

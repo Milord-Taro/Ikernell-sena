@@ -49,11 +49,11 @@ public class TipoInterrupcionService {
     }
 
     public List<TipoInterrupcionResponse> listarTodos() {
-        return tipoInterrupcionRepository.findAll().stream().map(tipoInterrupcionMapper::toResponse).toList();
+        return tipoInterrupcionRepository.findAllByOrderByIdTipoInterrupcionAsc().stream().map(tipoInterrupcionMapper::toResponse).toList();
     }
 
     public List<TipoInterrupcionResponse> listarActivos() {
-        return tipoInterrupcionRepository.findByActivoTrue().stream().map(tipoInterrupcionMapper::toResponse).toList();
+        return tipoInterrupcionRepository.findByActivoTrueOrderByIdTipoInterrupcionAsc().stream().map(tipoInterrupcionMapper::toResponse).toList();
     }
 
     public TipoInterrupcionResponse obtenerPorId(Integer idTipoInterrupcion) {

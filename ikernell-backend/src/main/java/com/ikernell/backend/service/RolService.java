@@ -49,14 +49,14 @@ public class RolService {
     }
 
     public List<RolResponse> listarTodos() {
-        return rolRepository.findAll()
+        return rolRepository.findAllByOrderByIdRolAsc()
                 .stream()
                 .map(rolMapper::toResponse)
                 .toList();
     }
 
     public List<RolResponse> listarActivos() {
-        return rolRepository.findByActivoTrue()
+        return rolRepository.findByActivoTrueOrderByIdRolAsc()
                 .stream()
                 .map(rolMapper::toResponse)
                 .toList();

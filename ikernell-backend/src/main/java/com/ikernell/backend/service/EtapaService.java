@@ -67,7 +67,7 @@ public class EtapaService {
     }
 
     public List<EtapaResponse> listarPorProyecto(Integer idProyecto) {
-        return etapaRepository.findByProyecto_IdProyecto(idProyecto)
+        return etapaRepository.findByProyecto_IdProyectoOrderByIdEtapaAsc(idProyecto)
                 .stream()
                 .map(etapaMapper::toResponse)
                 .toList();
@@ -78,16 +78,19 @@ public class EtapaService {
     }
 
     /**
-     * El chequeo de ownership se hace contra el proyecto ACTUAL de la
-     * etapa (antes de aplicar el request), no contra el idProyecto que
-     * venga en el body -- así no se puede "mover" una etapa de un
-     * proyecto ajeno usando el propio idProyecto en el payload.
+     * El chequeo de ownership se hace tanto contra el proyecto ACTUAL de
+     * la etapa como contra el proyecto DESTINO (request.getIdProyecto()).
+     * Antes solo se validaba el actual -- así no se podía "sacar" una
+     * etapa de un proyecto ajeno, pero sí se podía "meter" en uno,
+     * moviéndola a un proyecto que el solicitante no gestiona con solo
+     * mandar su id en el payload.
      */
     @Transactional
     public EtapaResponse actualizar(Integer idEtapa, EtapaRequest request, String correoSolicitante) {
         Etapa etapa = buscarOFallar(idEtapa);
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, etapa.getProyecto().getIdProyecto());
+        autorizacionProyectoService.verificarPuedeGestionar(correoSolicitante, request.getIdProyecto());
 
         Proyecto proyecto = buscarProyectoOFallar(request.getIdProyecto());
 

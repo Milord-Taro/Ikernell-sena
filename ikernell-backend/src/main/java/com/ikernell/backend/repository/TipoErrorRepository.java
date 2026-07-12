@@ -12,5 +12,9 @@ public interface TipoErrorRepository extends JpaRepository<TipoError, Integer> {
 
     Optional<TipoError> findByNombreTipoErrorIgnoreCase(String nombreTipoError);
 
-    List<TipoError> findByActivoTrue();
+    // Orden explícito por PK: sin esto, un UPDATE de "activo" puede
+    // reubicar la fila y reordenar la tabla del catálogo en el frontend.
+    List<TipoError> findByActivoTrueOrderByIdTipoErrorAsc();
+
+    List<TipoError> findAllByOrderByIdTipoErrorAsc();
 }

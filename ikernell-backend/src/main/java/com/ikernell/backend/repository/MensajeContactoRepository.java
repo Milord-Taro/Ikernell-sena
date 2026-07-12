@@ -11,5 +11,11 @@ public interface MensajeContactoRepository extends JpaRepository<MensajeContacto
 
     Optional<MensajeContacto> findByCodigoMensaje(String codigoMensaje);
 
-    List<MensajeContacto> findByEstado(EstadoMensaje estado);
+    // Orden explícito por PK, por consistencia/defensa en profundidad --
+    // el frontend (MensajesPage.tsx) ya reordena en cliente por
+    // fechaEnvio, pero no conviene depender de que cada consumidor
+    // futuro lo recuerde.
+    List<MensajeContacto> findByEstadoOrderByIdMensajeContactoAsc(EstadoMensaje estado);
+
+    List<MensajeContacto> findAllByOrderByIdMensajeContactoAsc();
 }

@@ -1,9 +1,10 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { FolderKanban, Activity, Bug, Users, CheckCircle2, MessageSquare } from 'lucide-react';
+import { FolderKanban, Activity, Bug, Users, CheckCircle2, MessageSquare, Zap } from 'lucide-react';
 import { MetricCard } from '../components/ui/DataDisplay';
 import { DistribucionBarChart, type BarraDato } from '../components/charts/DistribucionBarChart';
 import { TendenciaDiariaChart, type PuntoDiario } from '../components/charts/TendenciaDiariaChart';
 import { FeedActividadReciente, type ItemFeed } from '../components/charts/FeedActividadReciente';
+import { RankingList, type ItemRanking } from '../components/charts/RankingList';
 import { useAuth } from '../context/AuthContext';
 import { CODIGO_ROL } from '../types/usuario';
 import { listarProyectos } from '../services/proyectos';
@@ -42,6 +43,14 @@ const COLOR_ESTADO_ACTIVIDAD: Record<string, string> = {
   'Cancelada': 'var(--error)',
 };
 
+const COLOR_ESTADO_PROYECTO: Record<string, string> = {
+  'Planeación': 'var(--text-tertiary)',
+  'En ejecución': 'var(--info)',
+  'Finalizado': 'var(--success)',
+  'Suspendido': 'var(--warning)',
+  'Cancelado': 'var(--error)',
+};
+
 interface Metrica {
   label: string;
   value: number;
@@ -53,8 +62,16 @@ interface DatosMetricas {
   erroresPorSeveridad: BarraDato[];
   erroresPorEstado: BarraDato[];
   actividadesPorEstado: BarraDato[];
+  /** Solo Coordinador -- para Líder/Desarrollador no aporta (ven pocos proyectos, o los propios). */
+  proyectosPorEstado?: BarraDato[];
+  /** Solo Coordinador -- ranking org-wide, no tiene sentido acotado a un solo Líder/Desarrollador. */
+  rankingErroresPorProyecto?: ItemRanking[];
   tendenciaFinalizadas: PuntoDiario[];
   feed: ItemFeed[];
+}
+
+function minutosInterrupcionDe(interrupciones: InterrupcionResponse[]): number {
+  return interrupciones.reduce((total, i) => total + i.duracionMinutos, 0);
 }
 
 function contarPor<T>(items: T[], claves: string[], obtenerClave: (item: T) => string, colores: Record<string, string>): BarraDato[] {
@@ -67,7 +84,7 @@ function contarPor<T>(items: T[], claves: string[], obtenerClave: (item: T) => s
   return claves.map((c) => ({ label: c, value: conteo.get(c) ?? 0, colorVar: colores[c] ?? 'var(--primary)' }));
 }
 
-const FORMATO_DIA = new Intl.DateTimeFormat('es-CO', { day: '2-digit', month: 'short' });
+const FORMATO_DIA = new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'numeric' });
 
 function ultimosNDias(n: number): { clave: string; etiqueta: string }[] {
   const dias: { clave: string; etiqueta: string }[] = [];
@@ -142,7 +159,22 @@ async function metricasCoordinador(): Promise<DatosMetricas> {
     { label: 'Errores abiertos', value: errores.filter((e) => ABIERTOS.includes(e.estado)).length, icon: <Bug size={15} /> },
     { label: 'Equipo (usuarios activos)', value: usuarios.filter((u) => u.activo).length, icon: <Users size={15} /> },
     { label: 'Mensajes pendientes', value: mensajesPendientes.length, icon: <MessageSquare size={15} /> },
+    { label: 'Minutos perdidos (interrupciones)', value: minutosInterrupcionDe(interrupciones), icon: <Zap size={15} /> },
   ];
+
+  const erroresAbiertosPorProyecto = new Map<number, number>();
+  errores
+    .filter((e) => ABIERTOS.includes(e.estado))
+    .forEach((e) => {
+      const idProyecto = e.actividad.etapa.proyecto.idProyecto;
+      erroresAbiertosPorProyecto.set(idProyecto, (erroresAbiertosPorProyecto.get(idProyecto) ?? 0) + 1);
+    });
+
+  const rankingErroresPorProyecto: ItemRanking[] = proyectos
+    .map((p) => ({ id: p.idProyecto, label: p.nombreProyecto, value: erroresAbiertosPorProyecto.get(p.idProyecto) ?? 0 }))
+    .filter((r) => r.value > 0)
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 5);
 
   return {
     cards,
@@ -154,6 +186,13 @@ async function metricasCoordinador(): Promise<DatosMetricas> {
       (a) => a.estado,
       COLOR_ESTADO_ACTIVIDAD,
     ),
+    proyectosPorEstado: contarPor(
+      proyectos,
+      ['Planeación', 'En ejecución', 'Finalizado', 'Suspendido', 'Cancelado'],
+      (p) => p.estado,
+      COLOR_ESTADO_PROYECTO,
+    ),
+    rankingErroresPorProyecto,
     tendenciaFinalizadas: tendenciaFinalizadasDe(actividades),
     feed: feedDe(errores, interrupciones, mensajesRecientes),
   };
@@ -187,6 +226,7 @@ async function metricasLider(idUsuario: number): Promise<DatosMetricas> {
     { label: 'Actividades pendientes', value: actividades.filter((a) => PENDIENTES.includes(a.estado)).length, icon: <Activity size={15} /> },
     { label: 'Errores abiertos', value: errores.filter((e) => ABIERTOS.includes(e.estado)).length, icon: <Bug size={15} /> },
     { label: 'Mi equipo', value: idsEquipo.size, icon: <Users size={15} /> },
+    { label: 'Minutos perdidos (interrupciones)', value: minutosInterrupcionDe(interrupciones), icon: <Zap size={15} /> },
   ];
 
   return {
@@ -221,6 +261,7 @@ async function metricasDesarrollador(idUsuario: number): Promise<DatosMetricas> 
     { label: 'Actividades finalizadas', value: misActividades.filter((a) => a.estado === 'Finalizada').length, icon: <CheckCircle2 size={15} /> },
     { label: 'Mis errores abiertos', value: misErrores.filter((e) => ABIERTOS.includes(e.estado)).length, icon: <Bug size={15} /> },
     { label: 'Proyectos en los que participo', value: misProyectos.size, icon: <FolderKanban size={15} /> },
+    { label: 'Minutos perdidos (interrupciones)', value: minutosInterrupcionDe(misInterrupciones), icon: <Zap size={15} /> },
   ];
 
   return {
@@ -298,6 +339,17 @@ export default function MetricasPage() {
             <DistribucionBarChart titulo="Actividades por estado" datos={datos.actividadesPorEstado} />
             <TendenciaDiariaChart titulo="Actividades finalizadas (últimos 14 días)" datos={datos.tendenciaFinalizadas} />
           </div>
+
+          {datos.proyectosPorEstado && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <DistribucionBarChart titulo="Proyectos por estado" datos={datos.proyectosPorEstado} />
+              <RankingList
+                titulo="Proyectos con más errores abiertos"
+                items={datos.rankingErroresPorProyecto ?? []}
+                emptyMessage="Ningún proyecto tiene errores abiertos."
+              />
+            </div>
+          )}
 
           <FeedActividadReciente items={datos.feed} />
         </>

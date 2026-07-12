@@ -96,7 +96,7 @@ public class ProyectoService {
     }
 
     public List<ProyectoResponse> listarTodos() {
-        return proyectoRepository.findAll()
+        return proyectoRepository.findAllByOrderByIdProyectoAsc()
                 .stream()
                 .map(this::enriquecerConLider)
                 .toList();
@@ -105,7 +105,7 @@ public class ProyectoService {
     public List<ProyectoResponse> listarPorEstado(String estadoTexto) {
         EstadoProyecto estado = parsearEstado(estadoTexto);
 
-        return proyectoRepository.findByEstado(estado)
+        return proyectoRepository.findByEstadoOrderByIdProyectoAsc(estado)
                 .stream()
                 .map(this::enriquecerConLider)
                 .toList();

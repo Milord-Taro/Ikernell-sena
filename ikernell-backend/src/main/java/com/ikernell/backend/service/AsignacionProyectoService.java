@@ -92,6 +92,16 @@ public class AsignacionProyectoService {
                     .ifPresent(liderAnterior -> {
                         liderAnterior.setFechaDesvinculacion(LocalDate.now());
                         asignacionProyectoRepository.save(liderAnterior);
+                        // NUEVO: el líder saliente se entera de que ya no lo es --
+                        // mismo criterio que "Te agregaron a un proyecto", pero
+                        // en la dirección de salida (antes solo se avisaba al
+                        // entrar).
+                        notificacionService.crear(new NotificacionRequest(
+                                liderAnterior.getUsuario().getIdUsuario(),
+                                "Ya no eres el líder de este proyecto",
+                                "Se asignó un nuevo líder en \"" + proyecto.getNombreProyecto() + "\".",
+                                TipoNotificacion.PROYECTO,
+                                "/dashboard/proyectos/" + proyecto.getIdProyecto()));
                     });
         }
 
@@ -117,14 +127,14 @@ public class AsignacionProyectoService {
     }
 
     public List<AsignacionProyectoResponse> listarPorProyecto(Integer idProyecto) {
-        return asignacionProyectoRepository.findByProyecto_IdProyecto(idProyecto)
+        return asignacionProyectoRepository.findByProyecto_IdProyectoOrderByIdAsignacionProyectoAsc(idProyecto)
                 .stream()
                 .map(asignacionProyectoMapper::toResponse)
                 .toList();
     }
 
     public List<AsignacionProyectoResponse> listarPorUsuario(Integer idUsuario) {
-        return asignacionProyectoRepository.findByUsuario_IdUsuario(idUsuario)
+        return asignacionProyectoRepository.findByUsuario_IdUsuarioOrderByIdAsignacionProyectoAsc(idUsuario)
                 .stream()
                 .map(asignacionProyectoMapper::toResponse)
                 .toList();
@@ -145,6 +155,19 @@ public class AsignacionProyectoService {
 
         asignacion.setFechaDesvinculacion(LocalDate.now());
         AsignacionProyecto guardada = asignacionProyectoRepository.save(asignacion);
+
+        // NUEVO: simétrico a "Te agregaron a un proyecto" -- si no se
+        // avisa al salir, la persona pierde acceso/visibilidad de golpe
+        // sin explicación. Si se desvinculó a sí misma, no hace falta
+        // notificarle algo que ella misma acaba de hacer.
+        if (!guardada.getUsuario().getIdUsuario().equals(solicitante.getIdUsuario())) {
+            notificacionService.crear(new NotificacionRequest(
+                    guardada.getUsuario().getIdUsuario(),
+                    "Te desvincularon de un proyecto",
+                    "Ya no eres parte del equipo de \"" + guardada.getProyecto().getNombreProyecto() + "\".",
+                    TipoNotificacion.PROYECTO,
+                    "/dashboard/proyectos/" + guardada.getProyecto().getIdProyecto()));
+        }
 
         AsignacionProyectoResponse response = asignacionProyectoMapper.toResponse(guardada);
         trazabilidadService.registrar(
