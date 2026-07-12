@@ -25,8 +25,9 @@ public class UsuarioController {
 
     @PostMapping
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
-    public ResponseEntity<ApiResponse<UsuarioResponse>> crear(@Valid @RequestBody UsuarioRequest request) {
-        UsuarioResponse creado = usuarioService.crear(request);
+    public ResponseEntity<ApiResponse<UsuarioResponse>> crear(
+            @Valid @RequestBody UsuarioRequest request, Authentication authentication) {
+        UsuarioResponse creado = usuarioService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Usuario creado correctamente.", creado));
     }
@@ -65,16 +66,17 @@ public class UsuarioController {
     @PutMapping("/{idUsuario}")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<UsuarioResponse>> actualizar(
-            @PathVariable Integer idUsuario, @Valid @RequestBody UsuarioUpdateRequest request) {
-        UsuarioResponse actualizado = usuarioService.actualizar(idUsuario, request);
+            @PathVariable Integer idUsuario, @Valid @RequestBody UsuarioUpdateRequest request,
+            Authentication authentication) {
+        UsuarioResponse actualizado = usuarioService.actualizar(idUsuario, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Usuario actualizado correctamente.", actualizado));
     }
 
     @PatchMapping("/{idUsuario}/estado")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<UsuarioResponse>> cambiarEstado(
-            @PathVariable Integer idUsuario, @RequestParam boolean activo) {
-        UsuarioResponse actualizado = usuarioService.cambiarEstado(idUsuario, activo);
+            @PathVariable Integer idUsuario, @RequestParam boolean activo, Authentication authentication) {
+        UsuarioResponse actualizado = usuarioService.cambiarEstado(idUsuario, activo, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Usuario activado correctamente." : "Usuario desactivado correctamente.", actualizado));
     }

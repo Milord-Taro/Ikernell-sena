@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, UserCheck, History, Zap } from 'lucide-react';
+import { Plus, Pencil, Trash2, UserCheck, History, Zap, Bug } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/DataDisplay';
-import { Select } from '../../components/ui/FormControls';
+import { Select, Textarea } from '../../components/ui/FormControls';
 import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { ActividadFormModal } from './ActividadFormModal';
 import { ActividadHistorialModal } from '../registros/ActividadHistorialModal';
@@ -68,6 +68,9 @@ export function ActividadesEtapaModal({
   const [actividadHistorial, setActividadHistorial] = useState<ActividadResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [actividadAEliminar, setActividadAEliminar] = useState<ActividadResponse | null>(null);
+  const [actividadACancelar, setActividadACancelar] = useState<ActividadResponse | null>(null);
+  const [actividadAFinalizar, setActividadAFinalizar] = useState<ActividadResponse | null>(null);
+  const [notaFinalizacion, setNotaFinalizacion] = useState('');
   const [interrupcionModalAbierto, setInterrupcionModalAbierto] = useState(false);
 
   const cargar = async () => {
@@ -122,14 +125,39 @@ export function ActividadesEtapaModal({
     await cargar();
   };
 
-  const alCambiarEstado = async (actividad: ActividadResponse, estado: string) => {
+  const aplicarCambioEstado = async (actividad: ActividadResponse, estado: EstadoActividad, nota?: string) => {
     setError(null);
     try {
-      await cambiarEstadoActividad(actividad.idActividad, estado as EstadoActividad);
+      await cambiarEstadoActividad(actividad.idActividad, estado, nota);
       await cargar();
     } catch (err) {
       setError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado.');
     }
+  };
+
+  const alCambiarEstado = (actividad: ActividadResponse, estado: string) => {
+    if (estado === 'Cancelada') {
+      setActividadACancelar(actividad);
+      return;
+    }
+    if (estado === 'Finalizada') {
+      setNotaFinalizacion('');
+      setActividadAFinalizar(actividad);
+      return;
+    }
+    aplicarCambioEstado(actividad, estado as EstadoActividad);
+  };
+
+  const alConfirmarCancelarActividad = async () => {
+    if (!actividadACancelar) return;
+    await aplicarCambioEstado(actividadACancelar, 'Cancelada');
+    setActividadACancelar(null);
+  };
+
+  const alConfirmarFinalizarActividad = async () => {
+    if (!actividadAFinalizar) return;
+    await aplicarCambioEstado(actividadAFinalizar, 'Finalizada', notaFinalizacion || undefined);
+    setActividadAFinalizar(null);
   };
 
   const alAsignar = async (actividad: ActividadResponse, idUsuario: string) => {
@@ -167,8 +195,14 @@ export function ActividadesEtapaModal({
   const proyectoEnEjecucion = (actividad: ActividadResponse) =>
     actividad.etapa.proyecto.estado === 'En ejecución';
 
-  const puedeCambiarEstado = (actividad: ActividadResponse) =>
-    (puedeGestionar || actividad.usuario?.idUsuario === usuario?.idUsuario) && proyectoEnEjecucion(actividad);
+  // CORREGIDO: refleja la regla nueva del backend (ActividadService.cambiarEstado)
+  // -- mientras no esté Cancelada, solo el desarrollador dueño puede tocarla; una
+  // vez Cancelada, solo Líder/Coordinador (ver AutorizacionProyectoService).
+  const puedeCambiarEstado = (actividad: ActividadResponse) => {
+    if (!proyectoEnEjecucion(actividad)) return false;
+    if (actividad.estado === 'Cancelada') return puedeGestionar;
+    return actividad.usuario?.idUsuario === usuario?.idUsuario;
+  };
 
   return (
     <>
@@ -232,16 +266,25 @@ export function ActividadesEtapaModal({
                           </div>
                         )}
 
+                        {actividad.notaFinalizacion && (
+                          <div className="flex flex-col">
+                            <span className="type-caption text-[var(--text-tertiary)]">Qué se hizo</span>
+                            <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
+                          </div>
+                        )}
+
                         <div className="flex items-center gap-2">
                           <div className="flex-1">
                             <Select
                               label="Estado"
                               value={actividad.estado}
-                              disabled={!proyectoEnEjecucion(actividad)}
+                              disabled={!puedeCambiarEstado(actividad)}
                               hint={
-                                !proyectoEnEjecucion(actividad)
-                                  ? `Proyecto en "${actividad.etapa.proyecto.estado}" -- no se puede ejecutar.`
-                                  : undefined
+                                actividad.estado === 'Cancelada'
+                                  ? 'Cancelada -- solo el Líder o el Coordinador pueden cambiarla.'
+                                  : !proyectoEnEjecucion(actividad)
+                                    ? `Proyecto en "${actividad.etapa.proyecto.estado}" -- no se puede ejecutar.`
+                                    : undefined
                               }
                               onChange={(e) => alCambiarEstado(actividad, e.target.value)}
                             >
@@ -250,6 +293,13 @@ export function ActividadesEtapaModal({
                               ))}
                             </Select>
                           </div>
+                          {/* Abre el mismo modal que "Historial" -- ActividadHistorialModal ya
+                              carga por defecto en la pestaña "Errores" (con su formulario de
+                              registro), esto solo lo hace más visible que buscarlo en Historial. */}
+                          <Button variant="ghost" size="sm" onClick={() => setActividadHistorial(actividad)}>
+                            <Bug size={14} />
+                            Reportar error
+                          </Button>
                           <Button variant="ghost" size="sm" onClick={() => setActividadHistorial(actividad)}>
                             <History size={14} />
                             Historial
@@ -270,7 +320,13 @@ export function ActividadesEtapaModal({
                       : 'Esta etapa todavía no tiene actividades registradas.'}
                   </p>
                 ) : (
-                  otras.map((actividad) => (
+                  // NUEVO: cuando no hay "Mis actividades" (columna única, todo
+                  // el ancho del modal disponible), las cards pasan a 3 columnas
+                  // para aprovechar el espacio -- si sí hay "Mis actividades", esta
+                  // columna comparte el modal con esa otra y se queda apilada como
+                  // antes, no le alcanza el ancho para una grilla.
+                  <div className={puedeVerColumnaMias ? 'flex flex-col gap-2' : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'}>
+                  {otras.map((actividad) => (
                     <Card key={actividad.idActividad}>
                       <CardContent className="flex flex-col gap-2.5">
                         <div className="flex items-center justify-between gap-3">
@@ -314,6 +370,20 @@ export function ActividadesEtapaModal({
                           )}
                         </div>
 
+                        {actividad.descripcion && (
+                          <div className="flex flex-col">
+                            <span className="type-caption text-[var(--text-tertiary)]">Descripción</span>
+                            <p className="type-body-sm text-[var(--text-secondary)]">{actividad.descripcion}</p>
+                          </div>
+                        )}
+
+                        {actividad.notaFinalizacion && (
+                          <div className="flex flex-col">
+                            <span className="type-caption text-[var(--text-tertiary)]">Qué se hizo</span>
+                            <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
+                          </div>
+                        )}
+
                         {actividad.estado === 'Pendiente de asignación' && puedeGestionar ? (
                           <Select
                             label="Asignar desarrollador"
@@ -345,9 +415,26 @@ export function ActividadesEtapaModal({
                             </Badge>
                           </div>
                         )}
+
+                        {/* NUEVO: cualquier miembro del equipo puede reportar un error o
+                            consultar el historial de actividades que NO son suyas -- el
+                            backend ya lo permite (equipo vigente del proyecto, no dueño
+                            de la actividad); antes solo estaba disponible en la columna
+                            "Mis actividades" o para Líder/Coordinador. */}
+                        <div className="flex items-center justify-end gap-1">
+                          <Button variant="ghost" size="sm" onClick={() => setActividadHistorial(actividad)}>
+                            <Bug size={14} />
+                            Reportar error
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => setActividadHistorial(actividad)}>
+                            <History size={14} />
+                            Historial
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
-                  ))
+                  ))}
+                  </div>
                 )}
               </div>
             </div>
@@ -387,12 +474,43 @@ export function ActividadesEtapaModal({
         onCancel={() => setActividadAEliminar(null)}
       />
 
+      <ConfirmDialog
+        open={actividadACancelar !== null}
+        title="¿Cancelar esta actividad?"
+        description="Una vez cancelada, solo el Líder del proyecto o un Coordinador podrán volver a cambiar su estado."
+        confirmLabel="Cancelar actividad"
+        cancelLabel="Volver"
+        variant="destructive"
+        onConfirm={alConfirmarCancelarActividad}
+        onCancel={() => setActividadACancelar(null)}
+      />
+
       <RegistrarInterrupcionModal
         open={interrupcionModalAbierto}
         actividadesElegibles={misElegiblesParaInterrupcion}
         onClose={() => setInterrupcionModalAbierto(false)}
         onRegistrado={cargar}
       />
+
+      <Modal
+        open={actividadAFinalizar !== null}
+        onClose={() => setActividadAFinalizar(null)}
+        title="Finalizar actividad"
+        size="sm"
+      >
+        <div className="flex flex-col gap-4">
+          <Textarea
+            label="Qué se hizo (opcional)"
+            rows={4}
+            value={notaFinalizacion}
+            onChange={(e) => setNotaFinalizacion(e.target.value)}
+          />
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={() => setActividadAFinalizar(null)}>Cancelar</Button>
+            <Button onClick={alConfirmarFinalizarActividad}>Finalizar</Button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 }

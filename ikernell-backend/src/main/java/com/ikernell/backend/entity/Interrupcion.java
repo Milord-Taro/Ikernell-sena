@@ -42,6 +42,11 @@ public class Interrupcion {
     @JoinColumn(name = "id_tipo_interrupcion", nullable = false)
     private TipoInterrupcion tipoInterrupcion;
 
+    /** NUEVO: quién la registró -- hoy siempre el desarrollador de la actividad. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario_creador")
+    private Usuario usuarioCreador;
+
     @Column(name = "motivo", nullable = false, columnDefinition = "TEXT")
     private String motivo;
 

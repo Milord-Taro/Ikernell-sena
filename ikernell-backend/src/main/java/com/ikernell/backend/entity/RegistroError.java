@@ -47,6 +47,11 @@ public class RegistroError {
     @JoinColumn(name = "id_tipo_error", nullable = false)
     private TipoError tipoError;
 
+    /** NUEVO: quién lo creó -- el propio desarrollador, o el Líder si lo registró él. */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_usuario_creador")
+    private Usuario usuarioCreador;
+
     @Column(name = "titulo", nullable = false, length = 100)
     private String titulo;
 
@@ -61,6 +66,10 @@ public class RegistroError {
     @Convert(converter = EstadoRegistroErrorConverter.class)
     @Column(name = "estado", nullable = false, length = 30)
     private EstadoRegistroError estado;
+
+    /** NUEVO: cómo se resolvió o por qué se descartó -- opcional, se limpia si vuelve a Abierto/En progreso. */
+    @Column(name = "nota_resolucion", columnDefinition = "TEXT")
+    private String notaResolucion;
 
     @Column(name = "fecha_registro", nullable = false, updatable = false)
     @Builder.Default

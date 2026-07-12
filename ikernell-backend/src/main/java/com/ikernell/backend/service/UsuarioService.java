@@ -1,5 +1,8 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ikernell.backend.audit.DetalleObjectMapper;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.CambiarContrasenaRequest;
 import com.ikernell.backend.dto.UsuarioRequest;
 import com.ikernell.backend.dto.UsuarioResponse;
@@ -8,6 +11,7 @@ import com.ikernell.backend.entity.Especialidad;
 import com.ikernell.backend.entity.Profesion;
 import com.ikernell.backend.entity.Rol;
 import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -34,9 +38,12 @@ public class UsuarioService {
     private final EspecialidadRepository especialidadRepository;
     private final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
+    private final TrazabilidadService trazabilidadService;
+
 
     @Transactional
-    public UsuarioResponse crear(UsuarioRequest request) {
+    public UsuarioResponse crear(UsuarioRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         String correo = request.getCorreoElectronico().toLowerCase();
 
         validarCodigoDisponible(request.getCodigoUsuario(), null);
@@ -56,7 +63,12 @@ public class UsuarioService {
 
         Usuario guardado = usuarioRepository.save(usuario);
 
-        return usuarioMapper.toResponse(guardado);
+        UsuarioResponse response = usuarioMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "Usuario", guardado.getCodigoUsuario(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<UsuarioResponse> listarTodos() {
@@ -92,7 +104,8 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponse actualizar(Integer idUsuario, UsuarioUpdateRequest request) {
+    public UsuarioResponse actualizar(Integer idUsuario, UsuarioUpdateRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Usuario usuario = buscarOFallar(idUsuario);
 
         validarCodigoDisponible(request.getCodigoUsuario(), idUsuario);
@@ -109,16 +122,28 @@ public class UsuarioService {
 
         Usuario actualizado = usuarioRepository.save(usuario);
 
-        return usuarioMapper.toResponse(actualizado);
+        UsuarioResponse response = usuarioMapper.toResponse(actualizado);
+        trazabilidadService.registrar(
+                solicitante, "Usuario", actualizado.getCodigoUsuario(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
-    public UsuarioResponse cambiarEstado(Integer idUsuario, boolean activo) {
+    public UsuarioResponse cambiarEstado(Integer idUsuario, boolean activo, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Usuario usuario = buscarOFallar(idUsuario);
         usuario.setActivo(activo);
         Usuario guardado = usuarioRepository.save(usuario);
 
-        return usuarioMapper.toResponse(guardado);
+        UsuarioResponse response = usuarioMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "Usuario", guardado.getCodigoUsuario(),
+                activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
+                construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
@@ -139,6 +164,20 @@ public class UsuarioService {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con id " + idUsuario + "."));
+    }
+
+    private Usuario buscarSolicitanteOFallar(String correoElectronico) {
+        return usuarioRepository.findByCorreoElectronico(correoElectronico)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoElectronico + "'."));
+    }
+
+    private String construirDetalle(UsuarioResponse response) {
+        try {
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
     }
 
     private Rol buscarRolOFallar(Integer idRol) {

@@ -879,6 +879,16 @@ VALUES
 'Baja'
 );
 
+-- id_usuario_creador no está en el INSERT de arriba porque cada fila ya
+-- selecciona su actividad por código; se backfillea aquí en un solo paso
+-- con el desarrollador de esa actividad (quien los creó, bajo las
+-- reglas de negocio actuales).
+UPDATE registro_error
+SET id_usuario_creador = (
+    SELECT a.id_usuario FROM actividad a WHERE a.id_actividad = registro_error.id_actividad
+)
+WHERE id_usuario_creador IS NULL;
+
 -- ============================================================
 -- IKernell Solutions
 -- Script: 12_interrupciones.sql
@@ -935,6 +945,12 @@ VALUES
 'Pendiente de aprobación del diseño funcional.',
 240
 );
+
+UPDATE interrupcion
+SET id_usuario_creador = (
+    SELECT a.id_usuario FROM actividad a WHERE a.id_actividad = interrupcion.id_actividad
+)
+WHERE id_usuario_creador IS NULL;
 
 -- ============================================================
 -- IKernell Solutions

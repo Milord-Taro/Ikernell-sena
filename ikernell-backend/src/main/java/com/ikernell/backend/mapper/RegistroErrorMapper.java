@@ -9,13 +9,14 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
         componentModel = "spring",
-        uses = {ActividadMapper.class, TipoErrorMapper.class},
+        uses = {ActividadMapper.class, TipoErrorMapper.class, UsuarioMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RegistroErrorMapper {
 
     @Mapping(target = "idRegistroError", ignore = true)
     @Mapping(target = "actividad", ignore = true)
     @Mapping(target = "tipoError", ignore = true)
+    @Mapping(target = "usuarioCreador", ignore = true)
     @Mapping(target = "fechaRegistro", ignore = true)
     RegistroError toEntity(RegistroErrorRequest request);
 

@@ -1,8 +1,7 @@
 package com.ikernell.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoErrorRequest;
 import com.ikernell.backend.dto.TipoErrorResponse;
@@ -31,17 +30,22 @@ public class TipoErrorService {
     private final TipoErrorMapper tipoErrorMapper;
     private final TrazabilidadService trazabilidadService;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
-    public TipoErrorResponse crear(TipoErrorRequest request) {
+    public TipoErrorResponse crear(TipoErrorRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarCodigoDisponible(request.getCodigoTipoError(), null);
         validarNombreDisponible(request.getNombreTipoError(), null);
 
         TipoError tipoError = tipoErrorMapper.toEntity(request);
         TipoError guardado = tipoErrorRepository.save(tipoError);
 
-        return tipoErrorMapper.toResponse(guardado);
+        TipoErrorResponse response = tipoErrorMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "TipoError", guardado.getCodigoTipoError(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<TipoErrorResponse> listarTodos() {
@@ -57,7 +61,8 @@ public class TipoErrorService {
     }
 
     @Transactional
-    public TipoErrorResponse actualizar(Integer idTipoError, TipoErrorRequest request) {
+    public TipoErrorResponse actualizar(Integer idTipoError, TipoErrorRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         TipoError tipoError = buscarOFallar(idTipoError);
 
         validarCodigoDisponible(request.getCodigoTipoError(), idTipoError);
@@ -66,16 +71,28 @@ public class TipoErrorService {
         tipoErrorMapper.actualizarEntidadDesdeRequest(request, tipoError);
         TipoError actualizado = tipoErrorRepository.save(tipoError);
 
-        return tipoErrorMapper.toResponse(actualizado);
+        TipoErrorResponse response = tipoErrorMapper.toResponse(actualizado);
+        trazabilidadService.registrar(
+                solicitante, "TipoError", actualizado.getCodigoTipoError(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
-    public TipoErrorResponse cambiarEstado(Integer idTipoError, boolean activo) {
+    public TipoErrorResponse cambiarEstado(Integer idTipoError, boolean activo, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         TipoError tipoError = buscarOFallar(idTipoError);
         tipoError.setActivo(activo);
         TipoError guardado = tipoErrorRepository.save(tipoError);
 
-        return tipoErrorMapper.toResponse(guardado);
+        TipoErrorResponse response = tipoErrorMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "TipoError", guardado.getCodigoTipoError(),
+                activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
+                construirDetalle(response));
+
+        return response;
     }
 
     /**
@@ -119,7 +136,7 @@ public class TipoErrorService {
 
     private String construirDetalle(TipoErrorResponse response) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(response);
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }

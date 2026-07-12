@@ -10,5 +10,10 @@ public interface RegistroErrorRepository extends JpaRepository<RegistroError, In
 
     Optional<RegistroError> findByCodigoRegistroError(String codigoRegistroError);
 
-    List<RegistroError> findByActividad_IdActividad(Integer idActividad);
+    // Orden explícito por PK: ver comentario equivalente en ActividadRepository.
+    List<RegistroError> findByActividad_IdActividadOrderByIdRegistroErrorAsc(Integer idActividad);
+
+    // Alimenta la vista global "Errores" (cards con filtro de Proyecto/Estado):
+    // mismo motivo, sin esto la card salta de posición al cambiar su estado.
+    List<RegistroError> findAllByOrderByIdRegistroErrorAsc();
 }

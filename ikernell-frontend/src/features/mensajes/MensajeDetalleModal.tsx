@@ -74,14 +74,14 @@ export function MensajeDetalleModal({ open, mensaje, onClose, onActualizado }: M
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="flex flex-col">
             <span className="type-caption text-[var(--text-tertiary)]">Estado</span>
             <Badge variant={variantePorEstado[mensaje.estado]} size="sm" className="w-fit">
               {mensaje.estado}
             </Badge>
           </div>
-          <div className="flex flex-col items-end">
+          <div className="flex flex-col">
             <span className="type-caption text-[var(--text-tertiary)]">Enviado</span>
             <span className="type-body-sm text-[var(--text-secondary)]">{mensaje.fechaEnvio}</span>
           </div>

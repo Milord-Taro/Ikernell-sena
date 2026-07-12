@@ -1,5 +1,8 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ikernell.backend.audit.DetalleObjectMapper;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.MensajeContactoRequest;
 import com.ikernell.backend.dto.MensajeContactoResponse;
@@ -8,6 +11,7 @@ import com.ikernell.backend.dto.RespuestaMensajeRequest;
 import com.ikernell.backend.entity.MensajeContacto;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoMensaje;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
@@ -32,6 +36,8 @@ public class MensajeContactoService {
     private final UsuarioRepository usuarioRepository;
     private final MensajeContactoMapper mensajeContactoMapper;
     private final NotificacionService notificacionService;
+    private final TrazabilidadService trazabilidadService;
+
 
     @Transactional
     public MensajeContactoResponse enviar(MensajeContactoRequest request) {
@@ -73,12 +79,19 @@ public class MensajeContactoService {
     }
 
     @Transactional
-    public MensajeContactoResponse marcarComoLeido(Integer idMensajeContacto) {
+    public MensajeContactoResponse marcarComoLeido(Integer idMensajeContacto, String correoSolicitante) {
         MensajeContacto mensaje = buscarOFallar(idMensajeContacto);
 
         if (mensaje.getEstado() == EstadoMensaje.PENDIENTE) {
             mensaje.setEstado(EstadoMensaje.LEIDO);
             mensajeContactoRepository.save(mensaje);
+
+            Usuario solicitante = usuarioRepository.findByCorreoElectronico(correoSolicitante)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "No existe un usuario con el correo '" + correoSolicitante + "'."));
+            trazabilidadService.registrar(
+                    solicitante, "MensajeContacto", mensaje.getCodigoMensaje(),
+                    OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(mensajeContactoMapper.toResponse(mensaje)));
         }
 
         return mensajeContactoMapper.toResponse(mensaje);
@@ -101,7 +114,20 @@ public class MensajeContactoService {
 
         MensajeContacto guardado = mensajeContactoRepository.save(mensaje);
 
-        return mensajeContactoMapper.toResponse(guardado);
+        MensajeContactoResponse response = mensajeContactoMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                responsable, "MensajeContacto", guardado.getCodigoMensaje(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
+    }
+
+    private String construirDetalle(MensajeContactoResponse response) {
+        try {
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
     }
 
     private EstadoMensaje parsearEstado(String estadoTexto) {

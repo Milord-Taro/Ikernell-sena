@@ -1,23 +1,31 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ikernell.backend.audit.DetalleObjectMapper;
+import com.ikernell.backend.audit.TrazabilidadService;
+import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.dto.RegistroErrorRequest;
 import com.ikernell.backend.dto.RegistroErrorResponse;
 import com.ikernell.backend.entity.Actividad;
 import com.ikernell.backend.entity.RegistroError;
 import com.ikernell.backend.entity.TipoError;
+import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoRegistroError;
 import com.ikernell.backend.enums.NivelCriticidad;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
+import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.RegistroErrorMapper;
 import com.ikernell.backend.repository.ActividadRepository;
 import com.ikernell.backend.repository.AsignacionProyectoRepository;
 import com.ikernell.backend.repository.RegistroErrorRepository;
 import com.ikernell.backend.repository.TipoErrorRepository;
+import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,13 +42,28 @@ public class RegistroErrorService {
     private final TipoErrorRepository tipoErrorRepository;
     private final RegistroErrorMapper registroErrorMapper;
     private final AsignacionProyectoRepository asignacionProyectoRepository;
+    private final AutorizacionProyectoService autorizacionProyectoService;
     private final NotificacionService notificacionService;
+    private final UsuarioRepository usuarioRepository;
+    private final TrazabilidadService trazabilidadService;
 
+
+    /**
+     * CORREGIDO: antes cualquier autenticado podía reportar un error en
+     * CUALQUIER actividad de CUALQUIER proyecto -- ahora se exige
+     * pertenecer al equipo vigente del proyecto dueño de la actividad (o
+     * ser Coordinador). No se exige ser el dueño de la actividad en sí:
+     * cualquier miembro del equipo puede reportar errores encontrados en
+     * el trabajo de sus compañeros de proyecto, no solo en el propio.
+     */
     @Transactional
-    public RegistroErrorResponse crear(RegistroErrorRequest request) {
+    public RegistroErrorResponse crear(RegistroErrorRequest request, String correoSolicitante) {
         Actividad actividad = actividadRepository.findById(request.getIdActividad())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe una actividad con id " + request.getIdActividad() + "."));
+
+        Usuario solicitante = autorizacionProyectoService.verificarPerteneceAlEquipo(
+                correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
         TipoError tipoError = tipoErrorRepository.findById(request.getIdTipoError())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -51,6 +74,10 @@ public class RegistroErrorService {
         RegistroError registroError = registroErrorMapper.toEntity(request);
         registroError.setActividad(actividad);
         registroError.setTipoError(tipoError);
+        // NUEVO: quién lo creó -- cualquier miembro vigente del equipo del
+        // proyecto (no necesariamente el dueño de la actividad), o el
+        // Coordinador.
+        registroError.setUsuarioCreador(solicitante);
         // NUEVO: todo registro nace Abierto -- nunca se crea ya
         // Resuelto/Descartado, eso solo se llega ahí vía cambiarEstado().
         registroError.setEstado(EstadoRegistroError.ABIERTO);
@@ -71,15 +98,20 @@ public class RegistroErrorService {
                             "/dashboard/proyectos/" + idProyecto)));
         }
 
-        return registroErrorMapper.toResponse(guardado);
+        RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "RegistroError", guardado.getCodigoRegistroError(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<RegistroErrorResponse> listarTodos() {
-        return registroErrorRepository.findAll().stream().map(registroErrorMapper::toResponse).toList();
+        return registroErrorRepository.findAllByOrderByIdRegistroErrorAsc().stream().map(registroErrorMapper::toResponse).toList();
     }
 
     public List<RegistroErrorResponse> listarPorActividad(Integer idActividad) {
-        return registroErrorRepository.findByActividad_IdActividad(idActividad)
+        return registroErrorRepository.findByActividad_IdActividadOrderByIdRegistroErrorAsc(idActividad)
                 .stream()
                 .map(registroErrorMapper::toResponse)
                 .toList();
@@ -97,14 +129,70 @@ public class RegistroErrorService {
      * desde la vista de supervisión (Errores).
      */
     @Transactional
-    public RegistroErrorResponse cambiarEstado(Integer idRegistroError, String estadoTexto) {
+    public RegistroErrorResponse cambiarEstado(
+            Integer idRegistroError, String estadoTexto, String notaResolucion, String correoSolicitante) {
+        Usuario solicitante = usuarioRepository.findByCorreoElectronico(correoSolicitante)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoSolicitante + "'."));
+
         RegistroError registroError = buscarOFallar(idRegistroError);
         EstadoRegistroError nuevoEstado = parsearEstado(estadoTexto);
 
         registroError.setEstado(nuevoEstado);
+        // NUEVO: la nota de resolución solo tiene sentido si el error quedó
+        // Resuelto o Descartado -- se limpia en cualquier otro estado, igual
+        // que fechaFinalizacion en Actividad, para no dejar un dato huérfano.
+        registroError.setNotaResolucion(
+                (nuevoEstado == EstadoRegistroError.RESUELTO || nuevoEstado == EstadoRegistroError.DESCARTADO)
+                        ? notaResolucion : null);
         RegistroError guardado = registroErrorRepository.save(registroError);
 
-        return registroErrorMapper.toResponse(guardado);
+        RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "RegistroError", guardado.getCodigoRegistroError(),
+                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+
+        return response;
+    }
+
+    /**
+     * Delete físico, sin restricción de integridad referencial (nada
+     * cuelga de un RegistroError). Reservado al usuario que lo creó, o a
+     * un Coordinador como red de seguridad -- igual criterio que el resto
+     * de la app (líder/coordinador siempre pueden intervenir).
+     */
+    @Transactional
+    public void eliminar(Integer idRegistroError, String correoSolicitante) {
+        Usuario solicitante = usuarioRepository.findByCorreoElectronico(correoSolicitante)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No existe un usuario con el correo '" + correoSolicitante + "'."));
+
+        RegistroError registroError = buscarOFallar(idRegistroError);
+
+        boolean esCreador = registroError.getUsuarioCreador() != null
+                && registroError.getUsuarioCreador().getIdUsuario().equals(solicitante.getIdUsuario());
+        boolean esCoordinador = RolConstantes.COORDINADOR.equals(solicitante.getRol().getCodigoRol());
+
+        if (!esCreador && !esCoordinador) {
+            throw new ForbiddenException(
+                    "Solo quien registró este error, o un Coordinador, puede eliminarlo.");
+        }
+
+        String detalle = construirDetalle(registroErrorMapper.toResponse(registroError));
+
+        registroErrorRepository.delete(registroError);
+
+        trazabilidadService.registrar(
+                solicitante, "RegistroError", registroError.getCodigoRegistroError(),
+                OperacionTrazabilidad.ELIMINAR, detalle);
+    }
+
+    private String construirDetalle(RegistroErrorResponse response) {
+        try {
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
     }
 
     private EstadoRegistroError parsearEstado(String estadoTexto) {

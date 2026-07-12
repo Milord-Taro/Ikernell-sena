@@ -1,8 +1,7 @@
 package com.ikernell.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ActividadRequest;
 import com.ikernell.backend.dto.ActividadResponse;
@@ -13,9 +12,11 @@ import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.EstadoActividad;
 import com.ikernell.backend.enums.EstadoProyecto;
 import com.ikernell.backend.enums.OperacionTrazabilidad;
+import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
 import com.ikernell.backend.exception.ConflictException;
+import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.ActividadMapper;
 import com.ikernell.backend.repository.ActividadRepository;
@@ -44,12 +45,11 @@ public class ActividadService {
     private final TrazabilidadService trazabilidadService;
     private final NotificacionService notificacionService;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
     public ActividadResponse crear(ActividadRequest request, String correoSolicitante) {
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
-        autorizacionProyectoService.verificarPuedeGestionar(
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, etapa.getProyecto().getIdProyecto());
 
         validarCodigoDisponible(request.getCodigoActividad(), null);
@@ -73,8 +73,12 @@ public class ActividadService {
             notificarAsignacion(guardada);
         }
 
+        ActividadResponse response = actividadMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Actividad", guardada.getCodigoActividad(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
 
-        return actividadMapper.toResponse(guardada);
+        return response;
     }
 
     /**
@@ -91,14 +95,14 @@ public class ActividadService {
     }
 
     public List<ActividadResponse> listarPorEtapa(Integer idEtapa) {
-        return actividadRepository.findByEtapa_IdEtapa(idEtapa)
+        return actividadRepository.findByEtapa_IdEtapaOrderByIdActividadAsc(idEtapa)
                 .stream()
                 .map(actividadMapper::toResponse)
                 .toList();
     }
 
     public List<ActividadResponse> listarPorUsuario(Integer idUsuario) {
-        return actividadRepository.findByUsuario_IdUsuario(idUsuario)
+        return actividadRepository.findByUsuario_IdUsuarioOrderByIdActividadAsc(idUsuario)
                 .stream()
                 .map(actividadMapper::toResponse)
                 .toList();
@@ -111,7 +115,7 @@ public class ActividadService {
     @Transactional
     public ActividadResponse actualizar(Integer idActividad, ActividadRequest request, String correoSolicitante) {
         Actividad actividad = buscarOFallar(idActividad);
-        autorizacionProyectoService.verificarPuedeGestionar(
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
@@ -124,13 +128,18 @@ public class ActividadService {
 
         Actividad actualizada = actividadRepository.save(actividad);
 
-        return actividadMapper.toResponse(actualizada);
+        ActividadResponse response = actividadMapper.toResponse(actualizada);
+        trazabilidadService.registrar(
+                solicitante, "Actividad", actualizada.getCodigoActividad(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
     public ActividadResponse asignar(Integer idActividad, Integer idUsuario, String correoSolicitante) {
         Actividad actividad = buscarOFallar(idActividad);
-        autorizacionProyectoService.verificarPuedeGestionar(
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
         if (actividad.getEstado() != EstadoActividad.PENDIENTE_DE_ASIGNACION) {
@@ -145,24 +154,32 @@ public class ActividadService {
 
         Actividad guardada = actividadRepository.save(actividad);
         notificarAsignacion(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Actividad", guardada.getCodigoActividad(),
+                OperacionTrazabilidad.ASIGNAR, construirDetalle(actividadMapper.toResponse(guardada)));
 
         return actividadMapper.toResponse(guardada);
     }
 
     /**
-     * SIN CAMBIOS de rol respecto al diseño anterior: sigue abierto a
-     * cualquier autenticado (el propio desarrollador ejecuta su
-     * actividad, sin importar quién sea el líder del proyecto).
+     * CORREGIDO (HU-11): ahora exige ownership -- solo el desarrollador
+     * responsable de la actividad puede cambiar su estado. Antes quedaba
+     * abierto a cualquier autenticado, lo cual contradecía la propia HU.
      *
-     * CERRADO -- regla pendiente marcada en el plan de Fase 8: el
-     * Desarrollador solo puede ejecutar/cambiar el estado de una
-     * Actividad si el Proyecto padre está "En ejecución". Si el proyecto
+     * NUEVO: una vez la actividad queda Cancelada (el propio desarrollador
+     * la cancela, eso sí lo puede hacer bajo la regla de ownership de
+     * arriba), se bloquea para él -- de ahí en adelante solo el
+     * Coordinador o el Líder vigente de ESE proyecto pueden seguir
+     * cambiando su estado, igual que hicimos con Proyecto.cambiarEstado.
+     *
+     * El Proyecto padre además debe estar "En ejecución". Si el proyecto
      * está en Planeación, Suspendido, Finalizado o Cancelado, se
      * rechaza -- no tiene sentido seguir moviendo actividades de un
      * proyecto que no está corriendo.
      */
     @Transactional
-    public ActividadResponse cambiarEstado(Integer idActividad, String estadoTexto) {
+    public ActividadResponse cambiarEstado(
+            Integer idActividad, String estadoTexto, String notaFinalizacion, String correoSolicitante) {
         Actividad actividad = buscarOFallar(idActividad);
         EstadoActividad nuevoEstado = parsearEstado(estadoTexto);
 
@@ -173,6 +190,16 @@ public class ActividadService {
         if (actividad.getUsuario() == null) {
             throw new BusinessException(
                     "La actividad no tiene un desarrollador asignado todavía.");
+        }
+        Usuario solicitante;
+        if (actividad.getEstado() == EstadoActividad.CANCELADA) {
+            solicitante = autorizacionProyectoService.verificarPuedeGestionar(
+                    correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
+        } else if (!actividad.getUsuario().getCorreoElectronico().equals(correoSolicitante)) {
+            throw new ForbiddenException(
+                    "Solo el desarrollador responsable de esta actividad puede cambiar su estado.");
+        } else {
+            solicitante = actividad.getUsuario();
         }
         if (actividad.getEtapa().getProyecto().getEstado() != EstadoProyecto.EN_EJECUCION) {
             throw new BusinessException(
@@ -189,9 +216,19 @@ public class ActividadService {
         // está finalizado.
         actividad.setFechaFinalizacion(
                 nuevoEstado == EstadoActividad.FINALIZADA ? LocalDateTime.now() : null);
+        // NUEVO: qué hizo el desarrollador -- misma lógica que fechaFinalizacion,
+        // solo tiene sentido si termina en Finalizada.
+        actividad.setNotaFinalizacion(
+                nuevoEstado == EstadoActividad.FINALIZADA ? notaFinalizacion : null);
         Actividad guardada = actividadRepository.save(actividad);
+        notificarCierreALider(guardada, nuevoEstado, solicitante);
 
-        return actividadMapper.toResponse(guardada);
+        ActividadResponse response = actividadMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Actividad", guardada.getCodigoActividad(),
+                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+
+        return response;
     }
 
     /**
@@ -257,7 +294,7 @@ public class ActividadService {
 
     private String construirDetalle(ActividadResponse response) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(response);
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }
@@ -303,5 +340,32 @@ public class ActividadService {
                         + actividad.getEtapa().getNombreEtapa() + ".",
                 TipoNotificacion.ACTIVIDAD,
                 "/dashboard/proyectos/" + actividad.getEtapa().getProyecto().getIdProyecto()));
+    }
+
+    /**
+     * NUEVO: el Líder vigente del proyecto se entera cuando una actividad
+     * se Finaliza o Cancela -- son los dos cierres de ciclo de vida que le
+     * importan para dar seguimiento, a diferencia de estados intermedios
+     * (En desarrollo) que son ruido para él. Si el propio Líder fue quien
+     * hizo el cambio, no se le notifica a sí mismo (mismo criterio
+     * anti-ruido que RegistroErrorService).
+     */
+    private void notificarCierreALider(Actividad actividad, EstadoActividad nuevoEstado, Usuario solicitante) {
+        if (nuevoEstado != EstadoActividad.FINALIZADA && nuevoEstado != EstadoActividad.CANCELADA) {
+            return;
+        }
+
+        Integer idProyecto = actividad.getEtapa().getProyecto().getIdProyecto();
+        asignacionProyectoRepository
+                .findByProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(idProyecto, RolProyecto.LIDER)
+                .map(asignacion -> asignacion.getUsuario())
+                .filter(lider -> !lider.getIdUsuario().equals(solicitante.getIdUsuario()))
+                .ifPresent(lider -> notificacionService.crear(new NotificacionRequest(
+                        lider.getIdUsuario(),
+                        nuevoEstado == EstadoActividad.FINALIZADA ? "Actividad finalizada" : "Actividad cancelada",
+                        "\"" + actividad.getNombreActividad() + "\" en " + actividad.getEtapa().getNombreEtapa()
+                                + " -- " + actividad.getUsuario().getNombres() + " " + actividad.getUsuario().getApellidos(),
+                        TipoNotificacion.ACTIVIDAD,
+                        "/dashboard/proyectos/" + idProyecto)));
     }
 }

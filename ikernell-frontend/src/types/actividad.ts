@@ -52,6 +52,8 @@ export interface ActividadResponse {
   estado: EstadoActividad;
   /** NUEVO: solo tiene valor si estado === 'Finalizada'. */
   fechaFinalizacion: string | null;
+  /** NUEVO: qué hizo el desarrollador -- solo tiene valor si estado === 'Finalizada'. */
+  notaFinalizacion: string | null;
   fechaCreacion: string;
 }
 

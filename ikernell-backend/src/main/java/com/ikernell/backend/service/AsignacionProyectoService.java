@@ -1,5 +1,8 @@
 package com.ikernell.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.ikernell.backend.audit.DetalleObjectMapper;
+import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.AsignacionProyectoRequest;
 import com.ikernell.backend.dto.AsignacionProyectoResponse;
@@ -7,6 +10,7 @@ import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.entity.Proyecto;
 import com.ikernell.backend.entity.Usuario;
+import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
@@ -34,10 +38,13 @@ public class AsignacionProyectoService {
     private final AsignacionProyectoMapper asignacionProyectoMapper;
     private final AutorizacionProyectoService autorizacionProyectoService;
     private final NotificacionService notificacionService;
+    private final TrazabilidadService trazabilidadService;
+
 
     @Transactional
     public AsignacionProyectoResponse crear(AsignacionProyectoRequest request, String correoSolicitante) {
-        autorizacionProyectoService.verificarPuedeGestionar(correoSolicitante, request.getIdProyecto());
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
+                correoSolicitante, request.getIdProyecto());
 
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -101,7 +108,12 @@ public class AsignacionProyectoService {
                 TipoNotificacion.PROYECTO,
                 "/dashboard/proyectos/" + proyecto.getIdProyecto()));
 
-        return asignacionProyectoMapper.toResponse(guardada);
+        AsignacionProyectoResponse response = asignacionProyectoMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "AsignacionProyecto", String.valueOf(guardada.getIdAsignacionProyecto()),
+                OperacionTrazabilidad.ASIGNAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<AsignacionProyectoResponse> listarPorProyecto(Integer idProyecto) {
@@ -124,7 +136,7 @@ public class AsignacionProyectoService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe una asignación con id " + idAsignacionProyecto + "."));
 
-        autorizacionProyectoService.verificarPuedeGestionar(
+        Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, asignacion.getProyecto().getIdProyecto());
 
         if (asignacion.getFechaDesvinculacion() != null) {
@@ -134,6 +146,19 @@ public class AsignacionProyectoService {
         asignacion.setFechaDesvinculacion(LocalDate.now());
         AsignacionProyecto guardada = asignacionProyectoRepository.save(asignacion);
 
-        return asignacionProyectoMapper.toResponse(guardada);
+        AsignacionProyectoResponse response = asignacionProyectoMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "AsignacionProyecto", String.valueOf(guardada.getIdAsignacionProyecto()),
+                OperacionTrazabilidad.DESASIGNAR, construirDetalle(response));
+
+        return response;
+    }
+
+    private String construirDetalle(AsignacionProyectoResponse response) {
+        try {
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
+        } catch (JsonProcessingException ex) {
+            return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
     }
 }

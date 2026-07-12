@@ -1,11 +1,13 @@
 import type { ActividadResponse } from './actividad';
-import type { TipoInterrupcionResponse } from './usuario';
+import type { TipoInterrupcionResponse, UsuarioResponse } from './usuario';
 
 export interface InterrupcionResponse {
   idInterrupcion: number;
   codigoInterrupcion: string;
   actividad: ActividadResponse;
   tipoInterrupcion: TipoInterrupcionResponse;
+  /** NUEVO: quién la registró -- hoy siempre el desarrollador de la actividad. */
+  usuarioCreador: UsuarioResponse | null;
   motivo: string;
   duracionMinutos: number;
   fechaRegistro: string;

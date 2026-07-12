@@ -29,8 +29,9 @@ public class EspecialidadController {
     private final EspecialidadService especialidadService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<EspecialidadResponse>> crear(@Valid @RequestBody EspecialidadRequest request) {
-        EspecialidadResponse creada = especialidadService.crear(request);
+    public ResponseEntity<ApiResponse<EspecialidadResponse>> crear(
+            @Valid @RequestBody EspecialidadRequest request, Authentication authentication) {
+        EspecialidadResponse creada = especialidadService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Especialidad creada correctamente.", creada));
     }
@@ -50,15 +51,18 @@ public class EspecialidadController {
 
     @PutMapping("/{idEspecialidad}")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> actualizar(
-            @PathVariable Integer idEspecialidad, @Valid @RequestBody EspecialidadRequest request) {
-        EspecialidadResponse actualizada = especialidadService.actualizar(idEspecialidad, request);
+            @PathVariable Integer idEspecialidad, @Valid @RequestBody EspecialidadRequest request,
+            Authentication authentication) {
+        EspecialidadResponse actualizada =
+                especialidadService.actualizar(idEspecialidad, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Especialidad actualizada correctamente.", actualizada));
     }
 
     @PatchMapping("/{idEspecialidad}/estado")
     public ResponseEntity<ApiResponse<EspecialidadResponse>> cambiarEstado(
-            @PathVariable Integer idEspecialidad, @RequestParam boolean activo) {
-        EspecialidadResponse actualizada = especialidadService.cambiarEstado(idEspecialidad, activo);
+            @PathVariable Integer idEspecialidad, @RequestParam boolean activo, Authentication authentication) {
+        EspecialidadResponse actualizada =
+                especialidadService.cambiarEstado(idEspecialidad, activo, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Especialidad activada correctamente." : "Especialidad desactivada correctamente.", actualizada));
     }

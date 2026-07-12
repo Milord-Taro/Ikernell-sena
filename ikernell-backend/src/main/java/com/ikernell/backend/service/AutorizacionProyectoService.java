@@ -63,4 +63,32 @@ public class AutorizacionProyectoService {
 
         return usuario;
     }
+
+    /**
+     * Chequeo más laxo que verificarPuedeGestionar(): no exige ser Líder,
+     * solo pertenecer al equipo VIGENTE del proyecto (cualquier
+     * rol_proyecto) o ser Coordinador. Pensado para acciones que
+     * cualquier miembro del equipo debería poder hacer entre sí -- por
+     * ejemplo, reportar un error en una actividad del proyecto aunque no
+     * sea la propia (ver RegistroErrorService.crear()).
+     */
+    public Usuario verificarPerteneceAlEquipo(String correoElectronico, Integer idProyecto) {
+        Usuario usuario = buscarUsuarioOFallar(correoElectronico);
+
+        if (RolConstantes.COORDINADOR.equals(usuario.getRol().getCodigoRol())) {
+            return usuario;
+        }
+
+        boolean perteneceAlEquipo = asignacionProyectoRepository
+                .findByUsuario_IdUsuarioAndProyecto_IdProyectoAndFechaDesvinculacionIsNull(
+                        usuario.getIdUsuario(), idProyecto)
+                .isPresent();
+
+        if (!perteneceAlEquipo) {
+            throw new ForbiddenException(
+                    "No formas parte del equipo vigente de este proyecto, y no eres Coordinador.");
+        }
+
+        return usuario;
+    }
 }

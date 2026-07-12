@@ -10,9 +10,15 @@ public interface ActividadRepository extends JpaRepository<Actividad, Integer> {
 
     Optional<Actividad> findByCodigoActividad(String codigoActividad);
 
-    List<Actividad> findByEtapa_IdEtapa(Integer idEtapa);
+    // Orden explícito por PK (no por columnas mutables como estado): sin esto,
+    // Postgres no garantiza el orden de retorno y un UPDATE de estado (columna
+    // indexada) puede reubicar la fila y hacer que la card "salte" de posición
+    // en el frontend tras cada cambio de estado.
+    List<Actividad> findByEtapa_IdEtapaOrderByIdActividadAsc(Integer idEtapa);
 
-    List<Actividad> findByUsuario_IdUsuario(Integer idUsuario);
+    // Orden explícito por PK: ver comentario de arriba -- esta alimenta las
+    // cards de "Mis actividades", con el mismo riesgo de reordenarse.
+    List<Actividad> findByUsuario_IdUsuarioOrderByIdActividadAsc(Integer idUsuario);
 
     // Actividad no guarda id_proyecto directamente (se obtiene vía
     // Actividad -> Etapa -> Proyecto, ver comentario en la tabla actividad

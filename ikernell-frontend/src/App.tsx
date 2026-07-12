@@ -13,6 +13,7 @@ import MensajesPage from './pages/MensajesPage';
 import ConfiguracionPage from './pages/ConfiguracionPage';
 import AuditoriaPage from './pages/AuditoriaPage';
 import NotificacionesPage from './pages/NotificacionesPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { RoleRoute } from './routes/RoleRoute';
@@ -113,7 +114,14 @@ function App() {
 
         {/* Abierta a cualquier autenticado -- son las notificaciones de cada quien. */}
         <Route path="notificaciones" element={<NotificacionesPage />} />
+
+        {/* Ruta de dashboard sin match: 404 dentro del propio layout,
+            conservando sidebar/topbar en vez de una pantalla en blanco. */}
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
+
+      {/* Cualquier otra ruta fuera de "/" y "/dashboard/*". */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

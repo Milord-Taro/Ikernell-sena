@@ -1,8 +1,7 @@
 package com.ikernell.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.EspecialidadRequest;
 import com.ikernell.backend.dto.EspecialidadResponse;
@@ -31,17 +30,22 @@ public class EspecialidadService {
     private final EspecialidadMapper especialidadMapper;
     private final TrazabilidadService trazabilidadService;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
-    public EspecialidadResponse crear(EspecialidadRequest request) {
+    public EspecialidadResponse crear(EspecialidadRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarCodigoDisponible(request.getCodigoEspecialidad(), null);
         validarNombreDisponible(request.getNombreEspecialidad(), null);
 
         Especialidad especialidad = especialidadMapper.toEntity(request);
         Especialidad guardada = especialidadRepository.save(especialidad);
 
-        return especialidadMapper.toResponse(guardada);
+        EspecialidadResponse response = especialidadMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Especialidad", guardada.getCodigoEspecialidad(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<EspecialidadResponse> listarTodas() {
@@ -63,7 +67,8 @@ public class EspecialidadService {
     }
 
     @Transactional
-    public EspecialidadResponse actualizar(Integer idEspecialidad, EspecialidadRequest request) {
+    public EspecialidadResponse actualizar(Integer idEspecialidad, EspecialidadRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Especialidad especialidad = buscarOFallar(idEspecialidad);
 
         validarCodigoDisponible(request.getCodigoEspecialidad(), idEspecialidad);
@@ -72,16 +77,28 @@ public class EspecialidadService {
         especialidadMapper.actualizarEntidadDesdeRequest(request, especialidad);
         Especialidad actualizada = especialidadRepository.save(especialidad);
 
-        return especialidadMapper.toResponse(actualizada);
+        EspecialidadResponse response = especialidadMapper.toResponse(actualizada);
+        trazabilidadService.registrar(
+                solicitante, "Especialidad", actualizada.getCodigoEspecialidad(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
-    public EspecialidadResponse cambiarEstado(Integer idEspecialidad, boolean activo) {
+    public EspecialidadResponse cambiarEstado(Integer idEspecialidad, boolean activo, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Especialidad especialidad = buscarOFallar(idEspecialidad);
         especialidad.setActivo(activo);
         Especialidad guardada = especialidadRepository.save(especialidad);
 
-        return especialidadMapper.toResponse(guardada);
+        EspecialidadResponse response = especialidadMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Especialidad", guardada.getCodigoEspecialidad(),
+                activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
+                construirDetalle(response));
+
+        return response;
     }
 
     /**
@@ -125,7 +142,7 @@ public class EspecialidadService {
 
     private String construirDetalle(EspecialidadResponse response) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(response);
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }

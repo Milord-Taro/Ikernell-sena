@@ -1,8 +1,7 @@
 package com.ikernell.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.RolRequest;
 import com.ikernell.backend.dto.RolResponse;
@@ -31,17 +30,22 @@ public class RolService {
     private final RolMapper rolMapper;
     private final TrazabilidadService trazabilidadService;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
-    public RolResponse crear(RolRequest request) {
+    public RolResponse crear(RolRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarCodigoDisponible(request.getCodigoRol(), null);
         validarNombreDisponible(request.getNombreRol(), null);
 
         Rol rol = rolMapper.toEntity(request);
         Rol guardado = rolRepository.save(rol);
 
-        return rolMapper.toResponse(guardado);
+        RolResponse response = rolMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "Rol", guardado.getCodigoRol(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<RolResponse> listarTodos() {
@@ -63,7 +67,8 @@ public class RolService {
     }
 
     @Transactional
-    public RolResponse actualizar(Integer idRol, RolRequest request) {
+    public RolResponse actualizar(Integer idRol, RolRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Rol rol = buscarOFallar(idRol);
 
         validarCodigoDisponible(request.getCodigoRol(), idRol);
@@ -72,16 +77,28 @@ public class RolService {
         rolMapper.actualizarEntidadDesdeRequest(request, rol);
         Rol actualizado = rolRepository.save(rol);
 
-        return rolMapper.toResponse(actualizado);
+        RolResponse response = rolMapper.toResponse(actualizado);
+        trazabilidadService.registrar(
+                solicitante, "Rol", actualizado.getCodigoRol(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
-    public RolResponse cambiarEstado(Integer idRol, boolean activo) {
+    public RolResponse cambiarEstado(Integer idRol, boolean activo, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Rol rol = buscarOFallar(idRol);
         rol.setActivo(activo);
         Rol guardado = rolRepository.save(rol);
 
-        return rolMapper.toResponse(guardado);
+        RolResponse response = rolMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "Rol", guardado.getCodigoRol(),
+                activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
+                construirDetalle(response));
+
+        return response;
     }
 
     /**
@@ -125,7 +142,7 @@ public class RolService {
 
     private String construirDetalle(RolResponse response) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(response);
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }

@@ -9,13 +9,14 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(
         componentModel = "spring",
-        uses = {ActividadMapper.class, TipoInterrupcionMapper.class},
+        uses = {ActividadMapper.class, TipoInterrupcionMapper.class, UsuarioMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface InterrupcionMapper {
 
     @Mapping(target = "idInterrupcion", ignore = true)
     @Mapping(target = "actividad", ignore = true)
     @Mapping(target = "tipoInterrupcion", ignore = true)
+    @Mapping(target = "usuarioCreador", ignore = true)
     @Mapping(target = "fechaRegistro", ignore = true)
     Interrupcion toEntity(InterrupcionRequest request);
 

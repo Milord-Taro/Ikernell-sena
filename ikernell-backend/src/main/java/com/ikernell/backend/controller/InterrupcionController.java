@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +29,8 @@ public class InterrupcionController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<InterrupcionResponse>> crear(
-            @Valid @RequestBody InterrupcionRequest request) {
-        InterrupcionResponse creada = interrupcionService.crear(request);
+            @Valid @RequestBody InterrupcionRequest request, Authentication authentication) {
+        InterrupcionResponse creada = interrupcionService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Interrupción registrada correctamente.", creada));
     }
@@ -46,5 +48,12 @@ public class InterrupcionController {
     public ResponseEntity<ApiResponse<InterrupcionResponse>> obtenerPorId(
             @PathVariable Integer idInterrupcion) {
         return ResponseEntity.ok(ApiResponse.of(interrupcionService.obtenerPorId(idInterrupcion)));
+    }
+
+    @DeleteMapping("/{idInterrupcion}")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idInterrupcion, Authentication authentication) {
+        interrupcionService.eliminar(idInterrupcion, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Interrupción eliminada correctamente."));
     }
 }
