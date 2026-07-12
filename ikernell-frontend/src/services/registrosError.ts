@@ -15,9 +15,19 @@ export function crearRegistroError(request: RegistroErrorRequest): Promise<Regis
 
 // NUEVO: sin restricción de rol en el backend -- lo puede llamar quien
 // registró el error o quien lo esté supervisando (ver ErroresPage).
+// "nota" solo se persiste si el estado destino es Resuelto/Descartado
+// (ver ESTADOS_CON_NOTA_RESOLUCION); el backend la limpia en cualquier
+// otro caso.
 export function cambiarEstadoRegistroError(
   idRegistroError: number,
   estado: EstadoRegistroError,
+  nota?: string,
 ): Promise<RegistroErrorResponse> {
-  return api.patch<RegistroErrorResponse>(`/registros-error/${idRegistroError}/estado?estado=${encodeURIComponent(estado)}`);
+  const query = new URLSearchParams({ estado });
+  if (nota) query.set('nota', nota);
+  return api.patch<RegistroErrorResponse>(`/registros-error/${idRegistroError}/estado?${query.toString()}`);
+}
+
+export function eliminarRegistroError(idRegistroError: number): Promise<void> {
+  return api.delete<void>(`/registros-error/${idRegistroError}`);
 }

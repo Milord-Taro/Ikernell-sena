@@ -10,7 +10,7 @@ export type OperacionTrazabilidad =
   | 'Autenticar'
   | 'Eliminar';
 
-/** Entidades que hoy sí registran trazabilidad (ver TrazabilidadService.registrar en el backend). */
+/** Entidades que hoy sí registran trazabilidad (ver llamadas a trazabilidadService.registrar en el backend). */
 export const ENTIDADES_TRAZABILIDAD = [
   'Usuario',
   'Rol',
@@ -20,6 +20,11 @@ export const ENTIDADES_TRAZABILIDAD = [
   'TipoInterrupcion',
   'Etapa',
   'Actividad',
+  'Proyecto',
+  'AsignacionProyecto',
+  'RegistroError',
+  'Interrupcion',
+  'MensajeContacto',
 ] as const;
 
 export interface TrazabilidadResponse {

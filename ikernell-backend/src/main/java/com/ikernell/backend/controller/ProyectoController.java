@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -81,5 +82,17 @@ public class ProyectoController {
             @PathVariable Integer idProyecto, @RequestParam String estado, Authentication authentication) {
         ProyectoResponse actualizado = proyectoService.cambiarEstado(idProyecto, estado, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Estado del proyecto actualizado correctamente.", actualizado));
+    }
+
+    /**
+     * Eliminación física, reservada al Coordinador -- un proyecto
+     * Cancelado solo puede borrarse del todo por esta vía. Protegida por
+     * integridad referencial (etapas o equipo asignado) en el Service.
+     */
+    @DeleteMapping("/{idProyecto}")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer idProyecto, Authentication authentication) {
+        proyectoService.eliminar(idProyecto, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 }

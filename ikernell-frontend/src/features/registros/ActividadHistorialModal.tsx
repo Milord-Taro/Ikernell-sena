@@ -10,7 +10,7 @@ import { ApiRequestError } from '../../types/api';
 import { NIVELES_CRITICIDAD } from '../../types/actividad';
 import type { ActividadResponse, NivelCriticidad } from '../../types/actividad';
 import type { TipoErrorResponse } from '../../types/usuario';
-import type { RegistroErrorResponse, RegistroErrorRequest } from '../../types/registroError';
+import type { EstadoRegistroError, RegistroErrorResponse, RegistroErrorRequest } from '../../types/registroError';
 import type { InterrupcionResponse } from '../../types/interrupcion';
 import { tiposErrorService } from '../../services/catalogos';
 import { listarRegistrosErrorPorActividad, crearRegistroError } from '../../services/registrosError';
@@ -21,6 +21,13 @@ const variantePorSeveridad: Record<NivelCriticidad, 'default' | 'warning' | 'err
   'Media': 'info',
   'Alta': 'warning',
   'Crítica': 'error',
+};
+
+const variantePorEstadoError: Record<EstadoRegistroError, 'default' | 'warning' | 'error' | 'info' | 'success'> = {
+  'Abierto': 'error',
+  'En progreso': 'warning',
+  'Resuelto': 'success',
+  'Descartado': 'default',
 };
 
 const tabsHistorial = [
@@ -225,7 +232,10 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                     <span className="type-caption text-[var(--text-tertiary)]">Título</span>
                     <span className="type-body text-[var(--text-primary)]">{r.titulo}</span>
                   </div>
-                  <Badge variant={variantePorSeveridad[r.severidad]} size="sm">{r.severidad}</Badge>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Badge variant={variantePorEstadoError[r.estado]} size="sm">{r.estado}</Badge>
+                    <Badge variant={variantePorSeveridad[r.severidad]} size="sm">{r.severidad}</Badge>
+                  </div>
                 </div>
                 <div className="flex flex-col">
                   <span className="type-caption text-[var(--text-tertiary)]">Tipo de error</span>
@@ -235,9 +245,22 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                   <span className="type-caption text-[var(--text-tertiary)]">Descripción</span>
                   <p className="type-body-sm text-[var(--text-secondary)]">{r.descripcion}</p>
                 </div>
-                <span className="type-caption text-[var(--text-tertiary)]">
-                  Registrado: {r.fechaRegistro}
-                </span>
+                {r.notaResolucion && (
+                  <div className="flex flex-col">
+                    <span className="type-caption text-[var(--text-tertiary)]">
+                      {r.estado === 'Descartado' ? 'Motivo de descarte' : 'Cómo se resolvió'}
+                    </span>
+                    <p className="type-body-sm text-[var(--text-secondary)]">{r.notaResolucion}</p>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className="type-caption text-[var(--text-tertiary)]">
+                    Creado por: {r.usuarioCreador ? `${r.usuarioCreador.nombres} ${r.usuarioCreador.apellidos}` : '—'}
+                  </span>
+                  <span className="type-caption text-[var(--text-tertiary)]">
+                    Registrado: {r.fechaRegistro}
+                  </span>
+                </div>
               </CardContent>
             </Card>
           ))
@@ -290,6 +313,9 @@ function SeccionInterrupciones({ registros }: SeccionInterrupcionesProps) {
                   Registrado: {r.fechaRegistro}
                 </span>
               </div>
+              <span className="type-caption text-[var(--text-tertiary)]">
+                Creado por: {r.usuarioCreador ? `${r.usuarioCreador.nombres} ${r.usuarioCreador.apellidos}` : '—'}
+              </span>
             </CardContent>
           </Card>
         ))

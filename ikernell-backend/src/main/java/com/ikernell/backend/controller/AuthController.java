@@ -43,15 +43,22 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.of("Sesión renovada correctamente.", respuesta));
     }
 
+    /**
+     * SIMULADO: ver comentario en RecuperacionContrasenaService. El código
+     * viaja en la respuesta (no por correo real) a propósito, para que el
+     * frontend lo muestre y el usuario lo use en el siguiente paso.
+     */
     @PostMapping("/recuperar-contrasena")
-    public ResponseEntity<ApiResponse<Void>> recuperarContrasena(
+    public ResponseEntity<ApiResponse<String>> recuperarContrasena(
             @Valid @RequestBody RecuperarContrasenaRequest request) {
 
-        recuperacionContrasenaService.solicitarRecuperacion(request.getCorreoElectronico());
+        String token = recuperacionContrasenaService.solicitarRecuperacion(request.getCorreoElectronico());
 
-        // Mensaje genérico a propósito: no revela si el correo existe o no.
         return ResponseEntity.ok(ApiResponse.of(
-                "Si el correo está registrado, se ha enviado un enlace de recuperación."));
+                token != null
+                        ? "Código de recuperación generado (simulado -- no se envía correo real)."
+                        : "No existe ningún usuario con ese correo.",
+                token));
     }
 
     @PostMapping("/restablecer-contrasena")

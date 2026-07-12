@@ -37,12 +37,20 @@ export function asignarActividad(idActividad: number, idUsuario: number): Promis
   return api.patch<ActividadResponse>(`/actividades/${idActividad}/asignar?idUsuario=${idUsuario}`);
 }
 
-/** Sin restricción de rol en el backend -- lo llama el propio Desarrollador. */
+/**
+ * Lo llama el desarrollador dueño de la actividad; una vez Cancelada,
+ * solo Líder/Coordinador (ver ActividadService.cambiarEstado). "nota"
+ * solo se persiste si el estado destino es "Finalizada", el backend la
+ * limpia en cualquier otro caso.
+ */
 export function cambiarEstadoActividad(
   idActividad: number,
   estado: EstadoActividad,
+  nota?: string,
 ): Promise<ActividadResponse> {
-  return api.patch<ActividadResponse>(`/actividades/${idActividad}/estado?estado=${encodeURIComponent(estado)}`);
+  const query = new URLSearchParams({ estado });
+  if (nota) query.set('nota', nota);
+  return api.patch<ActividadResponse>(`/actividades/${idActividad}/estado?${query.toString()}`);
 }
 
 export function eliminarActividad(idActividad: number): Promise<void> {

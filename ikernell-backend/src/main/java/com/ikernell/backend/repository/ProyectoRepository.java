@@ -11,5 +11,9 @@ public interface ProyectoRepository extends JpaRepository<Proyecto, Integer> {
 
     Optional<Proyecto> findByCodigoProyecto(String codigoProyecto);
 
-    List<Proyecto> findByEstado(EstadoProyecto estado);
+    // Orden explícito por PK: sin esto, un UPDATE de estado puede reubicar
+    // la fila y reordenar la tabla de Proyectos en el frontend.
+    List<Proyecto> findByEstadoOrderByIdProyectoAsc(EstadoProyecto estado);
+
+    List<Proyecto> findAllByOrderByIdProyectoAsc();
 }

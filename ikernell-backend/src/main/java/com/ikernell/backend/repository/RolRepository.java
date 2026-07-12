@@ -12,5 +12,9 @@ public interface RolRepository extends JpaRepository<Rol, Integer> {
 
     Optional<Rol> findByNombreRolIgnoreCase(String nombreRol);
 
-    List<Rol> findByActivoTrue();
+    // Orden explícito por PK: sin esto, un UPDATE de "activo" puede
+    // reubicar la fila y reordenar la tabla del catálogo en el frontend.
+    List<Rol> findByActivoTrueOrderByIdRolAsc();
+
+    List<Rol> findAllByOrderByIdRolAsc();
 }

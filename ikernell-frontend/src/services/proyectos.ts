@@ -21,3 +21,7 @@ export function actualizarProyecto(idProyecto: number, request: ProyectoRequest)
 export function cambiarEstadoProyecto(idProyecto: number, estado: EstadoProyecto): Promise<ProyectoResponse> {
   return api.patch<ProyectoResponse>(`/proyectos/${idProyecto}/estado?estado=${encodeURIComponent(estado)}`);
 }
+
+export function eliminarProyecto(idProyecto: number): Promise<void> {
+  return api.delete<void>(`/proyectos/${idProyecto}`);
+}

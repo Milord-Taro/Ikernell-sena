@@ -29,5 +29,6 @@ public class ActividadResponse {
     private LocalDate fechaFin;
     private EstadoActividad estado;
     private LocalDateTime fechaFinalizacion;
+    private String notaFinalizacion;
     private LocalDateTime fechaCreacion;
 }

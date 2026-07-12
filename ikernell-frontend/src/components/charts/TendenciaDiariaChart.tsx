@@ -23,18 +23,20 @@ export function TendenciaDiariaChart({ titulo, datos }: TendenciaDiariaChartProp
         {sinDatos ? (
           <p className="type-body-sm text-[var(--text-tertiary)]">Sin datos en este periodo.</p>
         ) : (
-          <div className="flex items-end gap-1.5 h-28">
-            {datos.map((d) => (
-              <div key={d.etiqueta} className="flex-1 flex flex-col items-center justify-end gap-1 h-full">
-                <span className="type-id text-[var(--text-tertiary)]">{d.value > 0 ? d.value : ''}</span>
-                <div
-                  className="w-full rounded-t-[var(--radius-sm)] bg-[var(--primary)] min-h-[2px]"
-                  style={{ height: `${(d.value / max) * 100}%` }}
-                  title={`${d.etiqueta}: ${d.value}`}
-                />
-                <span className="type-id text-[var(--text-tertiary)] text-[9px] whitespace-nowrap">{d.etiqueta}</span>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <div className="flex items-end gap-1.5 h-28 min-w-max">
+              {datos.map((d) => (
+                <div key={d.etiqueta} className="w-8 shrink-0 flex flex-col items-center justify-end gap-1 h-full">
+                  <span className="type-id text-[var(--text-tertiary)]">{d.value > 0 ? d.value : ''}</span>
+                  <div
+                    className="w-full rounded-t-[var(--radius-sm)] bg-[var(--primary)] min-h-[2px]"
+                    style={{ height: `${(d.value / max) * 100}%` }}
+                    title={`${d.etiqueta}: ${d.value}`}
+                  />
+                  <span className="type-id text-[var(--text-tertiary)] text-[9px] whitespace-nowrap">{d.etiqueta}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </CardContent>

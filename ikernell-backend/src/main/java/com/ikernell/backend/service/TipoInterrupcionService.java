@@ -1,8 +1,7 @@
 package com.ikernell.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoInterrupcionRequest;
 import com.ikernell.backend.dto.TipoInterrupcionResponse;
@@ -31,25 +30,30 @@ public class TipoInterrupcionService {
     private final TipoInterrupcionMapper tipoInterrupcionMapper;
     private final TrazabilidadService trazabilidadService;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
-    public TipoInterrupcionResponse crear(TipoInterrupcionRequest request) {
+    public TipoInterrupcionResponse crear(TipoInterrupcionRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarCodigoDisponible(request.getCodigoTipoInterrupcion(), null);
         validarNombreDisponible(request.getNombreTipoInterrupcion(), null);
 
         TipoInterrupcion tipo = tipoInterrupcionMapper.toEntity(request);
         TipoInterrupcion guardado = tipoInterrupcionRepository.save(tipo);
 
-        return tipoInterrupcionMapper.toResponse(guardado);
+        TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "TipoInterrupcion", guardado.getCodigoTipoInterrupcion(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<TipoInterrupcionResponse> listarTodos() {
-        return tipoInterrupcionRepository.findAll().stream().map(tipoInterrupcionMapper::toResponse).toList();
+        return tipoInterrupcionRepository.findAllByOrderByIdTipoInterrupcionAsc().stream().map(tipoInterrupcionMapper::toResponse).toList();
     }
 
     public List<TipoInterrupcionResponse> listarActivos() {
-        return tipoInterrupcionRepository.findByActivoTrue().stream().map(tipoInterrupcionMapper::toResponse).toList();
+        return tipoInterrupcionRepository.findByActivoTrueOrderByIdTipoInterrupcionAsc().stream().map(tipoInterrupcionMapper::toResponse).toList();
     }
 
     public TipoInterrupcionResponse obtenerPorId(Integer idTipoInterrupcion) {
@@ -57,7 +61,8 @@ public class TipoInterrupcionService {
     }
 
     @Transactional
-    public TipoInterrupcionResponse actualizar(Integer idTipoInterrupcion, TipoInterrupcionRequest request) {
+    public TipoInterrupcionResponse actualizar(Integer idTipoInterrupcion, TipoInterrupcionRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         TipoInterrupcion tipo = buscarOFallar(idTipoInterrupcion);
 
         validarCodigoDisponible(request.getCodigoTipoInterrupcion(), idTipoInterrupcion);
@@ -66,16 +71,28 @@ public class TipoInterrupcionService {
         tipoInterrupcionMapper.actualizarEntidadDesdeRequest(request, tipo);
         TipoInterrupcion actualizado = tipoInterrupcionRepository.save(tipo);
 
-        return tipoInterrupcionMapper.toResponse(actualizado);
+        TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(actualizado);
+        trazabilidadService.registrar(
+                solicitante, "TipoInterrupcion", actualizado.getCodigoTipoInterrupcion(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
-    public TipoInterrupcionResponse cambiarEstado(Integer idTipoInterrupcion, boolean activo) {
+    public TipoInterrupcionResponse cambiarEstado(Integer idTipoInterrupcion, boolean activo, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         TipoInterrupcion tipo = buscarOFallar(idTipoInterrupcion);
         tipo.setActivo(activo);
         TipoInterrupcion guardado = tipoInterrupcionRepository.save(tipo);
 
-        return tipoInterrupcionMapper.toResponse(guardado);
+        TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(guardado);
+        trazabilidadService.registrar(
+                solicitante, "TipoInterrupcion", guardado.getCodigoTipoInterrupcion(),
+                activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
+                construirDetalle(response));
+
+        return response;
     }
 
     /**
@@ -119,7 +136,7 @@ public class TipoInterrupcionService {
 
     private String construirDetalle(TipoInterrupcionResponse response) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(response);
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }

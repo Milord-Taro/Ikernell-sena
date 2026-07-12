@@ -12,5 +12,9 @@ public interface TipoInterrupcionRepository extends JpaRepository<TipoInterrupci
 
     Optional<TipoInterrupcion> findByNombreTipoInterrupcionIgnoreCase(String nombreTipoInterrupcion);
 
-    List<TipoInterrupcion> findByActivoTrue();
+    // Orden explícito por PK: sin esto, un UPDATE de "activo" puede
+    // reubicar la fila y reordenar la tabla del catálogo en el frontend.
+    List<TipoInterrupcion> findByActivoTrueOrderByIdTipoInterrupcionAsc();
+
+    List<TipoInterrupcion> findAllByOrderByIdTipoInterrupcionAsc();
 }

@@ -14,7 +14,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByNumeroIdentificacion(String numeroIdentificacion);
 
-    List<Usuario> findByActivoTrue();
+    // Orden explícito por PK: sin esto, un UPDATE de "activo" puede
+    // reubicar la fila y reordenar la tabla de Usuarios en el frontend.
+    List<Usuario> findByActivoTrueOrderByIdUsuarioAsc();
+
+    List<Usuario> findAllByOrderByIdUsuarioAsc();
 
     // NUEVO: para notificar a todos los Coordinadores activos cuando
     // llega un mensaje de contacto nuevo.

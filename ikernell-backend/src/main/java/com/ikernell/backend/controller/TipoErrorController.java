@@ -38,8 +38,9 @@ public class TipoErrorController {
 
     @PostMapping
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
-    public ResponseEntity<ApiResponse<TipoErrorResponse>> crear(@Valid @RequestBody TipoErrorRequest request) {
-        TipoErrorResponse creado = tipoErrorService.crear(request);
+    public ResponseEntity<ApiResponse<TipoErrorResponse>> crear(
+            @Valid @RequestBody TipoErrorRequest request, Authentication authentication) {
+        TipoErrorResponse creado = tipoErrorService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Tipo de error creado correctamente.", creado));
     }
@@ -60,16 +61,18 @@ public class TipoErrorController {
     @PutMapping("/{idTipoError}")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<TipoErrorResponse>> actualizar(
-            @PathVariable Integer idTipoError, @Valid @RequestBody TipoErrorRequest request) {
-        TipoErrorResponse actualizado = tipoErrorService.actualizar(idTipoError, request);
+            @PathVariable Integer idTipoError, @Valid @RequestBody TipoErrorRequest request,
+            Authentication authentication) {
+        TipoErrorResponse actualizado = tipoErrorService.actualizar(idTipoError, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Tipo de error actualizado correctamente.", actualizado));
     }
 
     @PatchMapping("/{idTipoError}/estado")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<TipoErrorResponse>> cambiarEstado(
-            @PathVariable Integer idTipoError, @RequestParam boolean activo) {
-        TipoErrorResponse actualizado = tipoErrorService.cambiarEstado(idTipoError, activo);
+            @PathVariable Integer idTipoError, @RequestParam boolean activo, Authentication authentication) {
+        TipoErrorResponse actualizado =
+                tipoErrorService.cambiarEstado(idTipoError, activo, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Tipo de error activado." : "Tipo de error desactivado.", actualizado));
     }

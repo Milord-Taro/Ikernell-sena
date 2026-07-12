@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, FolderKanban, Activity, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -20,7 +20,7 @@ interface Resultado {
   ir: () => void;
 }
 
-const iconoPorTipo: Record<TipoResultado, JSX.Element> = {
+const iconoPorTipo: Record<TipoResultado, ReactNode> = {
   proyecto: <FolderKanban size={14} className="text-[var(--text-tertiary)]" />,
   usuario: <Users size={14} className="text-[var(--text-tertiary)]" />,
   actividad: <Activity size={14} className="text-[var(--text-tertiary)]" />,

@@ -33,8 +33,8 @@ public class TipoInterrupcionController {
     @PostMapping
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<TipoInterrupcionResponse>> crear(
-            @Valid @RequestBody TipoInterrupcionRequest request) {
-        TipoInterrupcionResponse creado = tipoInterrupcionService.crear(request);
+            @Valid @RequestBody TipoInterrupcionRequest request, Authentication authentication) {
+        TipoInterrupcionResponse creado = tipoInterrupcionService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Tipo de interrupción creado correctamente.", creado));
     }
@@ -56,16 +56,19 @@ public class TipoInterrupcionController {
     @PutMapping("/{idTipoInterrupcion}")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<TipoInterrupcionResponse>> actualizar(
-            @PathVariable Integer idTipoInterrupcion, @Valid @RequestBody TipoInterrupcionRequest request) {
-        TipoInterrupcionResponse actualizado = tipoInterrupcionService.actualizar(idTipoInterrupcion, request);
+            @PathVariable Integer idTipoInterrupcion, @Valid @RequestBody TipoInterrupcionRequest request,
+            Authentication authentication) {
+        TipoInterrupcionResponse actualizado =
+                tipoInterrupcionService.actualizar(idTipoInterrupcion, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Tipo de interrupción actualizado correctamente.", actualizado));
     }
 
     @PatchMapping("/{idTipoInterrupcion}/estado")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<TipoInterrupcionResponse>> cambiarEstado(
-            @PathVariable Integer idTipoInterrupcion, @RequestParam boolean activo) {
-        TipoInterrupcionResponse actualizado = tipoInterrupcionService.cambiarEstado(idTipoInterrupcion, activo);
+            @PathVariable Integer idTipoInterrupcion, @RequestParam boolean activo, Authentication authentication) {
+        TipoInterrupcionResponse actualizado =
+                tipoInterrupcionService.cambiarEstado(idTipoInterrupcion, activo, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Tipo de interrupción activado." : "Tipo de interrupción desactivado.", actualizado));
     }

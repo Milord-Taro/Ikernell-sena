@@ -29,8 +29,9 @@ public class ProfesionController {
     private final ProfesionService profesionService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ProfesionResponse>> crear(@Valid @RequestBody ProfesionRequest request) {
-        ProfesionResponse creada = profesionService.crear(request);
+    public ResponseEntity<ApiResponse<ProfesionResponse>> crear(
+            @Valid @RequestBody ProfesionRequest request, Authentication authentication) {
+        ProfesionResponse creada = profesionService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Profesión creada correctamente.", creada));
     }
@@ -50,15 +51,17 @@ public class ProfesionController {
 
     @PutMapping("/{idProfesion}")
     public ResponseEntity<ApiResponse<ProfesionResponse>> actualizar(
-            @PathVariable Integer idProfesion, @Valid @RequestBody ProfesionRequest request) {
-        ProfesionResponse actualizada = profesionService.actualizar(idProfesion, request);
+            @PathVariable Integer idProfesion, @Valid @RequestBody ProfesionRequest request,
+            Authentication authentication) {
+        ProfesionResponse actualizada = profesionService.actualizar(idProfesion, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Profesión actualizada correctamente.", actualizada));
     }
 
     @PatchMapping("/{idProfesion}/estado")
     public ResponseEntity<ApiResponse<ProfesionResponse>> cambiarEstado(
-            @PathVariable Integer idProfesion, @RequestParam boolean activo) {
-        ProfesionResponse actualizada = profesionService.cambiarEstado(idProfesion, activo);
+            @PathVariable Integer idProfesion, @RequestParam boolean activo, Authentication authentication) {
+        ProfesionResponse actualizada =
+                profesionService.cambiarEstado(idProfesion, activo, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Profesión activada correctamente." : "Profesión desactivada correctamente.", actualizada));
     }

@@ -74,6 +74,10 @@ public class Actividad {
     @Column(name = "fecha_finalizacion")
     private LocalDateTime fechaFinalizacion;
 
+    /** NUEVO: qué hizo el desarrollador -- opcional, se limpia junto con fechaFinalizacion. */
+    @Column(name = "nota_finalizacion", columnDefinition = "TEXT")
+    private String notaFinalizacion;
+
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime fechaCreacion = LocalDateTime.now();

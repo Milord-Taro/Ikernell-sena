@@ -19,6 +19,7 @@ public class InterrupcionResponse {
     private String codigoInterrupcion;
     private ActividadResponse actividad;
     private TipoInterrupcionResponse tipoInterrupcion;
+    private UsuarioResponse usuarioCreador;
     private String motivo;
     private Integer duracionMinutos;
     private LocalDateTime fechaRegistro;

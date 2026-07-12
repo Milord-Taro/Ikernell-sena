@@ -62,8 +62,9 @@ public class MensajeContactoController {
     @PatchMapping("/{idMensajeContacto}/leido")
     @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<MensajeContactoResponse>> marcarComoLeido(
-            @PathVariable Integer idMensajeContacto) {
-        MensajeContactoResponse actualizado = mensajeContactoService.marcarComoLeido(idMensajeContacto);
+            @PathVariable Integer idMensajeContacto, Authentication authentication) {
+        MensajeContactoResponse actualizado =
+                mensajeContactoService.marcarComoLeido(idMensajeContacto, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Mensaje marcado como leído.", actualizado));
     }
 

@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Pencil, User } from 'lucide-react';
+import { ArrowLeft, Pencil, Trash2, User } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Select } from '../components/ui/FormControls';
-import { Alert } from '../components/ui/Feedback';
+import { Alert, ConfirmDialog } from '../components/ui/Feedback';
 import { Tabs } from '../components/layout/Navigation';
 import { ProyectoFormModal } from '../features/proyectos/ProyectoFormModal';
 import { EquipoProyecto } from '../features/proyectos/EquipoProyecto';
 import { ReportesProyecto } from '../features/proyectos/ReportesProyecto';
 import { EtapasList } from '../features/etapas/EtapasList';
 import { TimelineProyecto } from '../features/proyectos/TimelineProyecto';
-import { obtenerProyectoPorId, actualizarProyecto, cambiarEstadoProyecto } from '../services/proyectos';
+import { obtenerProyectoPorId, actualizarProyecto, cambiarEstadoProyecto, eliminarProyecto } from '../services/proyectos';
 import { ApiRequestError } from '../types/api';
 import { ESTADOS_PROYECTO } from '../types/proyecto';
 import type { ProyectoResponse, EstadoProyecto } from '../types/proyecto';
@@ -36,6 +36,13 @@ export default function ProyectoDetallePage() {
   const [tabActiva, setTabActiva] = useState('etapas');
   const [modalEdicionAbierto, setModalEdicionAbierto] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [estadoAConfirmar, setEstadoAConfirmar] = useState<EstadoProyecto | null>(null);
+  const [modalEliminarAbierto, setModalEliminarAbierto] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+
+  const esCoordinador = usuario?.rol.codigoRol === CODIGO_ROL.COORDINADOR;
+  const proyectoCancelado = proyecto?.estado === 'Cancelado';
+  const estadoBloqueado = proyectoCancelado && !esCoordinador;
 
   const cargar = async () => {
     if (!idProyecto) return;
@@ -52,14 +59,46 @@ export default function ProyectoDetallePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idProyecto]);
 
-  const alCambiarEstado = async (estado: string) => {
+  const aplicarCambioEstado = async (estado: EstadoProyecto) => {
     if (!proyecto) return;
     setError(null);
     try {
-      const actualizado = await cambiarEstadoProyecto(proyecto.idProyecto, estado as EstadoProyecto);
+      const actualizado = await cambiarEstadoProyecto(proyecto.idProyecto, estado);
       setProyecto(actualizado);
     } catch (err) {
       setError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado.');
+    }
+  };
+
+  const alCambiarEstado = (estado: string) => {
+    // Cancelar un proyecto es una acción de alto impacto (bloquea el
+    // estado para el líder de ahí en adelante) -- se pide confirmación
+    // explícita antes de aplicarla, en vez de cambiarla directo con el select.
+    if (estado === 'Cancelado') {
+      setEstadoAConfirmar(estado as EstadoProyecto);
+      return;
+    }
+    aplicarCambioEstado(estado as EstadoProyecto);
+  };
+
+  const alConfirmarCancelar = async () => {
+    if (!estadoAConfirmar) return;
+    await aplicarCambioEstado(estadoAConfirmar);
+    setEstadoAConfirmar(null);
+  };
+
+  const alEliminar = async () => {
+    if (!proyecto) return;
+    setError(null);
+    setEliminando(true);
+    try {
+      await eliminarProyecto(proyecto.idProyecto);
+      navigate('/dashboard/proyectos');
+    } catch (err) {
+      setError(err instanceof ApiRequestError ? err.message : 'No se pudo eliminar el proyecto.');
+    } finally {
+      setEliminando(false);
+      setModalEliminarAbierto(false);
     }
   };
 
@@ -108,6 +147,12 @@ export default function ProyectoDetallePage() {
                 <Pencil size={14} />
                 Editar
               </Button>
+              {proyectoCancelado && esCoordinador && (
+                <Button variant="outline" size="sm" onClick={() => setModalEliminarAbierto(true)}>
+                  <Trash2 size={14} />
+                  Eliminar
+                </Button>
+              )}
             </div>
           </div>
 
@@ -126,7 +171,12 @@ export default function ProyectoDetallePage() {
             <div className="flex flex-col gap-1">
               <span className="type-label text-[var(--text-tertiary)]">Estado</span>
               <div className="w-48">
-                <Select value={proyecto.estado} onChange={(e) => alCambiarEstado(e.target.value)}>
+                <Select
+                  value={proyecto.estado}
+                  disabled={estadoBloqueado}
+                  hint={estadoBloqueado ? 'Cancelado -- solo un Coordinador puede cambiarlo.' : undefined}
+                  onChange={(e) => alCambiarEstado(e.target.value)}
+                >
                   {ESTADOS_PROYECTO.map((estado) => (
                     <option key={estado} value={estado}>{estado}</option>
                   ))}
@@ -165,6 +215,28 @@ export default function ProyectoDetallePage() {
         proyectoEditando={proyecto}
         onClose={() => setModalEdicionAbierto(false)}
         onGuardar={alEditar}
+      />
+
+      <ConfirmDialog
+        open={estadoAConfirmar !== null}
+        variant="destructive"
+        title="¿Cancelar este proyecto?"
+        description="Una vez cancelado, solo un Coordinador podrá volver a cambiar su estado o eliminarlo."
+        confirmLabel="Cancelar proyecto"
+        cancelLabel="Volver"
+        onConfirm={alConfirmarCancelar}
+        onCancel={() => setEstadoAConfirmar(null)}
+      />
+
+      <ConfirmDialog
+        open={modalEliminarAbierto}
+        variant="destructive"
+        title="¿Eliminar este proyecto?"
+        description="Esta acción no se puede deshacer. Solo es posible si el proyecto no tiene etapas ni equipo asignado."
+        confirmLabel={eliminando ? 'Eliminando...' : 'Eliminar'}
+        cancelLabel="Cancelar"
+        onConfirm={alEliminar}
+        onCancel={() => setModalEliminarAbierto(false)}
       />
     </div>
   );

@@ -4,19 +4,18 @@ import com.ikernell.backend.entity.Trazabilidad;
 import com.ikernell.backend.entity.Usuario;
 import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.repository.TrazabilidadRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Punto único de escritura de trazabilidad. Cualquier Service puede
  * inyectar esta clase y llamar registrar(...) para dejar un rastro de
  * auditoría, sin preocuparse por construir la entidad a mano.
- *
- * ALCANCE ACTUAL: solo está conectado desde AuthService (login ->
- * operación AUTENTICAR), como prueba funcional del mecanismo. Conectarlo
- * a los demás 12 módulos (Rol, Usuario, Proyecto, Actividad, etc.) es
- * trabajo pendiente explícito -- requiere tocar cada Service existente.
  */
 @Service
 @RequiredArgsConstructor
@@ -38,8 +37,32 @@ public class TrazabilidadService {
                 .codigoRegistro(codigoRegistro)
                 .operacion(operacion)
                 .detalle(detalle)
+                .direccionIp(obtenerDireccionIpActual())
                 .build();
 
         trazabilidadRepository.save(evento);
+    }
+
+    /**
+     * Todas las llamadas a registrar(...) ocurren dentro del hilo de una
+     * petición HTTP (Service invocado desde un Controller), así que el
+     * request actual siempre está disponible vía RequestContextHolder.
+     * Se prioriza X-Forwarded-For por si hay un proxy/balanceador
+     * delante; si no hay contexto de request (ej. proceso batch futuro),
+     * se guarda null en vez de fallar el registro.
+     */
+    private String obtenerDireccionIpActual() {
+        RequestAttributes atributos = RequestContextHolder.getRequestAttributes();
+        if (!(atributos instanceof ServletRequestAttributes servletAtributos)) {
+            return null;
+        }
+
+        HttpServletRequest request = servletAtributos.getRequest();
+        String forwardedFor = request.getHeader("X-Forwarded-For");
+        if (forwardedFor != null && !forwardedFor.isBlank()) {
+            return forwardedFor.split(",")[0].trim();
+        }
+
+        return request.getRemoteAddr();
     }
 }

@@ -1,8 +1,7 @@
 package com.ikernell.backend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ProfesionRequest;
 import com.ikernell.backend.dto.ProfesionResponse;
@@ -31,28 +30,33 @@ public class ProfesionService {
     private final ProfesionMapper profesionMapper;
     private final TrazabilidadService trazabilidadService;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Transactional
-    public ProfesionResponse crear(ProfesionRequest request) {
+    public ProfesionResponse crear(ProfesionRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarCodigoDisponible(request.getCodigoProfesion(), null);
         validarNombreDisponible(request.getNombreProfesion(), null);
 
         Profesion profesion = profesionMapper.toEntity(request);
         Profesion guardada = profesionRepository.save(profesion);
 
-        return profesionMapper.toResponse(guardada);
+        ProfesionResponse response = profesionMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Profesion", guardada.getCodigoProfesion(),
+                OperacionTrazabilidad.CREAR, construirDetalle(response));
+
+        return response;
     }
 
     public List<ProfesionResponse> listarTodas() {
-        return profesionRepository.findAll()
+        return profesionRepository.findAllByOrderByIdProfesionAsc()
                 .stream()
                 .map(profesionMapper::toResponse)
                 .toList();
     }
 
     public List<ProfesionResponse> listarActivas() {
-        return profesionRepository.findByActivoTrue()
+        return profesionRepository.findByActivoTrueOrderByIdProfesionAsc()
                 .stream()
                 .map(profesionMapper::toResponse)
                 .toList();
@@ -63,7 +67,8 @@ public class ProfesionService {
     }
 
     @Transactional
-    public ProfesionResponse actualizar(Integer idProfesion, ProfesionRequest request) {
+    public ProfesionResponse actualizar(Integer idProfesion, ProfesionRequest request, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Profesion profesion = buscarOFallar(idProfesion);
 
         validarCodigoDisponible(request.getCodigoProfesion(), idProfesion);
@@ -72,16 +77,28 @@ public class ProfesionService {
         profesionMapper.actualizarEntidadDesdeRequest(request, profesion);
         Profesion actualizada = profesionRepository.save(profesion);
 
-        return profesionMapper.toResponse(actualizada);
+        ProfesionResponse response = profesionMapper.toResponse(actualizada);
+        trazabilidadService.registrar(
+                solicitante, "Profesion", actualizada.getCodigoProfesion(),
+                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+
+        return response;
     }
 
     @Transactional
-    public ProfesionResponse cambiarEstado(Integer idProfesion, boolean activo) {
+    public ProfesionResponse cambiarEstado(Integer idProfesion, boolean activo, String correoSolicitante) {
+        Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Profesion profesion = buscarOFallar(idProfesion);
         profesion.setActivo(activo);
         Profesion guardada = profesionRepository.save(profesion);
 
-        return profesionMapper.toResponse(guardada);
+        ProfesionResponse response = profesionMapper.toResponse(guardada);
+        trazabilidadService.registrar(
+                solicitante, "Profesion", guardada.getCodigoProfesion(),
+                activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
+                construirDetalle(response));
+
+        return response;
     }
 
     /**
@@ -125,7 +142,7 @@ public class ProfesionService {
 
     private String construirDetalle(ProfesionResponse response) {
         try {
-            return OBJECT_MAPPER.writeValueAsString(response);
+            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }

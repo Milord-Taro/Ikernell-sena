@@ -3,6 +3,7 @@ import { Table } from '../components/ui/Table';
 import { Badge } from '../components/ui/Badge';
 import { Select } from '../components/ui/FormControls';
 import { Modal } from '../components/ui/Modal';
+import { JsonTree, type JsonValue } from '../components/ui/JsonTree';
 import { listarTrazabilidad } from '../services/trazabilidad';
 import { ENTIDADES_TRAZABILIDAD } from '../types/trazabilidad';
 import type { TrazabilidadResponse, OperacionTrazabilidad } from '../types/trazabilidad';
@@ -18,13 +19,13 @@ const variantePorOperacion: Record<OperacionTrazabilidad, 'default' | 'success' 
   'Eliminar': 'error',
 };
 
-/** Intenta mostrar el detalle bonito si es JSON (snapshot de eliminar); si no, tal cual. */
-function formatearDetalle(detalle: string | null): string {
-  if (!detalle) return '—';
+/** El detalle casi siempre es un snapshot JSON del recurso afectado; si no parsea, se muestra tal cual. */
+function parsearDetalle(detalle: string | null): JsonValue | undefined {
+  if (!detalle) return null;
   try {
-    return JSON.stringify(JSON.parse(detalle), null, 2);
+    return JSON.parse(detalle) as JsonValue;
   } catch {
-    return detalle;
+    return undefined;
   }
 }
 
@@ -42,11 +43,7 @@ interface FilaTabla extends Record<string, unknown> {
  * Solo Coordinador (RoleRoute + backend @PreAuthorize). Muestra TODO lo
  * que hoy registra trazabilidad -- que no es "todas las operaciones del
  * sistema", solo las que ya llaman a TrazabilidadService.registrar()
- * (Usuario, Rol, Profesión, Especialidad, TipoError, TipoInterrupción,
- * Etapa, Actividad). Proyecto/AsignacionProyecto/RegistroError/
- * Interrupción/MensajeContacto no están cubiertos todavía -- eso sería
- * ampliar el alcance de auditoría, no construir la pantalla que ya se
- * aprobó, así que lo dejo tal cual está.
+ * (ver ENTIDADES_TRAZABILIDAD).
  */
 export default function AuditoriaPage() {
   const [eventos, setEventos] = useState<TrazabilidadResponse[]>([]);
@@ -125,6 +122,7 @@ export default function AuditoriaPage() {
           open={Boolean(eventoAbierto)}
           onClose={() => setEventoAbierto(null)}
           title={`${eventoAbierto.entidad} · ${eventoAbierto.codigoRegistro}`}
+          description={`Evento #${eventoAbierto.idTrazabilidad}`}
           size="md"
         >
           <div className="flex flex-col gap-3">
@@ -133,8 +131,14 @@ export default function AuditoriaPage() {
                 <span className="type-caption text-[var(--text-tertiary)]">Usuario</span>
                 <span className="type-body-sm text-[var(--text-secondary)]">
                   {eventoAbierto.usuario
-                    ? `${eventoAbierto.usuario.nombres} ${eventoAbierto.usuario.apellidos}`
+                    ? `${eventoAbierto.usuario.nombres} ${eventoAbierto.usuario.apellidos} (${eventoAbierto.usuario.codigoUsuario})`
                     : 'Sistema'}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="type-caption text-[var(--text-tertiary)]">Rol</span>
+                <span className="type-body-sm text-[var(--text-secondary)]">
+                  {eventoAbierto.usuario?.rol?.nombreRol ?? '—'}
                 </span>
               </div>
               <div className="flex flex-col">
@@ -155,9 +159,22 @@ export default function AuditoriaPage() {
 
             <div className="flex flex-col gap-1">
               <span className="type-caption text-[var(--text-tertiary)]">Detalle</span>
-              <pre className="type-code text-[var(--text-secondary)] bg-[var(--muted)] rounded-[var(--radius-md)] p-3 overflow-x-auto whitespace-pre-wrap break-words">
-                {formatearDetalle(eventoAbierto.detalle)}
-              </pre>
+              <div className="bg-[var(--muted)] rounded-[var(--radius-md)] p-3 overflow-x-auto">
+                {(() => {
+                  const detalle = parsearDetalle(eventoAbierto.detalle);
+                  if (detalle === null) {
+                    return <span className="type-code text-[var(--text-secondary)]">—</span>;
+                  }
+                  if (detalle === undefined) {
+                    return (
+                      <pre className="type-code text-[var(--text-secondary)] whitespace-pre-wrap break-words">
+                        {eventoAbierto.detalle}
+                      </pre>
+                    );
+                  }
+                  return <JsonTree value={detalle} />;
+                })()}
+              </div>
             </div>
           </div>
         </Modal>

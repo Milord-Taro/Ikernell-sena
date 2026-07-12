@@ -26,7 +26,9 @@ import java.util.List;
 /**
  * CORREGIDO: gate de rol amplía a Coordinador + Líder de Proyecto para
  * crear/editar/asignar/eliminar. El ownership real (¿es el líder de ESE
- * proyecto?) lo valida el Service. cambiarEstado SIN CAMBIOS (sigue abierto).
+ * proyecto?) lo valida el Service. cambiarEstado no lleva @PreAuthorize de
+ * rol porque lo ejecuta el Desarrollador -- el ownership (¿es SU actividad?)
+ * se valida en ActividadService.cambiarEstado.
  */
 @RestController
 @RequestMapping("/api/actividades")
@@ -94,8 +96,10 @@ public class ActividadController {
 
     @PatchMapping("/{idActividad}/estado")
     public ResponseEntity<ApiResponse<ActividadResponse>> cambiarEstado(
-            @PathVariable Integer idActividad, @RequestParam String estado) {
-        ActividadResponse actualizada = actividadService.cambiarEstado(idActividad, estado);
+            @PathVariable Integer idActividad, @RequestParam String estado,
+            @RequestParam(required = false) String nota, Authentication authentication) {
+        ActividadResponse actualizada =
+                actividadService.cambiarEstado(idActividad, estado, nota, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Estado de la actividad actualizado correctamente.", actualizada));
     }
 

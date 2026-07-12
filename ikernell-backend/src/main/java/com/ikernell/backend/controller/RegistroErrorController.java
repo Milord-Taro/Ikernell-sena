@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +22,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Sin @PreAuthorize específico: cualquier autenticado puede registrar,
- * leer y cambiar el estado (el propio Desarrollador registra sus
- * errores; el Líder/Coordinador los leen y también pueden actualizar el
- * estado desde la vista de supervisión). No tiene PUT -- los campos del
- * error no se editan, solo su estado.
+ * Sin @PreAuthorize específico a nivel de rol: el gate de "registrar" es
+ * a nivel de PROYECTO, no de rol -- solo un miembro vigente del equipo
+ * del proyecto dueño de la actividad (cualquier rol_proyecto) o un
+ * Coordinador puede reportar un error ahí, ver
+ * RegistroErrorService.crear() / AutorizacionProyectoService
+ * .verificarPerteneceAlEquipo(). Leer y cambiar el estado sigue abierto a
+ * cualquier autenticado (el Líder/Coordinador los leen y también pueden
+ * actualizar el estado desde la vista de supervisión). No tiene PUT --
+ * los campos del error no se editan, solo su estado.
  */
 @RestController
 @RequestMapping("/api/registros-error")
@@ -35,8 +41,8 @@ public class RegistroErrorController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<RegistroErrorResponse>> crear(
-            @Valid @RequestBody RegistroErrorRequest request) {
-        RegistroErrorResponse creado = registroErrorService.crear(request);
+            @Valid @RequestBody RegistroErrorRequest request, Authentication authentication) {
+        RegistroErrorResponse creado = registroErrorService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Registro de error creado correctamente.", creado));
     }
@@ -58,8 +64,17 @@ public class RegistroErrorController {
 
     @PatchMapping("/{idRegistroError}/estado")
     public ResponseEntity<ApiResponse<RegistroErrorResponse>> cambiarEstado(
-            @PathVariable Integer idRegistroError, @RequestParam String estado) {
-        RegistroErrorResponse actualizado = registroErrorService.cambiarEstado(idRegistroError, estado);
+            @PathVariable Integer idRegistroError, @RequestParam String estado,
+            @RequestParam(required = false) String nota, Authentication authentication) {
+        RegistroErrorResponse actualizado =
+                registroErrorService.cambiarEstado(idRegistroError, estado, nota, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Estado del error actualizado correctamente.", actualizado));
+    }
+
+    @DeleteMapping("/{idRegistroError}")
+    public ResponseEntity<ApiResponse<Void>> eliminar(
+            @PathVariable Integer idRegistroError, Authentication authentication) {
+        registroErrorService.eliminar(idRegistroError, authentication.getName());
+        return ResponseEntity.ok(ApiResponse.of("Registro de error eliminado correctamente."));
     }
 }

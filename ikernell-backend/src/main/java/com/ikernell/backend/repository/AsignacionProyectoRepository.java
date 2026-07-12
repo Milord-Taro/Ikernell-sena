@@ -9,9 +9,12 @@ import java.util.Optional;
 
 public interface AsignacionProyectoRepository extends JpaRepository<AsignacionProyecto, Integer> {
 
-    List<AsignacionProyecto> findByProyecto_IdProyecto(Integer idProyecto);
+    // Orden explícito por PK: alimenta las cards de "Equipo del proyecto" --
+    // sin esto, desvincular a alguien (UPDATE sobre fecha_desvinculacion)
+    // puede reubicar la fila y hacer que las demás cards salten de posición.
+    List<AsignacionProyecto> findByProyecto_IdProyectoOrderByIdAsignacionProyectoAsc(Integer idProyecto);
 
-    List<AsignacionProyecto> findByUsuario_IdUsuario(Integer idUsuario);
+    List<AsignacionProyecto> findByUsuario_IdUsuarioOrderByIdAsignacionProyectoAsc(Integer idUsuario);
 
     List<AsignacionProyecto> findByProyecto_IdProyectoAndFechaDesvinculacionIsNull(Integer idProyecto);
 

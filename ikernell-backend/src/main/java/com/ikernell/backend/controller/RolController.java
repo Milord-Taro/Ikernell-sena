@@ -24,8 +24,9 @@ public class RolController {
     private final RolService rolService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<RolResponse>> crear(@Valid @RequestBody RolRequest request) {
-        RolResponse creado = rolService.crear(request);
+    public ResponseEntity<ApiResponse<RolResponse>> crear(
+            @Valid @RequestBody RolRequest request, Authentication authentication) {
+        RolResponse creado = rolService.crear(request, authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.of("Rol creado correctamente.", creado));
     }
@@ -44,15 +45,15 @@ public class RolController {
 
     @PutMapping("/{idRol}")
     public ResponseEntity<ApiResponse<RolResponse>> actualizar(
-            @PathVariable Integer idRol, @Valid @RequestBody RolRequest request) {
-        RolResponse actualizado = rolService.actualizar(idRol, request);
+            @PathVariable Integer idRol, @Valid @RequestBody RolRequest request, Authentication authentication) {
+        RolResponse actualizado = rolService.actualizar(idRol, request, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of("Rol actualizado correctamente.", actualizado));
     }
 
     @PatchMapping("/{idRol}/estado")
     public ResponseEntity<ApiResponse<RolResponse>> cambiarEstado(
-            @PathVariable Integer idRol, @RequestParam boolean activo) {
-        RolResponse actualizado = rolService.cambiarEstado(idRol, activo);
+            @PathVariable Integer idRol, @RequestParam boolean activo, Authentication authentication) {
+        RolResponse actualizado = rolService.cambiarEstado(idRol, activo, authentication.getName());
         return ResponseEntity.ok(ApiResponse.of(
                 activo ? "Rol activado correctamente." : "Rol desactivado correctamente.", actualizado));
     }

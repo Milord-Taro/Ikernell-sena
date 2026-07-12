@@ -630,6 +630,9 @@ CREATE TABLE actividad
 
     fecha_creacion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
+    -- Qué hizo el desarrollador, se completa al llegar a Finalizada (opcional).
+    nota_finalizacion TEXT,
+
     CONSTRAINT pk_actividad
         PRIMARY KEY (id_actividad),
 
@@ -709,11 +712,20 @@ CREATE TABLE registro_error
 
     id_tipo_error INTEGER NOT NULL,
 
+    -- Quién lo registró: el propio desarrollador, o el Líder si lo creó
+    -- él y se lo asignó a la actividad. Nullable a nivel de BD para
+    -- poder backfillearlo en bases existentes; el backend siempre lo
+    -- llena al crear.
+    id_usuario_creador INTEGER,
+
     titulo VARCHAR(100) NOT NULL,
 
     descripcion TEXT NOT NULL,
 
     severidad VARCHAR(20) NOT NULL,
+
+    -- Cómo se resolvió o por qué se descartó (opcional, libre).
+    nota_resolucion TEXT,
 
     fecha_registro TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
 
@@ -729,6 +741,12 @@ CREATE TABLE registro_error
     CONSTRAINT fk_registro_error_tipo
         FOREIGN KEY (id_tipo_error)
         REFERENCES tipo_error(id_tipo_error)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_registro_error_usuario_creador
+        FOREIGN KEY (id_usuario_creador)
+        REFERENCES usuario(id_usuario)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
@@ -766,6 +784,10 @@ CREATE TABLE interrupcion
 
     id_tipo_interrupcion INTEGER NOT NULL,
 
+    -- Quién la registró -- hoy siempre el desarrollador de la actividad,
+    -- se deja explícito para mostrarlo con claridad en la UI.
+    id_usuario_creador INTEGER,
+
     motivo TEXT NOT NULL,
 
     duracion_minutos INTEGER NOT NULL,
@@ -784,6 +806,12 @@ CREATE TABLE interrupcion
     CONSTRAINT fk_interrupcion_tipo
         FOREIGN KEY (id_tipo_interrupcion)
         REFERENCES tipo_interrupcion(id_tipo_interrupcion)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_interrupcion_usuario_creador
+        FOREIGN KEY (id_usuario_creador)
+        REFERENCES usuario(id_usuario)
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
 
