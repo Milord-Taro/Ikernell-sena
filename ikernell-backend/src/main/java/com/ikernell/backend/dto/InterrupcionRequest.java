@@ -15,10 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InterrupcionRequest {
 
-    @NotBlank(message = "El código de la interrupción es obligatorio.")
-    @Size(max = 20, message = "El código no puede superar los 20 caracteres.")
-    private String codigoInterrupcion;
-
     @NotNull(message = "La actividad es obligatoria.")
     private Integer idActividad;
 

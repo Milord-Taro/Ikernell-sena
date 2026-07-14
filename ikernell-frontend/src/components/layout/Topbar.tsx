@@ -8,6 +8,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { Avatar } from '../ui/DataDisplay'
 import { IconButton } from '../ui/Button'
 import { listarMisNotificaciones, marcarNotificacionComoLeida } from '../../services/notificaciones'
+import { formatFechaHora } from '../../utils/formatDate'
 import type { UsuarioResponse } from '../../types/usuario'
 import type { NotificacionResponse, TipoNotificacion } from '../../types/notificacion'
 
@@ -174,7 +175,7 @@ export function Topbar({ usuario, onLogout, onAbrirMenuMobile }: TopbarProps) {
                       {n.detalle && (
                         <span className="type-caption text-[var(--text-tertiary)] line-clamp-2">{n.detalle}</span>
                       )}
-                      <span className="type-caption text-[var(--text-tertiary)] mt-0.5">{n.fechaCreacion}</span>
+                      <span className="type-caption text-[var(--text-tertiary)] mt-0.5">{formatFechaHora(n.fechaCreacion)}</span>
                     </div>
                     {!n.leida && <span className="size-1.5 rounded-full bg-[var(--primary)] shrink-0 mt-1.5" />}
                   </button>

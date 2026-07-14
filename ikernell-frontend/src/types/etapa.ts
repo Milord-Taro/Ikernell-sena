@@ -24,7 +24,6 @@ export interface EtapaResponse {
 }
 
 export interface EtapaRequest {
-  codigoEtapa: string;
   idProyecto: number;
   nombreEtapa: string;
   descripcion?: string;

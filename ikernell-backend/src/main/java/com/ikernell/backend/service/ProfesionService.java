@@ -29,15 +29,16 @@ public class ProfesionService {
     private final UsuarioRepository usuarioRepository;
     private final ProfesionMapper profesionMapper;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
     public ProfesionResponse crear(ProfesionRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
-        validarCodigoDisponible(request.getCodigoProfesion(), null);
         validarNombreDisponible(request.getNombreProfesion(), null);
 
         Profesion profesion = profesionMapper.toEntity(request);
+        profesion.setCodigoProfesion(codigoGeneradorService.siguienteCodigoProfesion());
         Profesion guardada = profesionRepository.save(profesion);
 
         ProfesionResponse response = profesionMapper.toResponse(guardada);
@@ -71,7 +72,6 @@ public class ProfesionService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Profesion profesion = buscarOFallar(idProfesion);
 
-        validarCodigoDisponible(request.getCodigoProfesion(), idProfesion);
         validarNombreDisponible(request.getNombreProfesion(), idProfesion);
 
         profesionMapper.actualizarEntidadDesdeRequest(request, profesion);
@@ -146,15 +146,6 @@ public class ProfesionService {
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }
-    }
-
-    private void validarCodigoDisponible(String codigoProfesion, Integer idProfesionActual) {
-        profesionRepository.findByCodigoProfesion(codigoProfesion).ifPresent(existente -> {
-            if (idProfesionActual == null || !existente.getIdProfesion().equals(idProfesionActual)) {
-                throw new ConflictException(
-                        "Ya existe una profesión con el código '" + codigoProfesion + "'.");
-            }
-        });
     }
 
     private void validarNombreDisponible(String nombreProfesion, Integer idProfesionActual) {

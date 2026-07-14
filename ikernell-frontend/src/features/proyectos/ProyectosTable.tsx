@@ -6,8 +6,11 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Select } from '../../components/ui/FormControls';
 import { ProyectoFormModal } from './ProyectoFormModal';
+import { MenuDescarga } from './ReportesProyecto';
 import { useAuth } from '../../context/AuthContext';
 import { listarProyectos, crearProyecto } from '../../services/proyectos';
+import { descargarReporteGeneral } from '../../services/reportes';
+import type { FormatoReporte } from '../../services/reportes';
 import { CODIGO_ROL } from '../../types/usuario';
 import { ESTADOS_PROYECTO } from '../../types/proyecto';
 import type { ProyectoResponse, EstadoProyecto } from '../../types/proyecto';
@@ -27,8 +30,8 @@ const variantePorEstado: Record<EstadoProyecto, 'info' | 'success' | 'default' |
 export function ProyectosTable() {
   const navigate = useNavigate();
   const { usuario } = useAuth();
-  const puedeCrear =
-    usuario?.rol.codigoRol === CODIGO_ROL.COORDINADOR || usuario?.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO;
+  const esCoordinador = usuario?.rol.codigoRol === CODIGO_ROL.COORDINADOR;
+  const puedeCrear = esCoordinador || usuario?.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO;
 
   const [proyectos, setProyectos] = useState<ProyectoResponse[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -84,12 +87,20 @@ export function ProyectosTable() {
           </div>
         </div>
 
-        {puedeCrear && (
-          <Button size="md" onClick={() => setModalAbierto(true)}>
-            <Plus size={15} />
-            Nuevo proyecto
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {esCoordinador && (
+            <MenuDescarga
+              titulo="Reporte general"
+              onDescargar={(formato: FormatoReporte) => descargarReporteGeneral(formato)}
+            />
+          )}
+          {puedeCrear && (
+            <Button size="md" onClick={() => setModalAbierto(true)}>
+              <Plus size={15} />
+              Nuevo proyecto
+            </Button>
+          )}
+        </div>
       </div>
 
       <Table<FilaProyecto>

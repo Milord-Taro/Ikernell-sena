@@ -24,4 +24,8 @@ public interface ActividadRepository extends JpaRepository<Actividad, Integer> {
     // Actividad -> Etapa -> Proyecto, ver comentario en la tabla actividad
     // del script SQL). Usado por el reporte de actividades por proyecto.
     List<Actividad> findByEtapa_Proyecto_IdProyecto(Integer idProyecto);
+
+    // Orden explícito por PK: usado por el reporte general (todas las
+    // actividades de la organización, no de un solo proyecto).
+    List<Actividad> findAllByOrderByIdActividadAsc();
 }

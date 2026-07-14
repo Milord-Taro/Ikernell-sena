@@ -33,7 +33,6 @@ export function RegistrarInterrupcionModal({
 }: RegistrarInterrupcionModalProps) {
   const [tiposInterrupcion, setTiposInterrupcion] = useState<TipoInterrupcionResponse[]>([]);
   const [seleccionadas, setSeleccionadas] = useState<Set<number>>(new Set());
-  const [codigoBase, setCodigoBase] = useState('');
   const [idTipoInterrupcion, setIdTipoInterrupcion] = useState('');
   const [motivo, setMotivo] = useState('');
   const [duracionMinutos, setDuracionMinutos] = useState('');
@@ -43,7 +42,6 @@ export function RegistrarInterrupcionModal({
   useEffect(() => {
     if (!open) return;
     setSeleccionadas(new Set());
-    setCodigoBase('');
     setIdTipoInterrupcion('');
     setMotivo('');
     setDuracionMinutos('');
@@ -76,11 +74,8 @@ export function RegistrarInterrupcionModal({
     try {
       const idsSeleccionados = Array.from(seleccionadas);
       await Promise.all(
-        idsSeleccionados.map((idActividad, indice) =>
+        idsSeleccionados.map((idActividad) =>
           crearInterrupcion({
-            // Con más de una actividad seleccionada, cada registro
-            // necesita un código único -- se agrega sufijo -1, -2...
-            codigoInterrupcion: idsSeleccionados.length > 1 ? `${codigoBase}-${indice + 1}` : codigoBase,
             idActividad,
             idTipoInterrupcion: Number(idTipoInterrupcion),
             motivo,
@@ -124,20 +119,6 @@ export function RegistrarInterrupcionModal({
             </div>
           )}
         </div>
-
-        <Input
-          label="Código base"
-          required
-          maxLength={20}
-          value={codigoBase}
-          onChange={(e) => setCodigoBase(e.target.value)}
-          placeholder="INT-001"
-          hint={
-            seleccionadas.size > 1
-              ? 'Se agregará un sufijo -1, -2... por cada actividad seleccionada.'
-              : undefined
-          }
-        />
 
         <Select
           label="Tipo de interrupción"

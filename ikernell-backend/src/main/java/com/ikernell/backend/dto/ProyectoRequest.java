@@ -22,10 +22,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProyectoRequest {
 
-    @NotBlank(message = "El código del proyecto es obligatorio.")
-    @Size(max = 20, message = "El código del proyecto no puede superar los 20 caracteres.")
-    private String codigoProyecto;
-
     @NotBlank(message = "El nombre del proyecto es obligatorio.")
     @Size(min = 3, max = 150, message = "El nombre del proyecto debe tener entre 3 y 150 caracteres.")
     private String nombreProyecto;

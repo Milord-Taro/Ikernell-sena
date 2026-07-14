@@ -25,7 +25,6 @@ export interface CatalogoItem {
 }
 
 export interface ValoresFormularioCatalogo {
-  codigo: string;
   nombre: string;
   descripcion: string;
 }
@@ -50,7 +49,6 @@ export const configRoles: CatalogoConfig<RolResponse, RolRequest> = {
     activo: r.activo,
   }),
   aRequest: (v) => ({
-    codigoRol: v.codigo,
     nombreRol: v.nombre,
     descripcion: v.descripcion || undefined,
   }),
@@ -68,7 +66,6 @@ export const configProfesiones: CatalogoConfig<ProfesionResponse, ProfesionReque
     activo: p.activo,
   }),
   aRequest: (v) => ({
-    codigoProfesion: v.codigo,
     nombreProfesion: v.nombre,
     descripcion: v.descripcion || undefined,
   }),
@@ -86,7 +83,6 @@ export const configEspecialidades: CatalogoConfig<EspecialidadResponse, Especial
     activo: e.activo,
   }),
   aRequest: (v) => ({
-    codigoEspecialidad: v.codigo,
     nombreEspecialidad: v.nombre,
     descripcion: v.descripcion || undefined,
   }),
@@ -104,7 +100,6 @@ export const configTiposError: CatalogoConfig<TipoErrorResponse, TipoErrorReques
     activo: t.activo,
   }),
   aRequest: (v) => ({
-    codigoTipoError: v.codigo,
     nombreTipoError: v.nombre,
     descripcion: v.descripcion || undefined,
   }),
@@ -122,7 +117,6 @@ export const configTiposInterrupcion: CatalogoConfig<TipoInterrupcionResponse, T
     activo: t.activo,
   }),
   aRequest: (v) => ({
-    codigoTipoInterrupcion: v.codigo,
     nombreTipoInterrupcion: v.nombre,
     descripcion: v.descripcion || undefined,
   }),

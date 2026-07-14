@@ -5,6 +5,7 @@ import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Tabs } from '../components/layout/Navigation';
 import { listarMisNotificaciones, marcarNotificacionComoLeida } from '../services/notificaciones';
+import { formatFechaHora } from '../utils/formatDate';
 import type { NotificacionResponse, TipoNotificacion } from '../types/notificacion';
 
 const iconoPorTipo: Record<TipoNotificacion, ReactNode> = {
@@ -101,7 +102,7 @@ export default function NotificacionesPage() {
                   <div className="flex flex-col min-w-0 flex-1">
                     <span className="type-body text-[var(--text-primary)]">{n.titulo}</span>
                     {n.detalle && <span className="type-body-sm text-[var(--text-secondary)]">{n.detalle}</span>}
-                    <span className="type-caption text-[var(--text-tertiary)] mt-1">{n.fechaCreacion}</span>
+                    <span className="type-caption text-[var(--text-tertiary)] mt-1">{formatFechaHora(n.fechaCreacion)}</span>
                   </div>
                   {!n.leida && <span className="size-2 rounded-full bg-[var(--primary)] shrink-0 mt-1.5" />}
                 </CardContent>

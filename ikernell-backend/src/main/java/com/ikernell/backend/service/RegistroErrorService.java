@@ -17,7 +17,6 @@ import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
-import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.RegistroErrorMapper;
@@ -46,6 +45,7 @@ public class RegistroErrorService {
     private final NotificacionService notificacionService;
     private final UsuarioRepository usuarioRepository;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     /**
@@ -69,11 +69,10 @@ public class RegistroErrorService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un tipo de error con id " + request.getIdTipoError() + "."));
 
-        validarCodigoDisponible(request.getCodigoRegistroError());
-
         RegistroError registroError = registroErrorMapper.toEntity(request);
         registroError.setActividad(actividad);
         registroError.setTipoError(tipoError);
+        registroError.setCodigoRegistroError(codigoGeneradorService.siguienteCodigoRegistroError(actividad));
         // NUEVO: quién lo creó -- cualquier miembro vigente del equipo del
         // proyecto (no necesariamente el dueño de la actividad), o el
         // Coordinador.
@@ -236,9 +235,4 @@ public class RegistroErrorService {
                         "No existe un registro de error con id " + idRegistroError + "."));
     }
 
-    private void validarCodigoDisponible(String codigo) {
-        registroErrorRepository.findByCodigoRegistroError(codigo).ifPresent(existente -> {
-            throw new ConflictException("Ya existe un registro de error con el código '" + codigo + "'.");
-        });
-    }
 }

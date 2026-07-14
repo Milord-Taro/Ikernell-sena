@@ -33,7 +33,6 @@ export interface RegistroErrorResponse {
  * siempre nace en "Abierto"; se cambia después vía PATCH /estado.
  */
 export interface RegistroErrorRequest {
-  codigoRegistroError: string;
   idActividad: number;
   idTipoError: number;
   titulo: string;

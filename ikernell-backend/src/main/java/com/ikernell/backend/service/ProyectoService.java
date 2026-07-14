@@ -44,6 +44,7 @@ public class ProyectoService {
     private final AutorizacionProyectoService autorizacionProyectoService;
     private final TrazabilidadService trazabilidadService;
     private final NotificacionService notificacionService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     /**
@@ -63,12 +64,12 @@ public class ProyectoService {
      */
     @Transactional
     public ProyectoResponse crear(ProyectoRequest request, String correoCreador) {
-        validarCodigoDisponible(request.getCodigoProyecto(), null);
         validarFechas(request);
 
         Usuario creador = autorizacionProyectoService.buscarUsuarioOFallar(correoCreador);
 
         Proyecto proyecto = proyectoMapper.toEntity(request);
+        proyecto.setCodigoProyecto(codigoGeneradorService.siguienteCodigoProyecto());
         proyecto.setEstado(EstadoProyecto.PLANEACION);
         Proyecto guardado = proyectoRepository.save(proyecto);
 
@@ -121,7 +122,6 @@ public class ProyectoService {
 
         Proyecto proyecto = buscarOFallar(idProyecto);
 
-        validarCodigoDisponible(request.getCodigoProyecto(), idProyecto);
         validarFechas(request);
 
         proyectoMapper.actualizarEntidadDesdeRequest(request, proyecto);
@@ -271,12 +271,4 @@ public class ProyectoService {
                         "No existe un proyecto con id " + idProyecto + "."));
     }
 
-    private void validarCodigoDisponible(String codigoProyecto, Integer idProyectoActual) {
-        proyectoRepository.findByCodigoProyecto(codigoProyecto).ifPresent(existente -> {
-            if (idProyectoActual == null || !existente.getIdProyecto().equals(idProyectoActual)) {
-                throw new ConflictException(
-                        "Ya existe un proyecto con el código '" + codigoProyecto + "'.");
-            }
-        });
-    }
 }

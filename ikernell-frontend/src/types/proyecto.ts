@@ -24,7 +24,6 @@ export interface ProyectoResponse {
 }
 
 export interface ProyectoRequest {
-  codigoProyecto: string;
   nombreProyecto: string;
   descripcion?: string;
   fechaInicio: string;

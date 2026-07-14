@@ -36,7 +36,7 @@ public class RegistroError {
     @Column(name = "id_registro_error")
     private Integer idRegistroError;
 
-    @Column(name = "codigo_registro_error", nullable = false, length = 20, unique = true)
+    @Column(name = "codigo_registro_error", nullable = false, length = 50, unique = true)
     private String codigoRegistroError;
 
     @ManyToOne(fetch = FetchType.LAZY)

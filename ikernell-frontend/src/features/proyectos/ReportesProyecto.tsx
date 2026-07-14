@@ -14,7 +14,7 @@ interface MenuDescargaProps {
   onDescargar: (formato: FormatoReporte) => Promise<void>;
 }
 
-function MenuDescarga({ titulo, onDescargar }: MenuDescargaProps) {
+export function MenuDescarga({ titulo, onDescargar }: MenuDescargaProps) {
   const [abierto, setAbierto] = useState(false);
   const [descargando, setDescargando] = useState<FormatoReporte | null>(null);
   const ref = useRef<HTMLDivElement>(null);

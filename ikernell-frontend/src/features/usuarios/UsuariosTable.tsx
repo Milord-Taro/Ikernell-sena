@@ -2,7 +2,7 @@
   import { Plus, Search } from 'lucide-react';
   import { Table } from '../../components/ui/Table';
   import { Button } from '../../components/ui/Button';
-  import { Switch } from '../../components/ui/FormControls';
+  import { Switch, Select } from '../../components/ui/FormControls';
   import { Badge } from '../../components/ui/Badge';
   import { Avatar } from '../../components/ui/DataDisplay';
   import { UsuarioFormModal } from './UsuarioFormModal';
@@ -33,6 +33,8 @@
     const [especialidades, setEspecialidades] = useState<EspecialidadResponse[]>([]);
     const [cargando, setCargando] = useState(true);
     const [busqueda, setBusqueda] = useState('');
+    const [filtroRol, setFiltroRol] = useState('');
+    const [filtroEstado, setFiltroEstado] = useState<'activos' | 'inhabilitados' | 'todos'>('activos');
     const [modalAbierto, setModalAbierto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<UsuarioResponse | null>(null);
 
@@ -63,6 +65,11 @@
         const texto = `${u.codigoUsuario} ${u.nombres} ${u.apellidos} ${u.correoElectronico}`.toLowerCase();
         return texto.includes(busqueda.toLowerCase());
       })
+      .filter((u) => !filtroRol || u.rol.codigoRol === filtroRol)
+      .filter((u) => {
+        if (filtroEstado === 'todos') return true;
+        return filtroEstado === 'activos' ? u.activo : !u.activo;
+      })
       .map((usuario) => ({ usuario }));
 
     const alGuardarCreacion: Parameters<typeof UsuarioFormModal>[0]['onCrear'] = async (request) => {
@@ -86,14 +93,33 @@
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
-          <div className="relative w-72">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
-            <input
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Buscar por nombre, código o correo..."
-              className="w-full h-8 pl-8 pr-3 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] type-body-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-            />
+          <div className="flex items-center gap-2">
+            <div className="relative w-72">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
+              <input
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar por nombre, código o correo..."
+                className="w-full h-8 pl-8 pr-3 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] type-body-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+              />
+            </div>
+
+            <Select value={filtroRol} onChange={(e) => setFiltroRol(e.target.value)} className="w-44">
+              <option value="">Todos los roles</option>
+              {roles.map((r) => (
+                <option key={r.idRol} value={r.codigoRol}>{r.nombreRol}</option>
+              ))}
+            </Select>
+
+            <Select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value as 'activos' | 'inhabilitados' | 'todos')}
+              className="w-40"
+            >
+              <option value="activos">Activos</option>
+              <option value="inhabilitados">Inhabilitados</option>
+              <option value="todos">Todos</option>
+            </Select>
           </div>
 
           {/* Crear usuario: solo Coordinador (coincide con el backend) */}

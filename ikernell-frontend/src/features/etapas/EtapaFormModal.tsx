@@ -7,7 +7,6 @@ import { ApiRequestError } from '../../types/api';
 import type { EtapaResponse, EtapaRequest } from '../../types/etapa';
 
 interface ValoresFormulario {
-  codigoEtapa: string;
   nombreEtapa: string;
   descripcion: string;
   fechaInicio: string;
@@ -16,7 +15,6 @@ interface ValoresFormulario {
 }
 
 const valoresVacios: ValoresFormulario = {
-  codigoEtapa: '',
   nombreEtapa: '',
   descripcion: '',
   fechaInicio: '',
@@ -26,7 +24,6 @@ const valoresVacios: ValoresFormulario = {
 
 function etapaAValores(etapa: EtapaResponse): ValoresFormulario {
   return {
-    codigoEtapa: etapa.codigoEtapa,
     nombreEtapa: etapa.nombreEtapa,
     descripcion: etapa.descripcion ?? '',
     fechaInicio: etapa.fechaInicio,
@@ -35,7 +32,7 @@ function etapaAValores(etapa: EtapaResponse): ValoresFormulario {
   };
 }
 
-const LIMITES = { codigo: 20, nombre: 150 } as const;
+const LIMITES = { nombre: 150 } as const;
 
 interface EtapaFormModalProps {
   open: boolean;
@@ -93,7 +90,6 @@ export function EtapaFormModal({
 
     try {
       await onGuardar({
-        codigoEtapa: valores.codigoEtapa,
         nombreEtapa: valores.nombreEtapa,
         descripcion: valores.descripcion || undefined,
         fechaInicio: valores.fechaInicio,
@@ -125,26 +121,15 @@ export function EtapaFormModal({
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo guardar">{error}</Alert>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_100px] gap-3">
-          <Input
-            label="Código de la etapa"
-            required
-            maxLength={LIMITES.codigo}
-            value={valores.codigoEtapa}
-            onChange={(e) => actualizarCampo('codigoEtapa', e.target.value)}
-            error={erroresCampo.codigoEtapa}
-            placeholder="ETP-001"
-          />
-          <Input
-            label="Orden"
-            type="number"
-            min={1}
-            required
-            value={valores.orden}
-            onChange={(e) => actualizarCampo('orden', e.target.value)}
-            error={erroresCampo.orden}
-          />
-        </div>
+        <Input
+          label="Orden"
+          type="number"
+          min={1}
+          required
+          value={valores.orden}
+          onChange={(e) => actualizarCampo('orden', e.target.value)}
+          error={erroresCampo.orden}
+        />
 
         <Input
           label="Nombre de la etapa"

@@ -16,7 +16,6 @@ import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
-import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.InterrupcionMapper;
@@ -45,6 +44,7 @@ public class InterrupcionService {
     private final AutorizacionProyectoService autorizacionProyectoService;
     private final NotificacionService notificacionService;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     /**
@@ -78,12 +78,11 @@ public class InterrupcionService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un tipo de interrupción con id " + request.getIdTipoInterrupcion() + "."));
 
-        validarCodigoDisponible(request.getCodigoInterrupcion());
-
         Interrupcion interrupcion = interrupcionMapper.toEntity(request);
         interrupcion.setActividad(actividad);
         interrupcion.setTipoInterrupcion(tipoInterrupcion);
         interrupcion.setUsuarioCreador(solicitante);
+        interrupcion.setCodigoInterrupcion(codigoGeneradorService.siguienteCodigoInterrupcion(actividad));
 
         Interrupcion guardada = interrupcionRepository.save(interrupcion);
         notificarLider(guardada, solicitante);
@@ -179,9 +178,4 @@ public class InterrupcionService {
         return interrupcionMapper.toResponse(interrupcion);
     }
 
-    private void validarCodigoDisponible(String codigo) {
-        interrupcionRepository.findByCodigoInterrupcion(codigo).ifPresent(existente -> {
-            throw new ConflictException("Ya existe una interrupción con el código '" + codigo + "'.");
-        });
-    }
 }

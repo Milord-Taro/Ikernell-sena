@@ -35,7 +35,7 @@ public class Etapa {
     @Column(name = "id_etapa")
     private Integer idEtapa;
 
-    @Column(name = "codigo_etapa", nullable = false, length = 20, unique = true)
+    @Column(name = "codigo_etapa", nullable = false, length = 30, unique = true)
     private String codigoEtapa;
 
     @ManyToOne(fetch = FetchType.LAZY)

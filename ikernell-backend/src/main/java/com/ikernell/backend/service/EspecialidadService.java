@@ -29,15 +29,16 @@ public class EspecialidadService {
     private final UsuarioRepository usuarioRepository;
     private final EspecialidadMapper especialidadMapper;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
     public EspecialidadResponse crear(EspecialidadRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
-        validarCodigoDisponible(request.getCodigoEspecialidad(), null);
         validarNombreDisponible(request.getNombreEspecialidad(), null);
 
         Especialidad especialidad = especialidadMapper.toEntity(request);
+        especialidad.setCodigoEspecialidad(codigoGeneradorService.siguienteCodigoEspecialidad());
         Especialidad guardada = especialidadRepository.save(especialidad);
 
         EspecialidadResponse response = especialidadMapper.toResponse(guardada);
@@ -71,7 +72,6 @@ public class EspecialidadService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Especialidad especialidad = buscarOFallar(idEspecialidad);
 
-        validarCodigoDisponible(request.getCodigoEspecialidad(), idEspecialidad);
         validarNombreDisponible(request.getNombreEspecialidad(), idEspecialidad);
 
         especialidadMapper.actualizarEntidadDesdeRequest(request, especialidad);
@@ -146,15 +146,6 @@ public class EspecialidadService {
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }
-    }
-
-    private void validarCodigoDisponible(String codigoEspecialidad, Integer idEspecialidadActual) {
-        especialidadRepository.findByCodigoEspecialidad(codigoEspecialidad).ifPresent(existente -> {
-            if (idEspecialidadActual == null || !existente.getIdEspecialidad().equals(idEspecialidadActual)) {
-                throw new ConflictException(
-                        "Ya existe una especialidad con el código '" + codigoEspecialidad + "'.");
-            }
-        });
     }
 
     private void validarNombreDisponible(String nombreEspecialidad, Integer idEspecialidadActual) {

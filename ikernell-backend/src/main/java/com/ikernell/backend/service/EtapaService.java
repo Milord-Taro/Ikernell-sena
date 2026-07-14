@@ -39,6 +39,7 @@ public class EtapaService {
     private final AutorizacionProyectoService autorizacionProyectoService;
     private final TrazabilidadService trazabilidadService;
     private final NotificacionService notificacionService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
@@ -48,12 +49,12 @@ public class EtapaService {
 
         Proyecto proyecto = buscarProyectoOFallar(request.getIdProyecto());
 
-        validarCodigoDisponible(request.getCodigoEtapa(), null);
         validarOrdenDisponible(request.getIdProyecto(), request.getOrden(), null);
         validarFechas(request);
 
         Etapa etapa = etapaMapper.toEntity(request);
         etapa.setProyecto(proyecto);
+        etapa.setCodigoEtapa(codigoGeneradorService.siguienteCodigoEtapa(proyecto));
         etapa.setEstado(EstadoEtapa.PENDIENTE);
 
         Etapa guardada = etapaRepository.save(etapa);
@@ -94,7 +95,6 @@ public class EtapaService {
 
         Proyecto proyecto = buscarProyectoOFallar(request.getIdProyecto());
 
-        validarCodigoDisponible(request.getCodigoEtapa(), idEtapa);
         validarOrdenDisponible(request.getIdProyecto(), request.getOrden(), idEtapa);
         validarFechas(request);
 
@@ -218,15 +218,6 @@ public class EtapaService {
         return proyectoRepository.findById(idProyecto)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un proyecto con id " + idProyecto + "."));
-    }
-
-    private void validarCodigoDisponible(String codigoEtapa, Integer idEtapaActual) {
-        etapaRepository.findByCodigoEtapa(codigoEtapa).ifPresent(existente -> {
-            if (idEtapaActual == null || !existente.getIdEtapa().equals(idEtapaActual)) {
-                throw new ConflictException(
-                        "Ya existe una etapa con el código '" + codigoEtapa + "'.");
-            }
-        });
     }
 
     private void validarOrdenDisponible(Integer idProyecto, Integer orden, Integer idEtapaActual) {

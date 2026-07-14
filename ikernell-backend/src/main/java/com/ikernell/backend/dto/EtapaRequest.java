@@ -21,10 +21,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EtapaRequest {
 
-    @NotBlank(message = "El código de la etapa es obligatorio.")
-    @Size(max = 20, message = "El código de la etapa no puede superar los 20 caracteres.")
-    private String codigoEtapa;
-
     @NotNull(message = "El proyecto es obligatorio.")
     private Integer idProyecto;
 

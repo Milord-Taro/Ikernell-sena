@@ -4,6 +4,7 @@ import { Badge } from '../components/ui/Badge';
 import { Tabs } from '../components/layout/Navigation';
 import { MensajeDetalleModal } from '../features/mensajes/MensajeDetalleModal';
 import { listarMensajes } from '../services/mensajes';
+import { formatFechaHora } from '../utils/formatDate';
 import type { MensajeContactoResponse, EstadoMensaje } from '../types/mensaje';
 
 const variantePorEstado: Record<EstadoMensaje, 'default' | 'success' | 'info'> = {
@@ -12,9 +13,15 @@ const variantePorEstado: Record<EstadoMensaje, 'default' | 'success' | 'info'> =
   'Atendido': 'success',
 };
 
+const labelPorEstado: Record<EstadoMensaje, string> = {
+  'Pendiente': 'No leído',
+  'Leído': 'Leído',
+  'Atendido': 'Atendido',
+};
+
 const tabs = [
   { id: 'todos', label: 'Todos' },
-  { id: 'Pendiente', label: 'Pendientes' },
+  { id: 'Pendiente', label: 'No leídos' },
   { id: 'Leído', label: 'Leídos' },
   { id: 'Atendido', label: 'Atendidos' },
 ];
@@ -75,9 +82,9 @@ export default function MensajesPage() {
                   <div className="flex items-center gap-3 shrink-0">
                     <div className="flex flex-col items-end">
                       <span className="type-caption text-[var(--text-tertiary)]">Enviado</span>
-                      <span className="type-body-sm text-[var(--text-secondary)]">{m.fechaEnvio}</span>
+                      <span className="type-body-sm text-[var(--text-secondary)]">{formatFechaHora(m.fechaEnvio)}</span>
                     </div>
-                    <Badge variant={variantePorEstado[m.estado]} size="sm">{m.estado}</Badge>
+                    <Badge variant={variantePorEstado[m.estado]} size="sm">{labelPorEstado[m.estado]}</Badge>
                   </div>
                 </CardContent>
               </Card>

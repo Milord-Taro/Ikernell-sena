@@ -158,7 +158,7 @@ async function metricasCoordinador(): Promise<DatosMetricas> {
     { label: 'Actividades pendientes', value: actividades.filter((a) => PENDIENTES.includes(a.estado)).length, icon: <Activity size={15} /> },
     { label: 'Errores abiertos', value: errores.filter((e) => ABIERTOS.includes(e.estado)).length, icon: <Bug size={15} /> },
     { label: 'Equipo (usuarios activos)', value: usuarios.filter((u) => u.activo).length, icon: <Users size={15} /> },
-    { label: 'Mensajes pendientes', value: mensajesPendientes.length, icon: <MessageSquare size={15} /> },
+    { label: 'Mensajes no leídos', value: mensajesPendientes.length, icon: <MessageSquare size={15} /> },
     { label: 'Minutos perdidos (interrupciones)', value: minutosInterrupcionDe(interrupciones), icon: <Zap size={15} /> },
   ];
 

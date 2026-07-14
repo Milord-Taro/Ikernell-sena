@@ -12,12 +12,11 @@ interface CatalogoFormModalProps {
   onGuardar: (valores: ValoresFormularioCatalogo) => Promise<void>;
 }
 
-const valoresVacios: ValoresFormularioCatalogo = { codigo: '', nombre: '', descripcion: '' };
+const valoresVacios: ValoresFormularioCatalogo = { nombre: '', descripcion: '' };
 
 // Espejo de los límites reales en RolRequest/ProfesionRequest/
 // EspecialidadRequest.java -- los 3 comparten exactamente el mismo molde.
 const LIMITES = {
-  codigo: 20,
   nombre: 100,
   descripcion: 255,
 } as const;
@@ -56,16 +55,6 @@ export function CatalogoFormModal({
       size="sm"
     >
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
-        <Input
-          label="Código"
-          required
-          minLength={3}
-          maxLength={LIMITES.codigo}
-          value={valores.codigo}
-          onChange={(e) => setValores((v) => ({ ...v, codigo: e.target.value }))}
-          placeholder={`Ej: ${titulo.slice(0, 3).toUpperCase()}-001`}
-          hint="Entre 3 y 20 caracteres"
-        />
         <Input
           label="Nombre"
           required

@@ -123,7 +123,6 @@ interface SeccionErroresProps {
 }
 
 function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistrado }: SeccionErroresProps) {
-  const [codigo, setCodigo] = useState('');
   const [idTipoError, setIdTipoError] = useState('');
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -131,7 +130,6 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
   const [guardando, setGuardando] = useState(false);
 
   const limpiar = () => {
-    setCodigo('');
     setIdTipoError('');
     setTitulo('');
     setDescripcion('');
@@ -144,7 +142,6 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
     setGuardando(true);
     try {
       const request: RegistroErrorRequest = {
-        codigoRegistroError: codigo,
         idActividad,
         idTipoError: Number(idTipoError),
         titulo,
@@ -164,27 +161,17 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
   return (
     <div className="flex flex-col gap-4">
       <form onSubmit={alEnviar} className="flex flex-col gap-3">
-        <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr] gap-3">
-          <Input
-            label="Código del registro"
-            required
-            maxLength={20}
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            placeholder="ERR-001"
-          />
-          <Select
-            label="Tipo de error"
-            required
-            value={idTipoError}
-            onChange={(e) => setIdTipoError(e.target.value)}
-          >
-            <option value="">Seleccionar...</option>
-            {tiposError.map((t) => (
-              <option key={t.idTipoError} value={t.idTipoError}>{t.nombreTipoError}</option>
-            ))}
-          </Select>
-        </div>
+        <Select
+          label="Tipo de error"
+          required
+          value={idTipoError}
+          onChange={(e) => setIdTipoError(e.target.value)}
+        >
+          <option value="">Seleccionar...</option>
+          {tiposError.map((t) => (
+            <option key={t.idTipoError} value={t.idTipoError}>{t.nombreTipoError}</option>
+          ))}
+        </Select>
 
         <Input
           label="Título"
