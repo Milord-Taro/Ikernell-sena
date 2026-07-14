@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatFecha } from '../../utils/formatDate';
 import { Badge } from '../../components/ui/Badge';
 import { listarEtapasPorProyecto } from '../../services/etapas';
 import type { EtapaResponse, EstadoEtapa } from '../../types/etapa';
@@ -69,7 +70,7 @@ export function TimelineProyecto({ idProyecto }: TimelineProyectoProps) {
               {etapa.codigoEtapa} · Orden {etapa.orden}
             </span>
             <span className="type-body-sm text-[var(--text-secondary)]">
-              {etapa.fechaInicio} → {etapa.fechaFin}
+              {formatFecha(etapa.fechaInicio)} → {formatFecha(etapa.fechaFin)}
             </span>
             {etapa.descripcion && (
               <p className="type-body-sm text-[var(--text-tertiary)]">{etapa.descripcion}</p>

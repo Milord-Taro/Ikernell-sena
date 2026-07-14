@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatFecha } from '../../utils/formatDate';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search } from 'lucide-react';
 import { Table } from '../../components/ui/Table';
@@ -132,8 +133,8 @@ export function ProyectosTable() {
             width: '150px',
             render: (f) => <Badge variant={variantePorEstado[f.proyecto.estado]}>{f.proyecto.estado}</Badge>,
           },
-          { key: 'fechaInicio', header: 'Inicio', width: '120px', mono: true, render: (f) => f.proyecto.fechaInicio },
-          { key: 'fechaFin', header: 'Fin', width: '120px', mono: true, render: (f) => f.proyecto.fechaFin },
+          { key: 'fechaInicio', header: 'Inicio', width: '120px', render: (f) => formatFecha(f.proyecto.fechaInicio) },
+          { key: 'fechaFin', header: 'Fin', width: '120px', render: (f) => formatFecha(f.proyecto.fechaFin) },
         ]}
       />
 

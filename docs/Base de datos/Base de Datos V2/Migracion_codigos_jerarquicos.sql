@@ -18,8 +18,8 @@
 -- sigue siendo único en toda la base sin necesitar un chequeo aparte.
 --
 -- Los catálogos (Rol, Profesión, Especialidad, TipoError,
--- TipoInterrupcion) pasan a un autoincremento simple con prefijo fijo
--- (ROL-001, PRF-001, ESP-001, TER-001, TIN-001).
+-- TipoInterrupcion) y Usuario pasan a un autoincremento simple con
+-- prefijo fijo (ROL-001, PRF-001, ESP-001, TER-001, TIN-001, USR-001).
 --
 -- Este script solo transforma los datos ya existentes al nuevo formato;
 -- no depende de conocer los valores actuales (recalcula todo por orden
@@ -34,6 +34,10 @@ ALTER TABLE etapa ALTER COLUMN codigo_etapa TYPE character varying(30);
 ALTER TABLE actividad ALTER COLUMN codigo_actividad TYPE character varying(40);
 ALTER TABLE registro_error ALTER COLUMN codigo_registro_error TYPE character varying(50);
 ALTER TABLE interrupcion ALTER COLUMN codigo_interrupcion TYPE character varying(50);
+-- trazabilidad.codigo_registro guarda una COPIA en texto del código del
+-- recurso auditado (sin FK) -- también se queda corta con los códigos
+-- jerárquicos largos (ej. un RegistroError puede llegar a 28+ caracteres).
+ALTER TABLE trazabilidad ALTER COLUMN codigo_registro TYPE character varying(60);
 
 -- 2. Proyecto: PRY-001, PRY-002... por orden de creación (id_proyecto).
 WITH nuevos AS (
@@ -135,5 +139,11 @@ UPDATE tipo_interrupcion t
 SET codigo_tipo_interrupcion = n.codigo_nuevo
 FROM nuevos n
 WHERE t.id_tipo_interrupcion = n.id_tipo_interrupcion;
+
+WITH nuevos AS (
+    SELECT id_usuario, 'USR-' || LPAD(ROW_NUMBER() OVER (ORDER BY id_usuario)::text, 3, '0') AS codigo_nuevo
+    FROM usuario
+)
+UPDATE usuario u SET codigo_usuario = n.codigo_nuevo FROM nuevos n WHERE u.id_usuario = n.id_usuario;
 
 COMMIT;

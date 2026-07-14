@@ -13,6 +13,7 @@ import com.ikernell.backend.repository.RegistroErrorRepository;
 import com.ikernell.backend.repository.RolRepository;
 import com.ikernell.backend.repository.TipoErrorRepository;
 import com.ikernell.backend.repository.TipoInterrupcionRepository;
+import com.ikernell.backend.repository.UsuarioRepository;
 import com.ikernell.backend.util.SecuenciaCodigoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,13 @@ public class CodigoGeneradorService {
     private final EspecialidadRepository especialidadRepository;
     private final TipoErrorRepository tipoErrorRepository;
     private final TipoInterrupcionRepository tipoInterrupcionRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public String siguienteCodigoUsuario() {
+        var codigos = usuarioRepository.findAllByOrderByIdUsuarioAsc().stream()
+                .map(u -> u.getCodigoUsuario()).toList();
+        return "USR-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+    }
 
     public String siguienteCodigoProyecto() {
         var codigos = proyectoRepository.findAllByOrderByIdProyectoAsc().stream()

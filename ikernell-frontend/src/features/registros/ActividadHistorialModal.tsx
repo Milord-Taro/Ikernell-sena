@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { formatFechaHora } from '../../utils/formatDate';
 import { Modal } from '../../components/ui/Modal';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -245,7 +246,7 @@ function SeccionErrores({ idActividad, tiposError, registros, onError, onRegistr
                     Creado por: {r.usuarioCreador ? `${r.usuarioCreador.nombres} ${r.usuarioCreador.apellidos}` : '—'}
                   </span>
                   <span className="type-caption text-[var(--text-tertiary)]">
-                    Registrado: {r.fechaRegistro}
+                    Registrado: {formatFechaHora(r.fechaRegistro)}
                   </span>
                 </div>
               </CardContent>

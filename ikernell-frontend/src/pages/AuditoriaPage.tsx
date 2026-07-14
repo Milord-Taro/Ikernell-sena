@@ -3,7 +3,9 @@ import { Table } from '../components/ui/Table';
 import { Badge } from '../components/ui/Badge';
 import { Select } from '../components/ui/FormControls';
 import { Modal } from '../components/ui/Modal';
-import { JsonTree, type JsonValue } from '../components/ui/JsonTree';
+import type { JsonValue } from '../components/ui/JsonTree';
+import { JsonDiffTree } from '../components/ui/JsonDiffTree';
+import { formatFechaHora } from '../utils/formatDate';
 import { listarTrazabilidad } from '../services/trazabilidad';
 import { ENTIDADES_TRAZABILIDAD } from '../types/trazabilidad';
 import type { TrazabilidadResponse, OperacionTrazabilidad } from '../types/trazabilidad';
@@ -102,7 +104,7 @@ export default function AuditoriaPage() {
         emptyDescription="No hay eventos de auditoría para este filtro."
         onRowClick={(fila) => setEventoAbierto(fila.original)}
         columns={[
-          { key: 'fecha', header: 'Fecha', mono: true, width: '170px' },
+          { key: 'fecha', header: 'Fecha', width: '170px', render: (row) => formatFechaHora(row.fecha) },
           { key: 'usuario', header: 'Usuario' },
           {
             key: 'operacion',
@@ -149,7 +151,7 @@ export default function AuditoriaPage() {
               </div>
               <div className="flex flex-col">
                 <span className="type-caption text-[var(--text-tertiary)]">Fecha</span>
-                <span className="type-code text-[var(--text-secondary)]">{eventoAbierto.fechaEvento}</span>
+                <span className="type-code text-[var(--text-secondary)]">{formatFechaHora(eventoAbierto.fechaEvento)}</span>
               </div>
               <div className="flex flex-col">
                 <span className="type-caption text-[var(--text-tertiary)]">Dirección IP</span>
@@ -172,7 +174,8 @@ export default function AuditoriaPage() {
                       </pre>
                     );
                   }
-                  return <JsonTree value={detalle} />;
+                  const detalleAnterior = parsearDetalle(eventoAbierto.detalleAnterior);
+                  return <JsonDiffTree antes={detalleAnterior} despues={detalle} />;
                 })()}
               </div>
             </div>

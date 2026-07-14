@@ -5,8 +5,10 @@
   import { Switch, Select } from '../../components/ui/FormControls';
   import { Badge } from '../../components/ui/Badge';
   import { Avatar } from '../../components/ui/DataDisplay';
+  import { Alert } from '../../components/ui/Feedback';
   import { UsuarioFormModal } from './UsuarioFormModal';
   import { useAuth } from '../../context/AuthContext';
+  import { ApiRequestError } from '../../types/api';
   import {
     listarUsuarios,
     crearUsuario,
@@ -37,6 +39,7 @@
     const [filtroEstado, setFiltroEstado] = useState<'activos' | 'inhabilitados' | 'todos'>('activos');
     const [modalAbierto, setModalAbierto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<UsuarioResponse | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const cargarTodo = async () => {
       setCargando(true);
@@ -86,12 +89,26 @@
     };
 
     const alCambiarEstado = async (usuario: UsuarioResponse, activo: boolean) => {
-      await cambiarEstadoUsuario(usuario.idUsuario, activo);
-      await cargarTodo();
+      setError(null);
+      try {
+        await cambiarEstadoUsuario(usuario.idUsuario, activo);
+        await cargarTodo();
+      } catch (err) {
+        setError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado del usuario.');
+      }
     };
+
+    // Un Coordinador no puede cambiar su propio estado, ni inhabilitar a
+    // otro Coordinador -- coincide con la regla del backend
+    // (UsuarioService.cambiarEstado), esto solo evita el intento en la UI.
+    const noPuedeCambiarEstado = (usuario: UsuarioResponse) =>
+      usuario.idUsuario === usuarioActual?.idUsuario ||
+      (usuario.activo && usuario.rol.codigoRol === CODIGO_ROL.COORDINADOR);
 
     return (
       <div className="flex flex-col gap-4">
+        {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
+
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <div className="relative w-72">
@@ -173,7 +190,7 @@
               render: (fila) => (
                 <Switch
                   checked={fila.usuario.activo}
-                  disabled={!esCoordinador}
+                  disabled={!esCoordinador || noPuedeCambiarEstado(fila.usuario)}
                   onChange={(checked) => alCambiarEstado(fila.usuario, checked)}
                 />
               ),

@@ -41,7 +41,11 @@ public class Trazabilidad {
     @Column(name = "entidad", nullable = false, length = 100)
     private String entidad;
 
-    @Column(name = "codigo_registro", nullable = false, length = 20)
+    // Copia textual del código funcional del recurso auditado -- desde que
+    // Etapa/Actividad/RegistroError/Interrupcion generan códigos
+    // jerárquicos (heredan el prefijo del padre), pueden superar los 20
+    // caracteres originales (ej. "PRY-001-ETP-01-ACT-01-ERR-01" = 28).
+    @Column(name = "codigo_registro", nullable = false, length = 60)
     private String codigoRegistro;
 
     @Convert(converter = OperacionTrazabilidadConverter.class)

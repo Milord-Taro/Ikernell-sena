@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { formatFecha, formatFechaHora } from '../utils/formatDate';
 import { Bug, History, Zap } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
@@ -210,7 +211,7 @@ export default function MisActividadesPage() {
                   <div className="flex flex-col min-w-0">
                     <span className="type-caption text-[var(--text-tertiary)]">Plazo</span>
                     <span className="type-body-sm text-[var(--text-secondary)] truncate">
-                      {actividad.fechaInicio} → {actividad.fechaFin}
+                      {formatFecha(actividad.fechaInicio)} → {formatFecha(actividad.fechaFin)}
                     </span>
                   </div>
                   <div className="flex flex-col min-w-0">
@@ -232,7 +233,7 @@ export default function MisActividadesPage() {
                     <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
                     {actividad.fechaFinalizacion && (
                       <span className="type-caption text-[var(--text-tertiary)] mt-0.5">
-                        Finalizada: {actividad.fechaFinalizacion}
+                        Finalizada: {formatFechaHora(actividad.fechaFinalizacion)}
                       </span>
                     )}
                   </div>

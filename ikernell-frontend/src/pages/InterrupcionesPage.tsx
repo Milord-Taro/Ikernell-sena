@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { formatFechaHora } from '../utils/formatDate';
 import { Trash2 } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -150,7 +151,7 @@ export default function InterrupcionesPage() {
                 </div>
 
                 <div className="flex items-center justify-between gap-4 pt-1 border-t border-[var(--border)]">
-                  <span className="type-caption text-[var(--text-tertiary)]">Registrado: {r.fechaRegistro}</span>
+                  <span className="type-caption text-[var(--text-tertiary)]">Registrado: {formatFechaHora(r.fechaRegistro)}</span>
                   {puedeEliminar(r) && (
                     <Button variant="ghost" size="sm" onClick={() => setRegistroAEliminar(r)}>
                       <Trash2 size={14} />
