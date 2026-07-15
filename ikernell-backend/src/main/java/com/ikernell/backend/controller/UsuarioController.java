@@ -58,7 +58,16 @@ public class UsuarioController {
         return ResponseEntity.ok(ApiResponse.of(usuarioService.obtenerMiPerfil(authentication.getName())));
     }
 
+    /**
+     * CORREGIDO: no tenía @PreAuthorize -- cualquier autenticado (incluido
+     * un Desarrollador) podía consultar la ficha completa de cualquier
+     * usuario, incluyendo PII (identificación, fecha de nacimiento, correo).
+     * Mismo criterio que listar(): Coordinador o Líder de Proyecto.
+     */
     @GetMapping("/{idUsuario}")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<UsuarioResponse>> obtenerPorId(@PathVariable Integer idUsuario) {
         return ResponseEntity.ok(ApiResponse.of(usuarioService.obtenerPorId(idUsuario)));
     }

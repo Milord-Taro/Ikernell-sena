@@ -41,19 +41,29 @@
     const [usuarioEditando, setUsuarioEditando] = useState<UsuarioResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    // CORREGIDO: profesiones/especialidades son catálogos exclusivos de
+    // Coordinador (UsuarioFormModal, que tampoco se muestra para otros
+    // roles) -- pedirlos aquí para un Líder provoca un 403 que, al estar
+    // en el mismo Promise.all, tumbaba TODA la carga (incluida la lista
+    // de usuarios, que el Líder sí puede ver) y dejaba la tabla vacía.
     const cargarTodo = async () => {
       setCargando(true);
       try {
-        const [usuariosResp, rolesResp, profesionesResp, especialidadesResp] = await Promise.all([
+        const [usuariosResp, rolesResp] = await Promise.all([
           listarUsuarios(),
           rolesService.listar(),
-          profesionesService.listar(),
-          especialidadesService.listar(),
         ]);
         setUsuarios(usuariosResp);
         setRoles(rolesResp.filter((r) => r.activo));
-        setProfesiones(profesionesResp.filter((p) => p.activo));
-        setEspecialidades(especialidadesResp.filter((e) => e.activo));
+
+        if (esCoordinador) {
+          const [profesionesResp, especialidadesResp] = await Promise.all([
+            profesionesService.listar(),
+            especialidadesService.listar(),
+          ]);
+          setProfesiones(profesionesResp.filter((p) => p.activo));
+          setEspecialidades(especialidadesResp.filter((e) => e.activo));
+        }
       } finally {
         setCargando(false);
       }

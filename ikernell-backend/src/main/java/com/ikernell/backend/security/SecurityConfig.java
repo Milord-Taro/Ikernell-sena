@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,8 +28,14 @@ import java.util.List;
  *   mensaje sin autenticación). El resto de ese controller SÍ requiere
  *   autenticación (gestionado con @PreAuthorize a nivel de método).
  * - Todo lo demás requiere un JWT válido.
+ * - @EnableMethodSecurity habilita @PreAuthorize a nivel de método/clase en
+ *   los controllers -- sin esta anotación, Spring Security NUNCA evalúa esas
+ *   anotaciones (quedan ahí escritas pero no se ejecutan) y lo único que
+ *   protege la API es el anyRequest().authenticated() de abajo, sin
+ *   distinguir por rol.
  */
 @Configuration
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 

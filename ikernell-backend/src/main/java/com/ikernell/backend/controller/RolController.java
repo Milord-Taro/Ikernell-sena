@@ -15,15 +15,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * CORREGIDO: antes el @PreAuthorize de clase dejaba TODO (incluido leer)
+ * exclusivo de Coordinador. El Líder de Proyecto necesita GET /api/roles
+ * para el filtro "Todos los roles" de la lista de usuarios (ve usuarios,
+ * pero no gestiona el catálogo de roles) -- por eso el gate ahora está a
+ * nivel de método: lectura para Coordinador o Líder, escritura solo
+ * Coordinador.
+ */
 @RestController
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
 public class RolController {
 
     private final RolService rolService;
 
     @PostMapping
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<RolResponse>> crear(
             @Valid @RequestBody RolRequest request, Authentication authentication) {
         RolResponse creado = rolService.crear(request, authentication.getName());
@@ -32,6 +40,9 @@ public class RolController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<List<RolResponse>>> listar(
             @RequestParam(name = "soloActivos", defaultValue = "false") boolean soloActivos) {
         List<RolResponse> roles = soloActivos ? rolService.listarActivos() : rolService.listarTodos();
@@ -39,11 +50,15 @@ public class RolController {
     }
 
     @GetMapping("/{idRol}")
+    @PreAuthorize("hasAnyRole("
+            + "T(com.ikernell.backend.constants.RolConstantes).COORDINADOR, "
+            + "T(com.ikernell.backend.constants.RolConstantes).LIDER_PROYECTO)")
     public ResponseEntity<ApiResponse<RolResponse>> obtenerPorId(@PathVariable Integer idRol) {
         return ResponseEntity.ok(ApiResponse.of(rolService.obtenerPorId(idRol)));
     }
 
     @PutMapping("/{idRol}")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<RolResponse>> actualizar(
             @PathVariable Integer idRol, @Valid @RequestBody RolRequest request, Authentication authentication) {
         RolResponse actualizado = rolService.actualizar(idRol, request, authentication.getName());
@@ -51,6 +66,7 @@ public class RolController {
     }
 
     @PatchMapping("/{idRol}/estado")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<RolResponse>> cambiarEstado(
             @PathVariable Integer idRol, @RequestParam boolean activo, Authentication authentication) {
         RolResponse actualizado = rolService.cambiarEstado(idRol, activo, authentication.getName());
@@ -59,6 +75,7 @@ public class RolController {
     }
 
     @DeleteMapping("/{idRol}")
+    @PreAuthorize("hasRole(T(com.ikernell.backend.constants.RolConstantes).COORDINADOR)")
     public ResponseEntity<ApiResponse<Void>> eliminar(
             @PathVariable Integer idRol, Authentication authentication) {
         rolService.eliminar(idRol, authentication.getName());

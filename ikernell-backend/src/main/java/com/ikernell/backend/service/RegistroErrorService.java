@@ -148,19 +148,21 @@ public class RegistroErrorService {
     }
 
     /**
-     * NUEVO: sin restricción de rol, igual que ActividadService.cambiarEstado()
-     * -- el propio Desarrollador que detectó el error lo puede marcar
-     * En progreso/Resuelto, y Coordinador/Líder también pueden hacerlo
-     * desde la vista de supervisión (Errores).
+     * CORREGIDO: antes no exigía ninguna relación con el proyecto -- cualquier
+     * autenticado podía cambiar el estado de un error ajeno. Igual que en
+     * crear(), se exige pertenecer al equipo vigente del proyecto dueño de
+     * la actividad (o ser Coordinador): no hay un único "responsable" del
+     * error como sí lo hay en Actividad (usuarioCreador es quien lo
+     * reportó, no necesariamente quien lo resuelve), así que el límite
+     * natural es el mismo que para reportarlo.
      */
     @Transactional
     public RegistroErrorResponse cambiarEstado(
             Integer idRegistroError, String estadoTexto, String notaResolucion, String correoSolicitante) {
-        Usuario solicitante = usuarioRepository.findByCorreoElectronico(correoSolicitante)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "No existe un usuario con el correo '" + correoSolicitante + "'."));
-
         RegistroError registroError = buscarOFallar(idRegistroError);
+        Usuario solicitante = autorizacionProyectoService.verificarPerteneceAlEquipo(
+                correoSolicitante, registroError.getActividad().getEtapa().getProyecto().getIdProyecto());
+
         EstadoRegistroError nuevoEstado = parsearEstado(estadoTexto);
 
         registroError.setEstado(nuevoEstado);
