@@ -29,15 +29,16 @@ public class TipoInterrupcionService {
     private final UsuarioRepository usuarioRepository;
     private final TipoInterrupcionMapper tipoInterrupcionMapper;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
     public TipoInterrupcionResponse crear(TipoInterrupcionRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
-        validarCodigoDisponible(request.getCodigoTipoInterrupcion(), null);
         validarNombreDisponible(request.getNombreTipoInterrupcion(), null);
 
         TipoInterrupcion tipo = tipoInterrupcionMapper.toEntity(request);
+        tipo.setCodigoTipoInterrupcion(codigoGeneradorService.siguienteCodigoTipoInterrupcion());
         TipoInterrupcion guardado = tipoInterrupcionRepository.save(tipo);
 
         TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(guardado);
@@ -65,7 +66,6 @@ public class TipoInterrupcionService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         TipoInterrupcion tipo = buscarOFallar(idTipoInterrupcion);
 
-        validarCodigoDisponible(request.getCodigoTipoInterrupcion(), idTipoInterrupcion);
         validarNombreDisponible(request.getNombreTipoInterrupcion(), idTipoInterrupcion);
 
         tipoInterrupcionMapper.actualizarEntidadDesdeRequest(request, tipo);
@@ -140,14 +140,6 @@ public class TipoInterrupcionService {
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }
-    }
-
-    private void validarCodigoDisponible(String codigo, Integer idActual) {
-        tipoInterrupcionRepository.findByCodigoTipoInterrupcion(codigo).ifPresent(existente -> {
-            if (idActual == null || !existente.getIdTipoInterrupcion().equals(idActual)) {
-                throw new ConflictException("Ya existe un tipo de interrupción con el código '" + codigo + "'.");
-            }
-        });
     }
 
     private void validarNombreDisponible(String nombre, Integer idActual) {

@@ -34,6 +34,8 @@ export interface TrazabilidadResponse {
   codigoRegistro: string;
   operacion: OperacionTrazabilidad;
   detalle: string | null;
+  /** Snapshot del evento anterior sobre el mismo recurso, si existe -- permite mostrar un diff antes/después. */
+  detalleAnterior: string | null;
   direccionIp: string | null;
   fechaEvento: string;
 }

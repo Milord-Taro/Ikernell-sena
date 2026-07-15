@@ -29,15 +29,16 @@ public class TipoErrorService {
     private final UsuarioRepository usuarioRepository;
     private final TipoErrorMapper tipoErrorMapper;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
     public TipoErrorResponse crear(TipoErrorRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
-        validarCodigoDisponible(request.getCodigoTipoError(), null);
         validarNombreDisponible(request.getNombreTipoError(), null);
 
         TipoError tipoError = tipoErrorMapper.toEntity(request);
+        tipoError.setCodigoTipoError(codigoGeneradorService.siguienteCodigoTipoError());
         TipoError guardado = tipoErrorRepository.save(tipoError);
 
         TipoErrorResponse response = tipoErrorMapper.toResponse(guardado);
@@ -65,7 +66,6 @@ public class TipoErrorService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         TipoError tipoError = buscarOFallar(idTipoError);
 
-        validarCodigoDisponible(request.getCodigoTipoError(), idTipoError);
         validarNombreDisponible(request.getNombreTipoError(), idTipoError);
 
         tipoErrorMapper.actualizarEntidadDesdeRequest(request, tipoError);
@@ -140,14 +140,6 @@ public class TipoErrorService {
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }
-    }
-
-    private void validarCodigoDisponible(String codigo, Integer idActual) {
-        tipoErrorRepository.findByCodigoTipoError(codigo).ifPresent(existente -> {
-            if (idActual == null || !existente.getIdTipoError().equals(idActual)) {
-                throw new ConflictException("Ya existe un tipo de error con el código '" + codigo + "'.");
-            }
-        });
     }
 
     private void validarNombreDisponible(String nombre, Integer idActual) {

@@ -15,10 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RegistroErrorRequest {
 
-    @NotBlank(message = "El código del registro de error es obligatorio.")
-    @Size(max = 20, message = "El código no puede superar los 20 caracteres.")
-    private String codigoRegistroError;
-
     @NotNull(message = "La actividad es obligatoria.")
     private Integer idActividad;
 

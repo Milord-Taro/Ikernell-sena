@@ -2,11 +2,13 @@
   import { Plus, Search } from 'lucide-react';
   import { Table } from '../../components/ui/Table';
   import { Button } from '../../components/ui/Button';
-  import { Switch } from '../../components/ui/FormControls';
+  import { Switch, Select } from '../../components/ui/FormControls';
   import { Badge } from '../../components/ui/Badge';
   import { Avatar } from '../../components/ui/DataDisplay';
+  import { Alert } from '../../components/ui/Feedback';
   import { UsuarioFormModal } from './UsuarioFormModal';
   import { useAuth } from '../../context/AuthContext';
+  import { ApiRequestError } from '../../types/api';
   import {
     listarUsuarios,
     crearUsuario,
@@ -33,22 +35,35 @@
     const [especialidades, setEspecialidades] = useState<EspecialidadResponse[]>([]);
     const [cargando, setCargando] = useState(true);
     const [busqueda, setBusqueda] = useState('');
+    const [filtroRol, setFiltroRol] = useState('');
+    const [filtroEstado, setFiltroEstado] = useState<'activos' | 'inhabilitados' | 'todos'>('activos');
     const [modalAbierto, setModalAbierto] = useState(false);
     const [usuarioEditando, setUsuarioEditando] = useState<UsuarioResponse | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
+    // CORREGIDO: profesiones/especialidades son catálogos exclusivos de
+    // Coordinador (UsuarioFormModal, que tampoco se muestra para otros
+    // roles) -- pedirlos aquí para un Líder provoca un 403 que, al estar
+    // en el mismo Promise.all, tumbaba TODA la carga (incluida la lista
+    // de usuarios, que el Líder sí puede ver) y dejaba la tabla vacía.
     const cargarTodo = async () => {
       setCargando(true);
       try {
-        const [usuariosResp, rolesResp, profesionesResp, especialidadesResp] = await Promise.all([
+        const [usuariosResp, rolesResp] = await Promise.all([
           listarUsuarios(),
           rolesService.listar(),
-          profesionesService.listar(),
-          especialidadesService.listar(),
         ]);
         setUsuarios(usuariosResp);
         setRoles(rolesResp.filter((r) => r.activo));
-        setProfesiones(profesionesResp.filter((p) => p.activo));
-        setEspecialidades(especialidadesResp.filter((e) => e.activo));
+
+        if (esCoordinador) {
+          const [profesionesResp, especialidadesResp] = await Promise.all([
+            profesionesService.listar(),
+            especialidadesService.listar(),
+          ]);
+          setProfesiones(profesionesResp.filter((p) => p.activo));
+          setEspecialidades(especialidadesResp.filter((e) => e.activo));
+        }
       } finally {
         setCargando(false);
       }
@@ -62,6 +77,11 @@
       .filter((u) => {
         const texto = `${u.codigoUsuario} ${u.nombres} ${u.apellidos} ${u.correoElectronico}`.toLowerCase();
         return texto.includes(busqueda.toLowerCase());
+      })
+      .filter((u) => !filtroRol || u.rol.codigoRol === filtroRol)
+      .filter((u) => {
+        if (filtroEstado === 'todos') return true;
+        return filtroEstado === 'activos' ? u.activo : !u.activo;
       })
       .map((usuario) => ({ usuario }));
 
@@ -79,21 +99,54 @@
     };
 
     const alCambiarEstado = async (usuario: UsuarioResponse, activo: boolean) => {
-      await cambiarEstadoUsuario(usuario.idUsuario, activo);
-      await cargarTodo();
+      setError(null);
+      try {
+        await cambiarEstadoUsuario(usuario.idUsuario, activo);
+        await cargarTodo();
+      } catch (err) {
+        setError(err instanceof ApiRequestError ? err.message : 'No se pudo cambiar el estado del usuario.');
+      }
     };
+
+    // Un Coordinador no puede cambiar su propio estado, ni inhabilitar a
+    // otro Coordinador -- coincide con la regla del backend
+    // (UsuarioService.cambiarEstado), esto solo evita el intento en la UI.
+    const noPuedeCambiarEstado = (usuario: UsuarioResponse) =>
+      usuario.idUsuario === usuarioActual?.idUsuario ||
+      (usuario.activo && usuario.rol.codigoRol === CODIGO_ROL.COORDINADOR);
 
     return (
       <div className="flex flex-col gap-4">
+        {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
+
         <div className="flex items-center justify-between gap-3">
-          <div className="relative w-72">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
-            <input
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Buscar por nombre, código o correo..."
-              className="w-full h-8 pl-8 pr-3 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] type-body-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
-            />
+          <div className="flex items-center gap-2">
+            <div className="relative w-72">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)] pointer-events-none" />
+              <input
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar por nombre, código o correo..."
+                className="w-full h-8 pl-8 pr-3 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] type-body-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
+              />
+            </div>
+
+            <Select value={filtroRol} onChange={(e) => setFiltroRol(e.target.value)} className="w-44">
+              <option value="">Todos los roles</option>
+              {roles.map((r) => (
+                <option key={r.idRol} value={r.codigoRol}>{r.nombreRol}</option>
+              ))}
+            </Select>
+
+            <Select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value as 'activos' | 'inhabilitados' | 'todos')}
+              className="w-40"
+            >
+              <option value="activos">Activos</option>
+              <option value="inhabilitados">Inhabilitados</option>
+              <option value="todos">Todos</option>
+            </Select>
           </div>
 
           {/* Crear usuario: solo Coordinador (coincide con el backend) */}
@@ -147,7 +200,7 @@
               render: (fila) => (
                 <Switch
                   checked={fila.usuario.activo}
-                  disabled={!esCoordinador}
+                  disabled={!esCoordinador || noPuedeCambiarEstado(fila.usuario)}
                   onChange={(checked) => alCambiarEstado(fila.usuario, checked)}
                 />
               ),

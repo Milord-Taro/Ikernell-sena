@@ -27,10 +27,11 @@ import java.util.List;
  * del proyecto dueño de la actividad (cualquier rol_proyecto) o un
  * Coordinador puede reportar un error ahí, ver
  * RegistroErrorService.crear() / AutorizacionProyectoService
- * .verificarPerteneceAlEquipo(). Leer y cambiar el estado sigue abierto a
- * cualquier autenticado (el Líder/Coordinador los leen y también pueden
- * actualizar el estado desde la vista de supervisión). No tiene PUT --
- * los campos del error no se editan, solo su estado.
+ * .verificarPerteneceAlEquipo(). Leer sigue abierto a cualquier
+ * autenticado. CORREGIDO: cambiar el estado también exige pertenecer al
+ * equipo vigente del proyecto (o ser Coordinador) -- antes no tenía
+ * ninguna validación, ver RegistroErrorService.cambiarEstado(). No tiene
+ * PUT -- los campos del error no se editan, solo su estado.
  */
 @RestController
 @RequestMapping("/api/registros-error")

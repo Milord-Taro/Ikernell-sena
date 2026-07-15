@@ -54,3 +54,12 @@ export function descargarReporteInterrupciones(idProyecto: number, formato: Form
     `reporte-interrupciones-proyecto-${idProyecto}.${EXTENSION_POR_FORMATO[formato]}`,
   );
 }
+
+/** Reporte macro de toda la organización (proyectos, actividades, errores e
+ * interrupciones) -- solo Coordinador (ver ReporteGeneralController). */
+export function descargarReporteGeneral(formato: FormatoReporte): Promise<void> {
+  return descargar(
+    `/reportes/general?formato=${formato}`,
+    `reporte-general.${EXTENSION_POR_FORMATO[formato]}`,
+  );
+}

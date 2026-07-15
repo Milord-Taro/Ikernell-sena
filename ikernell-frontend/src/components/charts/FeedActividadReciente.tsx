@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Bug, GitBranch, MessageSquare } from 'lucide-react';
 import { Card, CardContent } from '../ui/Card';
+import { formatFechaHora } from '../../utils/formatDate';
 
 export type TipoFeed = 'error' | 'interrupcion' | 'mensaje';
 
@@ -22,7 +23,12 @@ interface FeedActividadRecienteProps {
   items: ItemFeed[];
 }
 
-/** Mezcla errores + interrupciones (+ mensajes para Coordinador), ya ordenados por fecha desc. */
+/**
+ * Mezcla errores + interrupciones (+ mensajes para Coordinador), ya
+ * ordenados por fecha desc. `item.fecha` llega cruda (ISO) a propósito --
+ * el orden se calculó comparándola como string en feedDe(), así que solo
+ * se formatea acá, al renderizar, sin tocar el valor que se ordena.
+ */
 export function FeedActividadReciente({ items }: FeedActividadRecienteProps) {
   return (
     <Card>
@@ -40,7 +46,7 @@ export function FeedActividadReciente({ items }: FeedActividadRecienteProps) {
                   <span className="type-caption text-[var(--text-tertiary)] truncate">{item.detalle}</span>
                 </div>
                 <span className="type-caption text-[var(--text-tertiary)] shrink-0 whitespace-nowrap">
-                  {item.fecha}
+                  {formatFechaHora(item.fecha)}
                 </span>
               </div>
             ))}

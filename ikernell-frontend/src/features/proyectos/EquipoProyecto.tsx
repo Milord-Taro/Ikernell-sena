@@ -7,6 +7,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/DataDisplay';
 import { Alert } from '../../components/ui/Feedback';
 import { Modal } from '../../components/ui/Modal';
+import { useAuth } from '../../context/AuthContext';
 import { ApiRequestError } from '../../types/api';
 import { CODIGO_ROL } from '../../types/usuario';
 import {
@@ -23,6 +24,14 @@ interface EquipoProyectoProps {
 }
 
 export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
+  const { usuario: usuarioActual } = useAuth();
+  // NUEVO: agregar/desvincular miembros es exclusivo de Coordinador/Líder
+  // en el backend (AsignacionProyectoController) -- un Desarrollador ve el
+  // equipo pero no puede tocarlo.
+  const puedeGestionarEquipo =
+    usuarioActual?.rol.codigoRol === CODIGO_ROL.COORDINADOR ||
+    usuarioActual?.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO;
+
   const [asignaciones, setAsignaciones] = useState<AsignacionProyectoResponse[]>([]);
   const [usuarios, setUsuarios] = useState<UsuarioResponse[]>([]);
   const [cargando, setCargando] = useState(true);
@@ -32,15 +41,20 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // CORREGIDO: listarUsuarios() solo hace falta para el desplegable "a
+  // quién agregar", que un Desarrollador ni siquiera puede usar (el
+  // backend rechaza su POST). Antes iba en el mismo Promise.all que la
+  // lista del equipo -- el 403 de un Desarrollador tumbaba TODO,
+  // incluida la lista de compañeros de su propio proyecto (que sí puede
+  // ver: GET /api/asignaciones-proyecto está abierto a cualquier
+  // autenticado).
   const cargar = async () => {
     setCargando(true);
     try {
-      const [asignacionesResp, usuariosResp] = await Promise.all([
-        listarAsignacionesPorProyecto(idProyecto),
-        listarUsuarios(),
-      ]);
-      setAsignaciones(asignacionesResp);
-      setUsuarios(usuariosResp);
+      setAsignaciones(await listarAsignacionesPorProyecto(idProyecto));
+      if (puedeGestionarEquipo) {
+        setUsuarios(await listarUsuarios());
+      }
     } finally {
       setCargando(false);
     }
@@ -104,10 +118,12 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
 
       <div className="flex items-center justify-between">
         <h3 className="type-h4 text-[var(--text-primary)]">Equipo del proyecto</h3>
-        <Button size="sm" onClick={() => setModalAbierto(true)}>
-          <UserPlus size={14} />
-          Agregar
-        </Button>
+        {puedeGestionarEquipo && (
+          <Button size="sm" onClick={() => setModalAbierto(true)}>
+            <UserPlus size={14} />
+            Agregar
+          </Button>
+        )}
       </div>
 
       {cargando ? (
@@ -130,10 +146,12 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge variant={a.rolProyecto === 'Líder' ? 'info' : 'default'}>{a.rolProyecto}</Badge>
-                  <Button variant="ghost" size="sm" onClick={() => alDesvincular(a)}>
-                    <UserMinus size={14} />
-                    Desvincular
-                  </Button>
+                  {puedeGestionarEquipo && (
+                    <Button variant="ghost" size="sm" onClick={() => alDesvincular(a)}>
+                      <UserMinus size={14} />
+                      Desvincular
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>

@@ -12,7 +12,7 @@ interface BadgeProps {
 }
 
 const variants: Record<BadgeVariant, string> = {
-  default: 'bg-[var(--secondary-bg)] text-[var(--secondary-fg)] border border-[var(--border)]',
+  default: 'bg-[var(--secondary-bg)] text-[var(--secondary-fg)] border border-[var(--secondary-border)]',
   success: 'bg-[var(--success-bg)] text-[var(--success-fg)] border border-[var(--success-border)]',
   warning: 'bg-[var(--warning-bg)] text-[var(--warning-fg)] border border-[var(--warning-border)]',
   error:   'bg-[var(--error-bg)] text-[var(--error-fg)] border border-[var(--error-border)]',

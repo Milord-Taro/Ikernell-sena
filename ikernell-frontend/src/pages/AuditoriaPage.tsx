@@ -1,22 +1,30 @@
-import { useEffect, useState } from 'react';
-import { Table } from '../components/ui/Table';
-import { Badge } from '../components/ui/Badge';
-import { Select } from '../components/ui/FormControls';
-import { Modal } from '../components/ui/Modal';
-import { JsonTree, type JsonValue } from '../components/ui/JsonTree';
-import { listarTrazabilidad } from '../services/trazabilidad';
-import { ENTIDADES_TRAZABILIDAD } from '../types/trazabilidad';
-import type { TrazabilidadResponse, OperacionTrazabilidad } from '../types/trazabilidad';
+import { useEffect, useState } from "react";
+import { Table } from "../components/ui/Table";
+import { Badge } from "../components/ui/Badge";
+import { Select } from "../components/ui/FormControls";
+import { Modal } from "../components/ui/Modal";
+import type { JsonValue } from "../components/ui/JsonTree";
+import { JsonDiffTree } from "../components/ui/JsonDiffTree";
+import { formatFechaHora } from "../utils/formatDate";
+import { listarTrazabilidad } from "../services/trazabilidad";
+import { ENTIDADES_TRAZABILIDAD } from "../types/trazabilidad";
+import type {
+  TrazabilidadResponse,
+  OperacionTrazabilidad,
+} from "../types/trazabilidad";
 
-const variantePorOperacion: Record<OperacionTrazabilidad, 'default' | 'success' | 'info' | 'warning' | 'error'> = {
-  'Crear': 'success',
-  'Actualizar': 'info',
-  'Inhabilitar': 'warning',
-  'Cambiar Estado': 'info',
-  'Asignar': 'info',
-  'Desasignar': 'warning',
-  'Autenticar': 'default',
-  'Eliminar': 'error',
+const variantePorOperacion: Record<
+  OperacionTrazabilidad,
+  "default" | "success" | "info" | "warning" | "error"
+> = {
+  Crear: "success",
+  Actualizar: "info",
+  Inhabilitar: "warning",
+  "Cambiar Estado": "info",
+  Asignar: "info",
+  Desasignar: "warning",
+  Autenticar: "default",
+  Eliminar: "error",
 };
 
 /** El detalle casi siempre es un snapshot JSON del recurso afectado; si no parsea, se muestra tal cual. */
@@ -48,8 +56,9 @@ interface FilaTabla extends Record<string, unknown> {
 export default function AuditoriaPage() {
   const [eventos, setEventos] = useState<TrazabilidadResponse[]>([]);
   const [cargando, setCargando] = useState(true);
-  const [entidadFiltro, setEntidadFiltro] = useState('');
-  const [eventoAbierto, setEventoAbierto] = useState<TrazabilidadResponse | null>(null);
+  const [entidadFiltro, setEntidadFiltro] = useState("");
+  const [eventoAbierto, setEventoAbierto] =
+    useState<TrazabilidadResponse | null>(null);
 
   const cargar = async () => {
     setCargando(true);
@@ -69,7 +78,9 @@ export default function AuditoriaPage() {
   const filas: FilaTabla[] = eventos.map((e) => ({
     idTrazabilidad: e.idTrazabilidad,
     fecha: e.fechaEvento,
-    usuario: e.usuario ? `${e.usuario.nombres} ${e.usuario.apellidos}` : 'Sistema',
+    usuario: e.usuario
+      ? `${e.usuario.nombres} ${e.usuario.apellidos}`
+      : "Sistema",
     operacion: e.operacion,
     entidad: e.entidad,
     codigo: e.codigoRegistro,
@@ -86,10 +97,16 @@ export default function AuditoriaPage() {
       </div>
 
       <div className="w-56">
-        <Select label="Entidad" value={entidadFiltro} onChange={(e) => setEntidadFiltro(e.target.value)}>
+        <Select
+          label="Entidad"
+          value={entidadFiltro}
+          onChange={(e) => setEntidadFiltro(e.target.value)}
+        >
           <option value="">Todas</option>
           {ENTIDADES_TRAZABILIDAD.map((ent) => (
-            <option key={ent} value={ent}>{ent}</option>
+            <option key={ent} value={ent}>
+              {ent}
+            </option>
           ))}
         </Select>
       </div>
@@ -102,18 +119,25 @@ export default function AuditoriaPage() {
         emptyDescription="No hay eventos de auditoría para este filtro."
         onRowClick={(fila) => setEventoAbierto(fila.original)}
         columns={[
-          { key: 'fecha', header: 'Fecha', mono: true, width: '170px' },
-          { key: 'usuario', header: 'Usuario' },
           {
-            key: 'operacion',
-            header: 'Operación',
-            width: '130px',
+            key: "fecha",
+            header: "Fecha",
+            width: "320px",
+            render: (row) => formatFechaHora(row.fecha),
+          },
+          { key: "usuario", header: "Usuario" },
+          {
+            key: "operacion",
+            header: "Operación",
+            width: "250px",
             render: (row) => (
-              <Badge variant={variantePorOperacion[row.operacion]} size="sm">{row.operacion}</Badge>
+              <Badge variant={variantePorOperacion[row.operacion]} size="sm">
+                {row.operacion}
+              </Badge>
             ),
           },
-          { key: 'entidad', header: 'Entidad', width: '140px' },
-          { key: 'codigo', header: 'Código', mono: true, width: '140px' },
+          { key: "entidad", header: "Entidad", width: "200px" },
+          { key: "codigo", header: "Código", mono: true, width: "220px" },
         ]}
       />
 
@@ -128,42 +152,66 @@ export default function AuditoriaPage() {
           <div className="flex flex-col gap-3">
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col">
-                <span className="type-caption text-[var(--text-tertiary)]">Usuario</span>
+                <span className="type-caption text-[var(--text-tertiary)]">
+                  Usuario
+                </span>
                 <span className="type-body-sm text-[var(--text-secondary)]">
                   {eventoAbierto.usuario
                     ? `${eventoAbierto.usuario.nombres} ${eventoAbierto.usuario.apellidos} (${eventoAbierto.usuario.codigoUsuario})`
-                    : 'Sistema'}
+                    : "Sistema"}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="type-caption text-[var(--text-tertiary)]">Rol</span>
+                <span className="type-caption text-[var(--text-tertiary)]">
+                  Rol
+                </span>
                 <span className="type-body-sm text-[var(--text-secondary)]">
-                  {eventoAbierto.usuario?.rol?.nombreRol ?? '—'}
+                  {eventoAbierto.usuario?.rol?.nombreRol ?? "—"}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="type-caption text-[var(--text-tertiary)]">Operación</span>
-                <Badge variant={variantePorOperacion[eventoAbierto.operacion]} size="sm" className="w-fit">
+                <span className="type-caption text-[var(--text-tertiary)]">
+                  Operación
+                </span>
+                <Badge
+                  variant={variantePorOperacion[eventoAbierto.operacion]}
+                  size="sm"
+                  className="w-fit"
+                >
                   {eventoAbierto.operacion}
                 </Badge>
               </div>
               <div className="flex flex-col">
-                <span className="type-caption text-[var(--text-tertiary)]">Fecha</span>
-                <span className="type-code text-[var(--text-secondary)]">{eventoAbierto.fechaEvento}</span>
+                <span className="type-caption text-[var(--text-tertiary)]">
+                  Fecha
+                </span>
+                <span className="type-code text-[var(--text-secondary)]">
+                  {formatFechaHora(eventoAbierto.fechaEvento)}
+                </span>
               </div>
               <div className="flex flex-col">
-                <span className="type-caption text-[var(--text-tertiary)]">Dirección IP</span>
-                <span className="type-code text-[var(--text-secondary)]">{eventoAbierto.direccionIp ?? '—'}</span>
+                <span className="type-caption text-[var(--text-tertiary)]">
+                  Dirección IP
+                </span>
+                <span className="type-code text-[var(--text-secondary)]">
+                  {eventoAbierto.direccionIp ?? "—"}
+                </span>
               </div>
             </div>
 
             <div className="flex flex-col gap-1">
-              <span className="type-caption text-[var(--text-tertiary)]">Detalle</span>
+              <span className="type-caption text-[var(--text-tertiary)]">
+                Detalle
+              </span>
               <div className="bg-[var(--muted)] rounded-[var(--radius-md)] p-3 overflow-x-auto">
                 {(() => {
                   const detalle = parsearDetalle(eventoAbierto.detalle);
                   if (detalle === null) {
-                    return <span className="type-code text-[var(--text-secondary)]">—</span>;
+                    return (
+                      <span className="type-code text-[var(--text-secondary)]">
+                        —
+                      </span>
+                    );
                   }
                   if (detalle === undefined) {
                     return (
@@ -172,7 +220,12 @@ export default function AuditoriaPage() {
                       </pre>
                     );
                   }
-                  return <JsonTree value={detalle} />;
+                  const detalleAnterior = parsearDetalle(
+                    eventoAbierto.detalleAnterior,
+                  );
+                  return (
+                    <JsonDiffTree antes={detalleAnterior} despues={detalle} />
+                  );
                 })()}
               </div>
             </div>

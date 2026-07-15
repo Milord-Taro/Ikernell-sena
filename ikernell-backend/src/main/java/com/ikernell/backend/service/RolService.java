@@ -29,15 +29,16 @@ public class RolService {
     private final UsuarioRepository usuarioRepository;
     private final RolMapper rolMapper;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
     public RolResponse crear(RolRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
-        validarCodigoDisponible(request.getCodigoRol(), null);
         validarNombreDisponible(request.getNombreRol(), null);
 
         Rol rol = rolMapper.toEntity(request);
+        rol.setCodigoRol(codigoGeneradorService.siguienteCodigoRol());
         Rol guardado = rolRepository.save(rol);
 
         RolResponse response = rolMapper.toResponse(guardado);
@@ -71,7 +72,6 @@ public class RolService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Rol rol = buscarOFallar(idRol);
 
-        validarCodigoDisponible(request.getCodigoRol(), idRol);
         validarNombreDisponible(request.getNombreRol(), idRol);
 
         rolMapper.actualizarEntidadDesdeRequest(request, rol);
@@ -146,15 +146,6 @@ public class RolService {
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
         }
-    }
-
-    private void validarCodigoDisponible(String codigoRol, Integer idRolActual) {
-        rolRepository.findByCodigoRol(codigoRol).ifPresent(existente -> {
-            if (idRolActual == null || !existente.getIdRol().equals(idRolActual)) {
-                throw new ConflictException(
-                        "Ya existe un rol con el código '" + codigoRol + "'.");
-            }
-        });
     }
 
     private void validarNombreDisponible(String nombreRol, Integer idRolActual) {

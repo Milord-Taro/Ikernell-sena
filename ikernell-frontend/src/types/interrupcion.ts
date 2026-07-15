@@ -15,7 +15,6 @@ export interface InterrupcionResponse {
 
 /** Igual que RegistroError: sin campo "fase" propio, se deriva de actividad.etapa. */
 export interface InterrupcionRequest {
-  codigoInterrupcion: string;
   idActividad: number;
   idTipoInterrupcion: number;
   motivo: string;

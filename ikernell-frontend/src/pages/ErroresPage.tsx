@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { formatFechaHora } from '../utils/formatDate';
 import { Trash2 } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
@@ -217,7 +218,7 @@ export default function ErroresPage() {
                   </div>
                   <div className="flex flex-col min-w-0">
                     <span className="type-caption text-[var(--text-tertiary)]">Registrado</span>
-                    <span className="type-body-sm text-[var(--text-secondary)] truncate">{r.fechaRegistro}</span>
+                    <span className="type-body-sm text-[var(--text-secondary)] truncate">{formatFechaHora(r.fechaRegistro)}</span>
                   </div>
                 </div>
 

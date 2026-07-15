@@ -23,10 +23,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ActividadRequest {
 
-    @NotBlank(message = "El código de la actividad es obligatorio.")
-    @Size(max = 20, message = "El código de la actividad no puede superar los 20 caracteres.")
-    private String codigoActividad;
-
     @NotNull(message = "La etapa es obligatoria.")
     private Integer idEtapa;
 

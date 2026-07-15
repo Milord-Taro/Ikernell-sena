@@ -64,7 +64,6 @@ export interface ActividadResponse {
  * (PATCH /asignar, PATCH /estado).
  */
 export interface ActividadRequest {
-  codigoActividad: string;
   idEtapa: number;
   idUsuario?: number;
   nombreActividad: string;

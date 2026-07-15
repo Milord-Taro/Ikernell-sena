@@ -3,6 +3,7 @@ package com.ikernell.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
+import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.CambiarContrasenaRequest;
 import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.dto.UsuarioRequest;
@@ -42,6 +43,7 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final NotificacionService notificacionService;
     private final TrazabilidadService trazabilidadService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
@@ -49,7 +51,6 @@ public class UsuarioService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         String correo = request.getCorreoElectronico().toLowerCase();
 
-        validarCodigoDisponible(request.getCodigoUsuario(), null);
         validarIdentificacionDisponible(request.getNumeroIdentificacion(), null);
         validarCorreoDisponible(correo, null);
 
@@ -58,6 +59,7 @@ public class UsuarioService {
         Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
 
         Usuario usuario = usuarioMapper.toEntity(request);
+        usuario.setCodigoUsuario(codigoGeneradorService.siguienteCodigoUsuario());
         usuario.setCorreoElectronico(correo);
         usuario.setHashContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setRol(rol);
@@ -111,7 +113,6 @@ public class UsuarioService {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Usuario usuario = buscarOFallar(idUsuario);
 
-        validarCodigoDisponible(request.getCodigoUsuario(), idUsuario);
         validarIdentificacionDisponible(request.getNumeroIdentificacion(), idUsuario);
 
         Rol rolAnterior = usuario.getRol();
@@ -161,6 +162,14 @@ public class UsuarioService {
     public UsuarioResponse cambiarEstado(Integer idUsuario, boolean activo, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         Usuario usuario = buscarOFallar(idUsuario);
+
+        if (usuario.getIdUsuario().equals(solicitante.getIdUsuario())) {
+            throw new BusinessException("No puedes cambiar tu propio estado.");
+        }
+        if (!activo && RolConstantes.COORDINADOR.equals(usuario.getRol().getCodigoRol())) {
+            throw new BusinessException("No puedes inhabilitar a otro Coordinador.");
+        }
+
         usuario.setActivo(activo);
         Usuario guardado = usuarioRepository.save(usuario);
 
@@ -223,15 +232,6 @@ public class UsuarioService {
         return especialidadRepository.findById(idEspecialidad)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe una especialidad con id " + idEspecialidad + "."));
-    }
-
-    private void validarCodigoDisponible(String codigoUsuario, Integer idUsuarioActual) {
-        usuarioRepository.findByCodigoUsuario(codigoUsuario).ifPresent(existente -> {
-            if (idUsuarioActual == null || !existente.getIdUsuario().equals(idUsuarioActual)) {
-                throw new ConflictException(
-                        "Ya existe un usuario con el código '" + codigoUsuario + "'.");
-            }
-        });
     }
 
     private void validarIdentificacionDisponible(String numeroIdentificacion, Integer idUsuarioActual) {

@@ -43,7 +43,7 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
     `${item.codigo} ${item.nombre}`.toLowerCase().includes(busqueda.toLowerCase()),
   );
 
-  const alGuardar = async (valores: { codigo: string; nombre: string; descripcion: string }) => {
+  const alGuardar = async (valores: { nombre: string; descripcion: string }) => {
     const request = config.aRequest(valores);
     if (itemEditando) {
       await config.servicio.actualizar(itemEditando.id, request);
@@ -163,7 +163,7 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
         titulo={config.tituloSingular}
         valoresIniciales={
           itemEditando
-            ? { codigo: itemEditando.codigo, nombre: itemEditando.nombre, descripcion: itemEditando.descripcion ?? '' }
+            ? { nombre: itemEditando.nombre, descripcion: itemEditando.descripcion ?? '' }
             : undefined
         }
         onClose={() => {

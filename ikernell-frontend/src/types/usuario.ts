@@ -70,7 +70,6 @@ export interface UsuarioResponse {
  * dos editable después -- coincide con UsuarioRequest.java del backend.
  */
 export interface UsuarioRequest {
-  codigoUsuario: string;
   nombres: string;
   apellidos: string;
   tipoIdentificacion: TipoIdentificacion;
@@ -90,7 +89,6 @@ export interface UsuarioRequest {
  * solo se cambia por el propio usuario vía /me/contrasena).
  */
 export interface UsuarioUpdateRequest {
-  codigoUsuario: string;
   nombres: string;
   apellidos: string;
   tipoIdentificacion: TipoIdentificacion;

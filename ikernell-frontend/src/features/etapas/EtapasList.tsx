@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatFecha } from '../../utils/formatDate';
 import { Plus, Pencil, ListChecks, Trash2 } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -136,7 +137,7 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
                   <div className="flex flex-col min-w-0">
                     <span className="type-body text-[var(--text-primary)] truncate">{etapa.nombreEtapa}</span>
                     <span className="type-caption text-[var(--text-tertiary)]">
-                      {etapa.codigoEtapa} · {etapa.fechaInicio} → {etapa.fechaFin}
+                      {etapa.codigoEtapa} · {formatFecha(etapa.fechaInicio)} → {formatFecha(etapa.fechaFin)}
                     </span>
                   </div>
                 </div>

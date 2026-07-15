@@ -1,5 +1,6 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 import { ArrowUpDown } from 'lucide-react'
+import { Pagination } from './Pagination'
 
 interface Column<T> {
   key: string
@@ -20,6 +21,8 @@ interface TableProps<T extends Record<string, unknown>> {
   emptyDescription?: string
   onRowClick?: (row: T) => void
   className?: string
+  /** Filas por página. 0 desactiva la paginación (se listan todas). */
+  pageSize?: number
 }
 
 export function Table<T extends Record<string, unknown>>({
@@ -31,12 +34,26 @@ export function Table<T extends Record<string, unknown>>({
   emptyDescription = 'No se encontraron registros para los filtros actuales.',
   onRowClick,
   className = '',
+  pageSize = 15,
 }: TableProps<T>) {
   const alignClass: Record<string, string> = {
     left: 'text-left',
     right: 'text-right',
     center: 'text-center',
   }
+
+  // Igual criterio que ErroresPage/InterrupcionesPage/MisActividadesPage:
+  // la página se deriva con un clamp (Math.min) en vez de resetear con un
+  // efecto -- `data` es un array nuevo en cada render del padre (ej. un
+  // .map()), así que un efecto atado a su identidad resetearía a la
+  // página 1 en cada re-render ajeno (como abrir un modal), no solo
+  // cuando cambian los filtros.
+  const [pagina, setPagina] = useState(1)
+  const totalPaginas = pageSize > 0 ? Math.max(1, Math.ceil(data.length / pageSize)) : 1
+  const paginaActual = Math.min(pagina, totalPaginas)
+  const datosVisibles = pageSize > 0
+    ? data.slice((paginaActual - 1) * pageSize, paginaActual * pageSize)
+    : data
 
   if (loading) {
     return (
@@ -117,7 +134,7 @@ export function Table<T extends Record<string, unknown>>({
             </tr>
           </thead>
           <tbody>
-            {data.map((row, idx) => (
+            {datosVisibles.map((row, idx) => (
               <tr
                 key={String(row[keyField] ?? idx)}
                 onClick={() => onRowClick?.(row)}
@@ -136,6 +153,15 @@ export function Table<T extends Record<string, unknown>>({
           </tbody>
         </table>
       </div>
+
+      {totalPaginas > 1 && (
+        <div className="flex items-center justify-between gap-3 border-t border-[var(--border)] bg-[var(--muted)] px-4 pb-2.5">
+          <p className="type-caption text-[var(--text-tertiary)] shrink-0">
+            {(paginaActual - 1) * pageSize + 1}–{Math.min(paginaActual * pageSize, data.length)} de {data.length}
+          </p>
+          <Pagination pagina={paginaActual} totalPaginas={totalPaginas} onCambiar={setPagina} />
+        </div>
+      )}
     </div>
   )
 }

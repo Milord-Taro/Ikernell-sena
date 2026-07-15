@@ -16,7 +16,6 @@ import type {
 } from '../../types/usuario';
 
 interface ValoresFormulario {
-  codigoUsuario: string;
   nombres: string;
   apellidos: string;
   tipoIdentificacion: TipoIdentificacion;
@@ -33,7 +32,6 @@ interface ValoresFormulario {
 }
 
 const valoresVacios: ValoresFormulario = {
-  codigoUsuario: '',
   nombres: '',
   apellidos: '',
   tipoIdentificacion: 'CC',
@@ -51,7 +49,6 @@ const valoresVacios: ValoresFormulario = {
 
 function usuarioAValores(usuario: UsuarioResponse): ValoresFormulario {
   return {
-    codigoUsuario: usuario.codigoUsuario,
     nombres: usuario.nombres,
     apellidos: usuario.apellidos,
     tipoIdentificacion: usuario.tipoIdentificacion,
@@ -71,7 +68,6 @@ function usuarioAValores(usuario: UsuarioResponse): ValoresFormulario {
 // Espejo EXACTO de los límites reales del backend (UsuarioRequest.java) --
 // si el backend cambia estos números, hay que actualizarlos aquí también.
 const LIMITES = {
-  codigoUsuario: 20,
   nombres: 100,
   apellidos: 100,
   numeroIdentificacion: 10,
@@ -173,7 +169,6 @@ export function UsuarioFormModal({
     setErroresServidor({});
 
     const base = {
-      codigoUsuario: valores.codigoUsuario,
       nombres: valores.nombres,
       apellidos: valores.apellidos,
       tipoIdentificacion: valores.tipoIdentificacion,
@@ -224,27 +219,15 @@ export function UsuarioFormModal({
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo guardar">{error}</Alert>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Input
-            label="Código de usuario"
-            required
-            maxLength={LIMITES.codigoUsuario}
-            value={valores.codigoUsuario}
-            onChange={(e) => actualizarCampo('codigoUsuario', e.target.value)}
-            error={erroresServidor.codigoUsuario}
-            placeholder="USR-001"
-          />
-          <Select
-            label="Tipo de identificación"
-            required
-            value={valores.tipoIdentificacion}
-            onChange={(e) => actualizarCampo('tipoIdentificacion', e.target.value)}
-          >
-            <option value="CC">Cédula de Ciudadanía</option>
-            <option value="CE">Cédula de Extranjería</option>
-            <option value="TI">Tarjeta de Identidad</option>
-          </Select>
-        </div>
+        <Select
+          label="Tipo de identificación"
+          required
+          value={valores.tipoIdentificacion}
+          onChange={(e) => actualizarCampo('tipoIdentificacion', e.target.value)}
+        >
+          <option value="CC">Cédula de Ciudadanía</option>
+          <option value="CE">Cédula de Extranjería</option>
+        </Select>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input

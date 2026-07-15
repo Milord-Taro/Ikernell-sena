@@ -44,6 +44,7 @@ public class ActividadService {
     private final AsignacionProyectoRepository asignacionProyectoRepository;
     private final TrazabilidadService trazabilidadService;
     private final NotificacionService notificacionService;
+    private final CodigoGeneradorService codigoGeneradorService;
 
 
     @Transactional
@@ -52,11 +53,11 @@ public class ActividadService {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, etapa.getProyecto().getIdProyecto());
 
-        validarCodigoDisponible(request.getCodigoActividad(), null);
         validarFechas(request);
 
         Actividad actividad = actividadMapper.toEntity(request);
         actividad.setEtapa(etapa);
+        actividad.setCodigoActividad(codigoGeneradorService.siguienteCodigoActividad(etapa));
 
         if (request.getIdUsuario() != null) {
             validarPerteneceAlEquipo(request.getIdUsuario(), etapa.getProyecto().getIdProyecto());
@@ -130,7 +131,6 @@ public class ActividadService {
         autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, etapa.getProyecto().getIdProyecto());
 
-        validarCodigoDisponible(request.getCodigoActividad(), idActividad);
         validarFechas(request);
 
         actividadMapper.actualizarEntidadDesdeRequest(request, actividad);
@@ -326,15 +326,6 @@ public class ActividadService {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con id " + idUsuario + "."));
-    }
-
-    private void validarCodigoDisponible(String codigoActividad, Integer idActividadActual) {
-        actividadRepository.findByCodigoActividad(codigoActividad).ifPresent(existente -> {
-            if (idActividadActual == null || !existente.getIdActividad().equals(idActividadActual)) {
-                throw new ConflictException(
-                        "Ya existe una actividad con el código '" + codigoActividad + "'.");
-            }
-        });
     }
 
     /**

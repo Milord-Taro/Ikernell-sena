@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatFechaHora } from '../../utils/formatDate';
 import { Plus, Pencil, Trash2, UserCheck, History, Zap, Bug } from 'lucide-react';
 import { Modal } from '../../components/ui/Modal';
 import { Card, CardContent } from '../../components/ui/Card';
@@ -272,7 +273,7 @@ export function ActividadesEtapaModal({
                             <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
                             {actividad.fechaFinalizacion && (
                               <span className="type-caption text-[var(--text-tertiary)] mt-0.5">
-                                Finalizada: {actividad.fechaFinalizacion}
+                                Finalizada: {formatFechaHora(actividad.fechaFinalizacion)}
                               </span>
                             )}
                           </div>
@@ -388,7 +389,7 @@ export function ActividadesEtapaModal({
                             <p className="type-body-sm text-[var(--text-secondary)]">{actividad.notaFinalizacion}</p>
                             {actividad.fechaFinalizacion && (
                               <span className="type-caption text-[var(--text-tertiary)] mt-0.5">
-                                Finalizada: {actividad.fechaFinalizacion}
+                                Finalizada: {formatFechaHora(actividad.fechaFinalizacion)}
                               </span>
                             )}
                           </div>

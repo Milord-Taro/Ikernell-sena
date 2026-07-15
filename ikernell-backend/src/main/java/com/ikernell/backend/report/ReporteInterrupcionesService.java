@@ -5,12 +5,6 @@ import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.repository.InterrupcionRepository;
 import com.ikernell.backend.repository.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -176,58 +170,32 @@ public class ReporteInterrupcionesService {
     // ================= PDF =================
 
     private byte[] generarPdf(List<ReporteInterrupcionFila> filas) {
-        try (PDDocument documento = new PDDocument();
-             ByteArrayOutputStream salida = new ByteArrayOutputStream()) {
+        try {
+            PdfTablaWriter escritor = new PdfTablaWriter();
+            escritor.titulo("Reporte de interrupciones por proyecto");
 
-            PDPage pagina = new PDPage(PDRectangle.A4);
-            documento.addPage(pagina);
-
-            try (PDPageContentStream contenido = new PDPageContentStream(documento, pagina)) {
-                float y = pagina.getMediaBox().getHeight() - 50;
-                float margenIzquierdo = 40;
-
-                contenido.beginText();
-                contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
-                contenido.newLineAtOffset(margenIzquierdo, y);
-                contenido.showText("Reporte de interrupciones por proyecto");
-                contenido.endText();
-
-                y -= 30;
-                contenido.beginText();
-                contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 8);
-                contenido.newLineAtOffset(margenIzquierdo, y);
-                contenido.showText(String.format("%-10s %-13s %-16s %-14s %-20s %-5s %-16s",
-                        "Codigo", "Etapa", "Actividad", "Tipo", "Motivo", "Min", "Registrado"));
-                contenido.endText();
-
-                contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 8);
-                for (ReporteInterrupcionFila fila : filas) {
-                    y -= 16;
-                    contenido.beginText();
-                    contenido.newLineAtOffset(margenIzquierdo, y);
-                    contenido.showText(String.format("%-10s %-13s %-16s %-14s %-20s %-5d %-16s",
-                            recortar(fila.codigoInterrupcion(), 10),
-                            recortar(fila.etapa(), 13),
-                            recortar(fila.actividad(), 16),
-                            recortar(fila.tipoInterrupcion(), 14),
-                            recortar(fila.motivo(), 20),
-                            fila.duracionMinutos(),
-                            recortar(fila.fechaRegistro().toString(), 16)));
-                    contenido.endText();
-                }
+            if (filas.isEmpty()) {
+                escritor.sinDatos("No hay interrupciones registradas.");
+            } else {
+                escritor.tabla(
+                        new String[]{"Código", "Etapa", "Actividad", "Tipo", "Motivo", "Min.", "Registrado"},
+                        new float[]{1.2f, 1.3f, 1.5f, 1.3f, 1.8f, 0.6f, 1.3f},
+                        filas.stream()
+                                .map(fila -> new String[]{
+                                        fila.codigoInterrupcion(),
+                                        fila.etapa(),
+                                        fila.actividad(),
+                                        fila.tipoInterrupcion(),
+                                        fila.motivo(),
+                                        String.valueOf(fila.duracionMinutos()),
+                                        fila.fechaRegistro().toString(),
+                                })
+                                .toList());
             }
 
-            documento.save(salida);
-            return salida.toByteArray();
+            return escritor.exportar();
         } catch (IOException ex) {
             throw new UncheckedIOException("Error generando el archivo PDF del reporte.", ex);
         }
-    }
-
-    private String recortar(String valor, int maximo) {
-        if (valor == null) {
-            return "";
-        }
-        return valor.length() > maximo ? valor.substring(0, maximo) : valor;
     }
 }

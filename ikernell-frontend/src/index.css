@@ -18,6 +18,12 @@
   --primary-fg:       #FFFFFF;
   --secondary-bg:     #EEF2FB;
   --secondary-fg:     #2461E8;
+  /* Por defecto es el mismo --border genérico (sin cambio visual) -- solo
+     diverge en .alto-contraste, igual que *-border en success/warning/
+     error/info. Sin este token propio, el badge 'default' (Finalizado,
+     Autenticar...) quedaba con el borde gris genérico mientras los demás
+     variants sí se reforzaban, así que se veía inconsistentemente débil. */
+  --secondary-border: var(--border);
 
   --success:          #15803D;
   --success-bg:       #F0FDF4;
@@ -65,6 +71,7 @@
   --primary-fg:       #FFFFFF;
   --secondary-bg:     #1A2340;
   --secondary-fg:     #93C5FD;
+  --secondary-border: var(--border);
 
   --success:          #22C55E;
   --success-bg:       #052E16;
@@ -207,6 +214,16 @@ body {
   --text-secondary: #2B3245;
   --text-tertiary:  #454E63;
   --muted-fg:       #454E63;
+  /* Los badges (Badge, Feedback, JsonDiffTree) no usan --border para su
+     contorno -- cada variante tiene su propio *-border pastel, pensado
+     para tema normal, que --border arriba no toca. Sin esto, los badges
+     de éxito/advertencia/error/info se quedan con un borde casi invisible
+     en alto contraste. Se sube al mismo tono que su -fg correspondiente. */
+  --success-border: #15803D;
+  --warning-border: #B45309;
+  --error-border:   #C81E1E;
+  --info-border:    #1D4ED8;
+  --secondary-border: #2461E8;
 }
 
 .dark.alto-contraste {
@@ -215,6 +232,11 @@ body {
   --text-secondary: #D7DCE8;
   --text-tertiary:  #B8C0D2;
   --muted-fg:       #B8C0D2;
+  --success-border: #22C55E;
+  --warning-border: #F59E0B;
+  --secondary-border: #93C5FD;
+  --error-border:   #EF4444;
+  --info-border:    #3B82F6;
 }
 
 .alto-contraste .focus-ring:focus-visible {

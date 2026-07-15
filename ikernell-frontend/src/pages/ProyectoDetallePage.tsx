@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatFecha } from '../utils/formatDate';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Pencil, Trash2, User } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
@@ -185,11 +186,11 @@ export default function ProyectoDetallePage() {
             </div>
             <div className="flex flex-col gap-1">
               <span className="type-label text-[var(--text-tertiary)]">Fecha de inicio</span>
-              <span className="type-code text-[var(--text-primary)]">{proyecto.fechaInicio}</span>
+              <span className="type-code text-[var(--text-primary)]">{formatFecha(proyecto.fechaInicio)}</span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="type-label text-[var(--text-tertiary)]">Fecha de fin</span>
-              <span className="type-code text-[var(--text-primary)]">{proyecto.fechaFin}</span>
+              <span className="type-code text-[var(--text-primary)]">{formatFecha(proyecto.fechaFin)}</span>
             </div>
             <Badge variant={variantePorEstado[proyecto.estado]}>{proyecto.estado}</Badge>
           </div>

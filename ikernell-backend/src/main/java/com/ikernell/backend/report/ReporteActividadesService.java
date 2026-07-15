@@ -5,12 +5,6 @@ import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.repository.ActividadRepository;
 import com.ikernell.backend.repository.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -180,58 +174,32 @@ public class ReporteActividadesService {
     // ================= PDF =================
 
     private byte[] generarPdf(List<ReporteActividadFila> filas) {
-        try (PDDocument documento = new PDDocument();
-             ByteArrayOutputStream salida = new ByteArrayOutputStream()) {
+        try {
+            PdfTablaWriter escritor = new PdfTablaWriter();
+            escritor.titulo("Reporte de actividades por proyecto");
 
-            PDPage pagina = new PDPage(PDRectangle.A4);
-            documento.addPage(pagina);
-
-            try (PDPageContentStream contenido = new PDPageContentStream(documento, pagina)) {
-                float y = pagina.getMediaBox().getHeight() - 50;
-                float margenIzquierdo = 40;
-
-                contenido.beginText();
-                contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
-                contenido.newLineAtOffset(margenIzquierdo, y);
-                contenido.showText("Reporte de actividades por proyecto");
-                contenido.endText();
-
-                y -= 30;
-                contenido.beginText();
-                contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 9);
-                contenido.newLineAtOffset(margenIzquierdo, y);
-                contenido.showText(String.format("%-10s %-15s %-18s %-9s %-18s %-11s %-11s",
-                        "Codigo", "Etapa", "Desarrollador", "Prioridad", "Estado", "Inicio", "Fin"));
-                contenido.endText();
-
-                contenido.setFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA), 9);
-                for (ReporteActividadFila fila : filas) {
-                    y -= 16;
-                    contenido.beginText();
-                    contenido.newLineAtOffset(margenIzquierdo, y);
-                    contenido.showText(String.format("%-10s %-15s %-18s %-9s %-18s %-11s %-11s",
-                            recortar(fila.codigoActividad(), 10),
-                            recortar(fila.etapa(), 15),
-                            recortar(fila.desarrollador(), 18),
-                            recortar(fila.prioridad().getValor(), 9),
-                            recortar(fila.estado().getValor(), 18),
-                            fila.fechaInicio(),
-                            fila.fechaFin()));
-                    contenido.endText();
-                }
+            if (filas.isEmpty()) {
+                escritor.sinDatos("No hay actividades registradas.");
+            } else {
+                escritor.tabla(
+                        new String[]{"Código", "Etapa", "Desarrollador", "Prioridad", "Estado", "Inicio", "Fin"},
+                        new float[]{1.3f, 1.6f, 1.8f, 0.9f, 1.4f, 0.9f, 0.9f},
+                        filas.stream()
+                                .map(fila -> new String[]{
+                                        fila.codigoActividad(),
+                                        fila.etapa(),
+                                        fila.desarrollador(),
+                                        fila.prioridad().getValor(),
+                                        fila.estado().getValor(),
+                                        fila.fechaInicio().toString(),
+                                        fila.fechaFin().toString(),
+                                })
+                                .toList());
             }
 
-            documento.save(salida);
-            return salida.toByteArray();
+            return escritor.exportar();
         } catch (IOException ex) {
             throw new UncheckedIOException("Error generando el archivo PDF del reporte.", ex);
         }
-    }
-
-    private String recortar(String valor, int maximo) {
-        if (valor == null) {
-            return "";
-        }
-        return valor.length() > maximo ? valor.substring(0, maximo) : valor;
     }
 }

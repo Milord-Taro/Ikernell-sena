@@ -29,10 +29,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UsuarioRequest {
 
-    @NotBlank(message = "El código del usuario es obligatorio.")
-    @Size(max = 20, message = "El código del usuario no puede superar los 20 caracteres.")
-    private String codigoUsuario;
-
     @NotBlank(message = "Los nombres son obligatorios.")
     @Size(min = 3, max = 100, message = "Los nombres deben tener entre 3 y 100 caracteres.")
     @Pattern(regexp = "^[\\p{L} ]+$", message = "Los nombres solo pueden contener letras y espacios.")

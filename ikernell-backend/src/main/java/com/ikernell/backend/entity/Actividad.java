@@ -37,7 +37,7 @@ public class Actividad {
     @Column(name = "id_actividad")
     private Integer idActividad;
 
-    @Column(name = "codigo_actividad", nullable = false, length = 20, unique = true)
+    @Column(name = "codigo_actividad", nullable = false, length = 40, unique = true)
     private String codigoActividad;
 
     @ManyToOne(fetch = FetchType.LAZY)

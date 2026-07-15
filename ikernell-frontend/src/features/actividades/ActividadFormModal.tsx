@@ -9,7 +9,6 @@ import type { ActividadResponse, ActividadRequest, NivelCriticidad } from '../..
 import type { AsignacionProyectoResponse } from '../../types/asignacionProyecto';
 
 interface ValoresFormulario {
-  codigoActividad: string;
   nombreActividad: string;
   descripcion: string;
   prioridad: NivelCriticidad;
@@ -19,7 +18,6 @@ interface ValoresFormulario {
 }
 
 const valoresVacios: ValoresFormulario = {
-  codigoActividad: '',
   nombreActividad: '',
   descripcion: '',
   prioridad: 'Media',
@@ -30,7 +28,6 @@ const valoresVacios: ValoresFormulario = {
 
 function actividadAValores(actividad: ActividadResponse): ValoresFormulario {
   return {
-    codigoActividad: actividad.codigoActividad,
     nombreActividad: actividad.nombreActividad,
     descripcion: actividad.descripcion ?? '',
     prioridad: actividad.prioridad,
@@ -40,7 +37,7 @@ function actividadAValores(actividad: ActividadResponse): ValoresFormulario {
   };
 }
 
-const LIMITES = { codigo: 20, nombre: 150 } as const;
+const LIMITES = { nombre: 150 } as const;
 
 interface ActividadFormModalProps {
   open: boolean;
@@ -95,7 +92,6 @@ export function ActividadFormModal({
 
     try {
       await onGuardar({
-        codigoActividad: valores.codigoActividad,
         idEtapa,
         // CORREGIDO: idUsuario solo se manda al crear -- ActividadMapper
         // ignora "usuario" en actualizarEntidadDesdeRequest() a
@@ -131,16 +127,6 @@ export function ActividadFormModal({
     <Modal open={open} onClose={onClose} title={esEdicion ? 'Editar actividad' : 'Nueva actividad'} size="md">
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo guardar">{error}</Alert>}
-
-        <Input
-          label="Código de la actividad"
-          required
-          maxLength={LIMITES.codigo}
-          value={valores.codigoActividad}
-          onChange={(e) => actualizarCampo('codigoActividad', e.target.value)}
-          error={erroresCampo.codigoActividad}
-          placeholder="ACT-001"
-        />
 
         <Input
           label="Nombre de la actividad"

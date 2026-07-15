@@ -6,12 +6,19 @@ import { Textarea } from '../../components/ui/FormControls';
 import { Alert } from '../../components/ui/Feedback';
 import { ApiRequestError } from '../../types/api';
 import { marcarMensajeComoLeido, responderMensaje } from '../../services/mensajes';
+import { formatFechaHora } from '../../utils/formatDate';
 import type { MensajeContactoResponse, EstadoMensaje } from '../../types/mensaje';
 
 const variantePorEstado: Record<EstadoMensaje, 'default' | 'success' | 'info'> = {
   'Pendiente': 'default',
   'Leído': 'info',
   'Atendido': 'success',
+};
+
+const labelPorEstado: Record<EstadoMensaje, string> = {
+  'Pendiente': 'No leído',
+  'Leído': 'Leído',
+  'Atendido': 'Atendido',
 };
 
 interface MensajeDetalleModalProps {
@@ -78,12 +85,12 @@ export function MensajeDetalleModal({ open, mensaje, onClose, onActualizado }: M
           <div className="flex flex-col">
             <span className="type-caption text-[var(--text-tertiary)]">Estado</span>
             <Badge variant={variantePorEstado[mensaje.estado]} size="sm" className="w-fit">
-              {mensaje.estado}
+              {labelPorEstado[mensaje.estado]}
             </Badge>
           </div>
           <div className="flex flex-col">
             <span className="type-caption text-[var(--text-tertiary)]">Enviado</span>
-            <span className="type-body-sm text-[var(--text-secondary)]">{mensaje.fechaEnvio}</span>
+            <span className="type-body-sm text-[var(--text-secondary)]">{formatFechaHora(mensaje.fechaEnvio)}</span>
           </div>
         </div>
 
@@ -99,7 +106,7 @@ export function MensajeDetalleModal({ open, mensaje, onClose, onActualizado }: M
             {mensaje.responsable && (
               <span className="type-caption text-[var(--text-tertiary)]">
                 Respondido por: {mensaje.responsable.nombres} {mensaje.responsable.apellidos}
-                {mensaje.fechaAtencion ? ` · ${mensaje.fechaAtencion}` : ''}
+                {mensaje.fechaAtencion ? ` · ${formatFechaHora(mensaje.fechaAtencion)}` : ''}
               </span>
             )}
           </div>

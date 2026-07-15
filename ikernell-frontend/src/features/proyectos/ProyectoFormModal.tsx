@@ -11,7 +11,6 @@ import type { ProyectoResponse, ProyectoRequest } from '../../types/proyecto';
 import type { UsuarioResponse } from '../../types/usuario';
 
 interface ValoresFormulario {
-  codigoProyecto: string;
   nombreProyecto: string;
   descripcion: string;
   fechaInicio: string;
@@ -20,7 +19,6 @@ interface ValoresFormulario {
 }
 
 const valoresVacios: ValoresFormulario = {
-  codigoProyecto: '',
   nombreProyecto: '',
   descripcion: '',
   fechaInicio: '',
@@ -30,7 +28,6 @@ const valoresVacios: ValoresFormulario = {
 
 function proyectoAValores(proyecto: ProyectoResponse): ValoresFormulario {
   return {
-    codigoProyecto: proyecto.codigoProyecto,
     nombreProyecto: proyecto.nombreProyecto,
     descripcion: proyecto.descripcion ?? '',
     fechaInicio: proyecto.fechaInicio,
@@ -39,7 +36,7 @@ function proyectoAValores(proyecto: ProyectoResponse): ValoresFormulario {
   };
 }
 
-const LIMITES = { codigo: 20, nombre: 150 } as const;
+const LIMITES = { nombre: 150 } as const;
 
 interface ProyectoFormModalProps {
   open: boolean;
@@ -99,7 +96,6 @@ export function ProyectoFormModal({ open, proyectoEditando, onClose, onGuardar }
 
     try {
       await onGuardar({
-        codigoProyecto: valores.codigoProyecto,
         nombreProyecto: valores.nombreProyecto,
         descripcion: valores.descripcion || undefined,
         fechaInicio: valores.fechaInicio,
@@ -131,15 +127,6 @@ export function ProyectoFormModal({ open, proyectoEditando, onClose, onGuardar }
       <form onSubmit={manejarEnvio} className="flex flex-col gap-4">
         {error && <Alert variant="error" title="No se pudo guardar">{error}</Alert>}
 
-        <Input
-          label="Código del proyecto"
-          required
-          maxLength={LIMITES.codigo}
-          value={valores.codigoProyecto}
-          onChange={(e) => actualizarCampo('codigoProyecto', e.target.value)}
-          error={erroresCampo.codigoProyecto}
-          placeholder="PROY-001"
-        />
         <Input
           label="Nombre del proyecto"
           required
@@ -176,6 +163,12 @@ export function ProyectoFormModal({ open, proyectoEditando, onClose, onGuardar }
             error={errorFechas}
           />
         </div>
+
+        {esEdicion && (
+          <Alert variant="info">
+            El líder del proyecto se asigna o cambia desde la pestaña "Equipo", en el detalle del proyecto.
+          </Alert>
+        )}
 
         {/* Solo Coordinador, y solo al crear -- un Líder que crea ya
             queda autovinculado, no necesita elegir nada aquí. */}

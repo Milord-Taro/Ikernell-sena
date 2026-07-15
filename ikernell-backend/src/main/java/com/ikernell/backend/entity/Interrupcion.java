@@ -31,7 +31,7 @@ public class Interrupcion {
     @Column(name = "id_interrupcion")
     private Integer idInterrupcion;
 
-    @Column(name = "codigo_interrupcion", nullable = false, length = 20, unique = true)
+    @Column(name = "codigo_interrupcion", nullable = false, length = 50, unique = true)
     private String codigoInterrupcion;
 
     @ManyToOne(fetch = FetchType.LAZY)
