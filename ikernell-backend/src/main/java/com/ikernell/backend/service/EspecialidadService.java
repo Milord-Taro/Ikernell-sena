@@ -38,8 +38,7 @@ public class EspecialidadService {
         validarNombreDisponible(request.getNombreEspecialidad(), null);
 
         Especialidad especialidad = especialidadMapper.toEntity(request);
-        especialidad.setCodigoEspecialidad(codigoGeneradorService.siguienteCodigoEspecialidad());
-        Especialidad guardada = especialidadRepository.save(especialidad);
+        Especialidad guardada = guardarConCodigoUnico(especialidad);
 
         EspecialidadResponse response = especialidadMapper.toResponse(guardada);
         trazabilidadService.registrar(
@@ -145,6 +144,26 @@ public class EspecialidadService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: siguienteCodigoEspecialidad() calcula el código a partir
+     * del MAX() actual, así que dos altas concurrentes pueden calcular el
+     * mismo siguiente código antes de que la primera termine de guardar.
+     * save() sobre una entidad nueva con GenerationType.IDENTITY ejecuta el
+     * INSERT de inmediato (lo necesita para obtener el id generado), así
+     * que la violación de uq_especialidad_codigo se lanza aquí mismo y no
+     * queda diferida al flush final -- se traduce a un 409 legible en vez
+     * de tumbar la petición con un 500 sin explicación.
+     */
+    private Especialidad guardarConCodigoUnico(Especialidad especialidad) {
+        especialidad.setCodigoEspecialidad(codigoGeneradorService.siguienteCodigoEspecialidad());
+        try {
+            return especialidadRepository.save(especialidad);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "No se pudo generar un código único para la especialidad, intenta nuevamente.");
         }
     }
 

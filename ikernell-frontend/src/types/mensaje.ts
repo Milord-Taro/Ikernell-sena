@@ -1,4 +1,4 @@
-import type { UsuarioResponse } from './usuario';
+import type { UsuarioResumenResponse } from './usuario';
 
 export type EstadoMensaje = 'Pendiente' | 'Leído' | 'Atendido';
 
@@ -20,7 +20,7 @@ export interface MensajeContactoResponse {
   detalle: string;
   estado: EstadoMensaje;
   respuesta: string | null;
-  responsable: UsuarioResponse | null;
+  responsable: UsuarioResumenResponse | null;
   fechaEnvio: string;
   fechaAtencion: string | null;
 }

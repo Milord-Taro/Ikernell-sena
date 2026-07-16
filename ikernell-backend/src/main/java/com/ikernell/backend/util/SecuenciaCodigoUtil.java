@@ -1,6 +1,5 @@
 package com.ikernell.backend.util;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,15 +18,22 @@ public final class SecuenciaCodigoUtil {
         // Clase de utilidad: no se instancia.
     }
 
-    public static int siguienteSecuencia(List<String> codigosExistentes) {
-        int maximo = 0;
-        for (String codigo : codigosExistentes) {
-            Matcher m = SUFIJO_NUMERICO.matcher(codigo);
-            if (m.find()) {
-                maximo = Math.max(maximo, Integer.parseInt(m.group(1)));
-            }
+    /**
+     * Calcula la siguiente secuencia a partir de un único código: el MAX ya
+     * calculado en SQL, en vez de cargar y recorrer todos los códigos
+     * existentes en Java. Válido porque todos los códigos de un mismo
+     * padre comparten prefijo y ancho fijo con ceros a la izquierda -- bajo
+     * esas condiciones, el MAX() lexicográfico de SQL coincide con el MAX
+     * numérico real, así que ordenar en la base de datos y traer solo un
+     * valor es equivalente a comparar todos los códigos uno por uno en
+     * Java, pero sin materializar N entidades para descartar N-1.
+     */
+    public static int siguienteSecuenciaDesdeMaximo(String codigoMaximo) {
+        if (codigoMaximo == null) {
+            return 1;
         }
-        return maximo + 1;
+        Matcher m = SUFIJO_NUMERICO.matcher(codigoMaximo);
+        return m.find() ? Integer.parseInt(m.group(1)) + 1 : 1;
     }
 
     public static String conCeros(int numero, int digitos) {

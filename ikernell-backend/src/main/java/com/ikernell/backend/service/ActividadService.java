@@ -57,7 +57,6 @@ public class ActividadService {
 
         Actividad actividad = actividadMapper.toEntity(request);
         actividad.setEtapa(etapa);
-        actividad.setCodigoActividad(codigoGeneradorService.siguienteCodigoActividad(etapa));
 
         if (request.getIdUsuario() != null) {
             validarPerteneceAlEquipo(request.getIdUsuario(), etapa.getProyecto().getIdProyecto());
@@ -68,7 +67,7 @@ public class ActividadService {
             actividad.setEstado(EstadoActividad.PENDIENTE_DE_ASIGNACION);
         }
 
-        Actividad guardada = actividadRepository.save(actividad);
+        Actividad guardada = guardarConCodigoUnico(actividad, etapa);
         // NUEVO: si nace ya asignada, se notifica al desarrollador de una vez.
         if (guardada.getUsuario() != null) {
             notificarAsignacion(guardada);
@@ -307,6 +306,23 @@ public class ActividadService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DE LA MISMA ETAPA pueden calcular el mismo siguiente código
+     * antes de que la primera termine de guardar; se traduce la violación
+     * de uq_actividad_codigo a un 409 legible en vez de un 500 sin
+     * explicación.
+     */
+    private Actividad guardarConCodigoUnico(Actividad actividad, Etapa etapa) {
+        actividad.setCodigoActividad(codigoGeneradorService.siguienteCodigoActividad(etapa));
+        try {
+            return actividadRepository.save(actividad);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la actividad, intenta nuevamente.");
         }
     }
 

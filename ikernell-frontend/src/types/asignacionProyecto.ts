@@ -1,4 +1,4 @@
-import type { UsuarioResponse } from './usuario';
+import type { UsuarioResumenResponse } from './usuario';
 import type { ProyectoResponse } from './proyecto';
 
 export type RolProyecto = 'Líder' | 'Desarrollador';
@@ -7,7 +7,7 @@ export type RolProyecto = 'Líder' | 'Desarrollador';
  * DTOs completos, no una versión resumida. */
 export interface AsignacionProyectoResponse {
   idAsignacionProyecto: number;
-  usuario: UsuarioResponse;
+  usuario: UsuarioResumenResponse;
   proyecto: ProyectoResponse;
   rolProyecto: RolProyecto;
   fechaAsignacion: string;

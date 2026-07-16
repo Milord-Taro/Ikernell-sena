@@ -37,10 +37,39 @@ public class TrazabilidadService {
                 .codigoRegistro(codigoRegistro)
                 .operacion(operacion)
                 .detalle(detalle)
+                .detalleAnterior(calcularDetalleAnterior(entidad, codigoRegistro, detalle))
                 .direccionIp(obtenerDireccionIpActual())
                 .build();
 
         trazabilidadRepository.save(evento);
+    }
+
+    /**
+     * CORREGIDO (C7): antes esto se recalculaba en cada lectura,
+     * recorriendo TODO el historial del recurso en memoria (ver
+     * TrazabilidadQueryService antes de este cambio) -- además de caro,
+     * hacía imposible paginar la auditoría de forma correcta. Ahora se
+     * calcula UNA vez, acá, con una sola consulta puntual.
+     *
+     * Solo se encadenan eventos cuyo detalle es JSON (empieza por '{');
+     * los mensajes de auditoría en texto plano (ej. "Inicio de sesión
+     * exitoso.") ni generan ni reciben un "anterior" -- si el evento
+     * nuevo no es JSON, no tiene sentido buscarle uno.
+     */
+    private String calcularDetalleAnterior(String entidad, String codigoRegistro, String detalleNuevo) {
+        if (!esDetalleJson(detalleNuevo)) {
+            return null;
+        }
+
+        return trazabilidadRepository
+                .findFirstByEntidadAndCodigoRegistroAndDetalleStartingWithOrderByFechaEventoDescIdTrazabilidadDesc(
+                        entidad, codigoRegistro, "{")
+                .map(Trazabilidad::getDetalle)
+                .orElse(null);
+    }
+
+    private boolean esDetalleJson(String detalle) {
+        return detalle != null && detalle.strip().startsWith("{");
     }
 
     /**

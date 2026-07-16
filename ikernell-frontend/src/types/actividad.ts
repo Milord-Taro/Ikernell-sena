@@ -1,5 +1,5 @@
 import type { EtapaResponse } from './etapa';
-import type { UsuarioResponse } from './usuario';
+import type { UsuarioResumenResponse } from './usuario';
 
 /**
  * Los valores textuales deben coincidir EXACTO con @JsonValue de
@@ -43,7 +43,7 @@ export interface ActividadResponse {
   codigoActividad: string;
   etapa: EtapaResponse;
   /** null cuando el estado es "Pendiente de asignación". */
-  usuario: UsuarioResponse | null;
+  usuario: UsuarioResumenResponse | null;
   nombreActividad: string;
   descripcion: string | null;
   prioridad: NivelCriticidad;

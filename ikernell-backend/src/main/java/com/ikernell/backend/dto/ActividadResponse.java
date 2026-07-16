@@ -21,7 +21,7 @@ public class ActividadResponse {
     private Integer idActividad;
     private String codigoActividad;
     private EtapaResponse etapa;
-    private UsuarioResponse usuario;
+    private UsuarioResumenResponse usuario;
     private String nombreActividad;
     private String descripcion;
     private NivelCriticidad prioridad;

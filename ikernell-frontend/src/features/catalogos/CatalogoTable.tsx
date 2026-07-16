@@ -5,6 +5,7 @@ import { Button } from '../../components/ui/Button';
 import { Switch } from '../../components/ui/FormControls';
 import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { CatalogoFormModal } from './CatalogoFormModal';
+import { useCarga } from '../../hooks/useCarga';
 import { ApiRequestError } from '../../types/api';
 import type { CatalogoConfig, CatalogoItem } from './config';
 
@@ -14,22 +15,18 @@ interface CatalogoTableProps<TResponse, TRequest> {
 
 export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProps<TResponse, TRequest>) {
   const [items, setItems] = useState<CatalogoItem[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [busqueda, setBusqueda] = useState('');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [itemEditando, setItemEditando] = useState<CatalogoItem | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [itemAEliminar, setItemAEliminar] = useState<CatalogoItem | null>(null);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       const respuesta = await config.servicio.listar();
       setItems(respuesta.map(config.aItem));
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   // Se vuelve a cargar cada vez que cambia de catálogo (al cambiar de tab).
   useEffect(() => {
@@ -81,6 +78,7 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
 
   return (
     <div className="flex flex-col gap-4">
+      {errorCarga && <Alert variant="error" title="No se pudo cargar el catálogo">{errorCarga}</Alert>}
       {error && <Alert variant="error" title="No se pudo eliminar">{error}</Alert>}
 
       <div className="flex items-center justify-between gap-3">
@@ -115,11 +113,13 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
         emptyMessage={`No hay ${config.tituloPlural.toLowerCase()} registrados`}
         emptyDescription={`Crea el primer registro de ${config.tituloPlural.toLowerCase()} para empezar.`}
         columns={[
-          { key: 'codigo', header: 'Código', mono: true, width: '160px' },
-          { key: 'nombre', header: 'Nombre' },
+          { key: 'codigo', header: 'Código', mono: true, width: '160px', sortable: true },
+          { key: 'nombre', header: 'Nombre', sortable: true },
           {
             key: 'descripcion',
             header: 'Descripción',
+            sortable: true,
+            sortValue: (row) => row.descripcion,
             render: (row) => (
               <span className="text-[var(--text-secondary)]">{row.descripcion || '—'}</span>
             ),
@@ -128,6 +128,8 @@ export function CatalogoTable<TResponse, TRequest>({ config }: CatalogoTableProp
             key: 'activo',
             header: 'Estado',
             width: '110px',
+            sortable: true,
+            sortValue: (row) => row.activo,
             render: (row) => (
               <Switch checked={row.activo} onChange={(checked) => alCambiarEstado(row, checked)} />
             ),

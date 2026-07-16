@@ -30,6 +30,22 @@ import org.springframework.transaction.annotation.Transactional;
  * que la secuencia numérica se reinicia por padre pero el código completo
  * sigue siendo único de forma natural en toda la base de datos, sin
  * necesitar un chequeo de unicidad global aparte.
+ *
+ * CORREGIDO (rendimiento): antes cada método cargaba TODAS las entidades
+ * existentes (a veces la tabla completa) solo para leer su columna de
+ * código y quedarse con el máximo -- O(n) filas materializadas como
+ * entidades JPA completas en cada alta. Ahora cada repositorio expone un
+ * MAX() ya resuelto en SQL (buscarCodigoMaximo), así que aquí solo se
+ * recibe un único String y se parsea su sufijo numérico.
+ *
+ * La ventana de carrera (dos altas concurrentes leyendo el mismo MAX antes
+ * de que la primera termine de guardar) sigue existiendo -- es inherente a
+ * "calcular siguiente número" sin una secuencia de base de datos por
+ * padre, que no es viable aquí porque la secuencia se reinicia por padre.
+ * Se acepta la ventana y se traduce el choque (violación de la restricción
+ * UNIQUE del código) a un 409 legible en el Service que llama a save(),
+ * en vez de dejarlo caer como 500 -- ver el catch de DataIntegrityViolationException
+ * en, por ejemplo, ProyectoService.crear().
  */
 @Service
 @RequiredArgsConstructor
@@ -49,73 +65,61 @@ public class CodigoGeneradorService {
     private final UsuarioRepository usuarioRepository;
 
     public String siguienteCodigoUsuario() {
-        var codigos = usuarioRepository.findAllByOrderByIdUsuarioAsc().stream()
-                .map(u -> u.getCodigoUsuario()).toList();
-        return "USR-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(usuarioRepository.buscarCodigoMaximo());
+        return "USR-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 
     public String siguienteCodigoProyecto() {
-        var codigos = proyectoRepository.findAllByOrderByIdProyectoAsc().stream()
-                .map(Proyecto::getCodigoProyecto).toList();
-        return "PRY-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(proyectoRepository.buscarCodigoMaximo());
+        return "PRY-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 
     public String siguienteCodigoEtapa(Proyecto proyecto) {
-        var codigos = etapaRepository.findByProyecto_IdProyectoOrderByIdEtapaAsc(proyecto.getIdProyecto()).stream()
-                .map(Etapa::getCodigoEtapa).toList();
-        return proyecto.getCodigoProyecto() + "-ETP-"
-                + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 2);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(
+                etapaRepository.buscarCodigoMaximo(proyecto.getIdProyecto()));
+        return proyecto.getCodigoProyecto() + "-ETP-" + SecuenciaCodigoUtil.conCeros(secuencia, 2);
     }
 
     public String siguienteCodigoActividad(Etapa etapa) {
-        var codigos = actividadRepository.findByEtapa_IdEtapaOrderByIdActividadAsc(etapa.getIdEtapa()).stream()
-                .map(Actividad::getCodigoActividad).toList();
-        return etapa.getCodigoEtapa() + "-ACT-"
-                + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 2);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(
+                actividadRepository.buscarCodigoMaximo(etapa.getIdEtapa()));
+        return etapa.getCodigoEtapa() + "-ACT-" + SecuenciaCodigoUtil.conCeros(secuencia, 2);
     }
 
     public String siguienteCodigoRegistroError(Actividad actividad) {
-        var codigos = registroErrorRepository
-                .findByActividad_IdActividadOrderByIdRegistroErrorAsc(actividad.getIdActividad()).stream()
-                .map(r -> r.getCodigoRegistroError()).toList();
-        return actividad.getCodigoActividad() + "-ERR-"
-                + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 2);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(
+                registroErrorRepository.buscarCodigoMaximo(actividad.getIdActividad()));
+        return actividad.getCodigoActividad() + "-ERR-" + SecuenciaCodigoUtil.conCeros(secuencia, 2);
     }
 
     public String siguienteCodigoInterrupcion(Actividad actividad) {
-        var codigos = interrupcionRepository.findByActividad_IdActividad(actividad.getIdActividad()).stream()
-                .map(i -> i.getCodigoInterrupcion()).toList();
-        return actividad.getCodigoActividad() + "-INT-"
-                + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 2);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(
+                interrupcionRepository.buscarCodigoMaximo(actividad.getIdActividad()));
+        return actividad.getCodigoActividad() + "-INT-" + SecuenciaCodigoUtil.conCeros(secuencia, 2);
     }
 
     public String siguienteCodigoRol() {
-        var codigos = rolRepository.findAllByOrderByIdRolAsc().stream()
-                .map(r -> r.getCodigoRol()).toList();
-        return "ROL-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(rolRepository.buscarCodigoMaximo());
+        return "ROL-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 
     public String siguienteCodigoProfesion() {
-        var codigos = profesionRepository.findAllByOrderByIdProfesionAsc().stream()
-                .map(p -> p.getCodigoProfesion()).toList();
-        return "PRF-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(profesionRepository.buscarCodigoMaximo());
+        return "PRF-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 
     public String siguienteCodigoEspecialidad() {
-        var codigos = especialidadRepository.findAllByOrderByIdEspecialidadAsc().stream()
-                .map(e -> e.getCodigoEspecialidad()).toList();
-        return "ESP-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(especialidadRepository.buscarCodigoMaximo());
+        return "ESP-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 
     public String siguienteCodigoTipoError() {
-        var codigos = tipoErrorRepository.findAllByOrderByIdTipoErrorAsc().stream()
-                .map(t -> t.getCodigoTipoError()).toList();
-        return "TER-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(tipoErrorRepository.buscarCodigoMaximo());
+        return "TER-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 
     public String siguienteCodigoTipoInterrupcion() {
-        var codigos = tipoInterrupcionRepository.findAllByOrderByIdTipoInterrupcionAsc().stream()
-                .map(t -> t.getCodigoTipoInterrupcion()).toList();
-        return "TIN-" + SecuenciaCodigoUtil.conCeros(SecuenciaCodigoUtil.siguienteSecuencia(codigos), 3);
+        int secuencia = SecuenciaCodigoUtil.siguienteSecuenciaDesdeMaximo(tipoInterrupcionRepository.buscarCodigoMaximo());
+        return "TIN-" + SecuenciaCodigoUtil.conCeros(secuencia, 3);
     }
 }

@@ -16,6 +16,7 @@ import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
+import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.InterrupcionMapper;
@@ -25,6 +26,7 @@ import com.ikernell.backend.repository.InterrupcionRepository;
 import com.ikernell.backend.repository.TipoInterrupcionRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,9 +84,8 @@ public class InterrupcionService {
         interrupcion.setActividad(actividad);
         interrupcion.setTipoInterrupcion(tipoInterrupcion);
         interrupcion.setUsuarioCreador(solicitante);
-        interrupcion.setCodigoInterrupcion(codigoGeneradorService.siguienteCodigoInterrupcion(actividad));
 
-        Interrupcion guardada = interrupcionRepository.save(interrupcion);
+        Interrupcion guardada = guardarConCodigoUnico(interrupcion, actividad);
         notificarLider(guardada, solicitante);
 
         InterrupcionResponse response = interrupcionMapper.toResponse(guardada);
@@ -103,6 +104,23 @@ public class InterrupcionService {
      * el Líder conozca, no un dato rutinario). Si el propio Líder fue
      * quien la registró, no se le notifica a sí mismo.
      */
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DE LA MISMA ACTIVIDAD pueden calcular el mismo siguiente
+     * código antes de que la primera termine de guardar; se traduce la
+     * violación de uq_interrupcion_codigo a un 409 legible en vez de un
+     * 500 sin explicación.
+     */
+    private Interrupcion guardarConCodigoUnico(Interrupcion interrupcion, Actividad actividad) {
+        interrupcion.setCodigoInterrupcion(codigoGeneradorService.siguienteCodigoInterrupcion(actividad));
+        try {
+            return interrupcionRepository.save(interrupcion);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la interrupción, intenta nuevamente.");
+        }
+    }
+
     private void notificarLider(Interrupcion interrupcion, Usuario solicitante) {
         Integer idProyecto = interrupcion.getActividad().getEtapa().getProyecto().getIdProyecto();
         asignacionProyectoRepository

@@ -1,5 +1,5 @@
 import type { ActividadResponse, NivelCriticidad } from './actividad';
-import type { TipoErrorResponse, UsuarioResponse } from './usuario';
+import type { TipoErrorResponse, UsuarioResumenResponse } from './usuario';
 
 export type EstadoRegistroError = 'Abierto' | 'En progreso' | 'Resuelto' | 'Descartado';
 
@@ -16,7 +16,7 @@ export interface RegistroErrorResponse {
   actividad: ActividadResponse;
   tipoError: TipoErrorResponse;
   /** NUEVO: quién lo registró -- el propio desarrollador, o el Líder si lo creó él. */
-  usuarioCreador: UsuarioResponse | null;
+  usuarioCreador: UsuarioResumenResponse | null;
   titulo: string;
   descripcion: string;
   severidad: NivelCriticidad;

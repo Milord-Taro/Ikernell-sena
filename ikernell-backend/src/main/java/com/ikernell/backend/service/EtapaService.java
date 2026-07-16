@@ -54,10 +54,9 @@ public class EtapaService {
 
         Etapa etapa = etapaMapper.toEntity(request);
         etapa.setProyecto(proyecto);
-        etapa.setCodigoEtapa(codigoGeneradorService.siguienteCodigoEtapa(proyecto));
         etapa.setEstado(EstadoEtapa.PENDIENTE);
 
-        Etapa guardada = etapaRepository.save(etapa);
+        Etapa guardada = guardarConCodigoUnico(etapa, proyecto);
 
         EtapaResponse response = etapaMapper.toResponse(guardada);
         trazabilidadService.registrar(
@@ -205,6 +204,22 @@ public class EtapaService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DEL MISMO PROYECTO pueden calcular el mismo siguiente código
+     * antes de que la primera termine de guardar; se traduce la violación
+     * de uq_etapa_codigo a un 409 legible en vez de un 500 sin explicación.
+     */
+    private Etapa guardarConCodigoUnico(Etapa etapa, Proyecto proyecto) {
+        etapa.setCodigoEtapa(codigoGeneradorService.siguienteCodigoEtapa(proyecto));
+        try {
+            return etapaRepository.save(etapa);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la etapa, intenta nuevamente.");
         }
     }
 

@@ -7,7 +7,7 @@ import com.ikernell.backend.constants.RolConstantes;
 import com.ikernell.backend.dto.NotificacionRequest;
 import com.ikernell.backend.dto.ProyectoRequest;
 import com.ikernell.backend.dto.ProyectoResponse;
-import com.ikernell.backend.dto.UsuarioResponse;
+import com.ikernell.backend.dto.UsuarioResumenResponse;
 import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.entity.Proyecto;
 import com.ikernell.backend.entity.Usuario;
@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,9 +71,8 @@ public class ProyectoService {
         Usuario creador = autorizacionProyectoService.buscarUsuarioOFallar(correoCreador);
 
         Proyecto proyecto = proyectoMapper.toEntity(request);
-        proyecto.setCodigoProyecto(codigoGeneradorService.siguienteCodigoProyecto());
         proyecto.setEstado(EstadoProyecto.PLANEACION);
-        Proyecto guardado = proyectoRepository.save(proyecto);
+        Proyecto guardado = guardarConCodigoUnico(proyecto);
 
         if (RolConstantes.LIDER_PROYECTO.equals(creador.getRol().getCodigoRol())) {
             vincularLider(guardado, creador);
@@ -97,19 +98,12 @@ public class ProyectoService {
     }
 
     public List<ProyectoResponse> listarTodos() {
-        return proyectoRepository.findAllByOrderByIdProyectoAsc()
-                .stream()
-                .map(this::enriquecerConLider)
-                .toList();
+        return enriquecerConLider(proyectoRepository.findAllByOrderByIdProyectoAsc());
     }
 
     public List<ProyectoResponse> listarPorEstado(String estadoTexto) {
         EstadoProyecto estado = parsearEstado(estadoTexto);
-
-        return proyectoRepository.findByEstadoOrderByIdProyectoAsc(estado)
-                .stream()
-                .map(this::enriquecerConLider)
-                .toList();
+        return enriquecerConLider(proyectoRepository.findByEstadoOrderByIdProyectoAsc(estado));
     }
 
     public ProyectoResponse obtenerPorId(Integer idProyecto) {
@@ -244,10 +238,36 @@ public class ProyectoService {
         return response;
     }
 
-    private UsuarioResponse obtenerLiderActual(Integer idProyecto) {
+    /**
+     * CORREGIDO: versión para listas -- antes listarTodos()/listarPorEstado()
+     * llamaban a enriquecerConLider(Proyecto) por cada fila, y esa versión
+     * hacía una consulta de "líder vigente" POR PROYECTO (N+1: un
+     * findByProyecto_Id... por cada proyecto de la lista). Acá se trae de
+     * una sola vez TODAS las asignaciones vigentes con rol Líder (mismo
+     * patrón ya usado en ReporteGeneralService.construirProyectos()) y se
+     * arma un mapa en memoria -- una sola consulta sin importar cuántos
+     * proyectos haya.
+     */
+    private List<ProyectoResponse> enriquecerConLider(List<Proyecto> proyectos) {
+        Map<Integer, UsuarioResumenResponse> lideresPorProyecto = asignacionProyectoRepository
+                .findByRolProyectoAndFechaDesvinculacionIsNull(RolProyecto.LIDER).stream()
+                .collect(Collectors.toMap(
+                        a -> a.getProyecto().getIdProyecto(),
+                        a -> usuarioMapper.toResumen(a.getUsuario())));
+
+        return proyectos.stream()
+                .map(proyecto -> {
+                    ProyectoResponse response = proyectoMapper.toResponse(proyecto);
+                    response.setLiderActual(lideresPorProyecto.get(proyecto.getIdProyecto()));
+                    return response;
+                })
+                .toList();
+    }
+
+    private UsuarioResumenResponse obtenerLiderActual(Integer idProyecto) {
         return asignacionProyectoRepository
                 .findByProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(idProyecto, RolProyecto.LIDER)
-                .map(asignacion -> usuarioMapper.toResponse(asignacion.getUsuario()))
+                .map(asignacion -> usuarioMapper.toResumen(asignacion.getUsuario()))
                 .orElse(null);
     }
 
@@ -262,6 +282,22 @@ public class ProyectoService {
     private void validarFechas(ProyectoRequest request) {
         if (request.getFechaFin().isBefore(request.getFechaInicio())) {
             throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_proyecto_codigo a
+     * un 409 legible en vez de un 500 sin explicación.
+     */
+    private Proyecto guardarConCodigoUnico(Proyecto proyecto) {
+        proyecto.setCodigoProyecto(codigoGeneradorService.siguienteCodigoProyecto());
+        try {
+            return proyectoRepository.save(proyecto);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el proyecto, intenta nuevamente.");
         }
     }
 

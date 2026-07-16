@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Activity, FolderKanban, Bug, GitBranch, MessageSquare, Info, CheckCheck } from 'lucide-react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { Alert } from '../components/ui/Feedback';
 import { Tabs } from '../components/layout/Navigation';
+import { useCarga } from '../hooks/useCarga';
 import { listarMisNotificaciones, marcarNotificacionComoLeida } from '../services/notificaciones';
 import { formatFechaHora } from '../utils/formatDate';
 import type { NotificacionResponse, TipoNotificacion } from '../types/notificacion';
@@ -27,21 +29,17 @@ export default function NotificacionesPage() {
   const navigate = useNavigate();
   const [tabActiva, setTabActiva] = useState('todas');
   const [notificaciones, setNotificaciones] = useState<NotificacionResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error, ejecutar } = useCarga();
   const [marcandoTodas, setMarcandoTodas] = useState(false);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
-      const resp = await listarMisNotificaciones();
-      setNotificaciones(resp);
-    } finally {
-      setCargando(false);
-    }
-  };
+  const cargar = () =>
+    ejecutar(async () => {
+      setNotificaciones(await listarMisNotificaciones());
+    });
 
   useEffect(() => {
     cargar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const visibles = tabActiva === 'no-leidas' ? notificaciones.filter((n) => !n.leida) : notificaciones;
@@ -85,6 +83,12 @@ export default function NotificacionesPage() {
       </div>
 
       <Tabs tabs={tabs} active={tabActiva} onChange={setTabActiva} variant="pill" />
+
+      {error && (
+        <Alert variant="error" title="No se pudieron cargar las notificaciones">
+          {error}
+        </Alert>
+      )}
 
       {cargando ? (
         <p className="type-body-sm text-[var(--text-tertiary)]">Cargando notificaciones...</p>

@@ -38,8 +38,7 @@ public class RolService {
         validarNombreDisponible(request.getNombreRol(), null);
 
         Rol rol = rolMapper.toEntity(request);
-        rol.setCodigoRol(codigoGeneradorService.siguienteCodigoRol());
-        Rol guardado = rolRepository.save(rol);
+        Rol guardado = guardarConCodigoUnico(rol);
 
         RolResponse response = rolMapper.toResponse(guardado);
         trazabilidadService.registrar(
@@ -145,6 +144,22 @@ public class RolService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_rol_codigo a un 409
+     * legible en vez de un 500 sin explicación.
+     */
+    private Rol guardarConCodigoUnico(Rol rol) {
+        rol.setCodigoRol(codigoGeneradorService.siguienteCodigoRol());
+        try {
+            return rolRepository.save(rol);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el rol, intenta nuevamente.");
         }
     }
 

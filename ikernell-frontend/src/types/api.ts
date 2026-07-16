@@ -8,6 +8,15 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+/** Refleja com.ikernell.backend.dto.PaginaResponse<T> -- usado por endpoints paginados (ej. /trazabilidad). */
+export interface PaginaResponse<T> {
+  contenido: T[];
+  pagina: number;
+  tamano: number;
+  totalElementos: number;
+  totalPaginas: number;
+}
+
 export interface CampoError {
   campo: string;
   mensaje: string;

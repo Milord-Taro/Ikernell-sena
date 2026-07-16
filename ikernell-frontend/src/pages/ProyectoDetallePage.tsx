@@ -18,6 +18,7 @@ import { ApiRequestError } from '../types/api';
 import { ESTADOS_PROYECTO } from '../types/proyecto';
 import type { ProyectoResponse, EstadoProyecto } from '../types/proyecto';
 import { useAuth } from '../context/AuthContext';
+import { useCarga } from '../hooks/useCarga';
 import { CODIGO_ROL } from '../types/usuario';
 
 const variantePorEstado: Record<EstadoProyecto, 'info' | 'success' | 'default' | 'warning' | 'error'> = {
@@ -33,7 +34,7 @@ export default function ProyectoDetallePage() {
   const navigate = useNavigate();
   const { usuario } = useAuth();
   const [proyecto, setProyecto] = useState<ProyectoResponse | null>(null);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [tabActiva, setTabActiva] = useState('etapas');
   const [modalEdicionAbierto, setModalEdicionAbierto] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,14 +46,11 @@ export default function ProyectoDetallePage() {
   const proyectoCancelado = proyecto?.estado === 'Cancelado';
   const estadoBloqueado = proyectoCancelado && !esCoordinador;
 
-  const cargar = async () => {
+  const cargar = () => {
     if (!idProyecto) return;
-    setCargando(true);
-    try {
+    return ejecutar(async () => {
       setProyecto(await obtenerProyectoPorId(Number(idProyecto)));
-    } finally {
-      setCargando(false);
-    }
+    });
   };
 
   useEffect(() => {
@@ -115,7 +113,17 @@ export default function ProyectoDetallePage() {
   }
 
   if (!proyecto) {
-    return <p className="type-body-sm text-[var(--text-tertiary)]">No se encontró el proyecto.</p>;
+    // CORREGIDO: antes "no encontrado" era el único mensaje posible acá,
+    // sin distinguir "el proyecto no existe" (404) de "falló la petición"
+    // (red caída, 500) -- ambos dejaban proyecto en null y se veían
+    // idénticos para el usuario.
+    return errorCarga ? (
+      <Alert variant="error" title="No se pudo cargar el proyecto">
+        {errorCarga}
+      </Alert>
+    ) : (
+      <p className="type-body-sm text-[var(--text-tertiary)]">No se encontró el proyecto.</p>
+    );
   }
 
   return (

@@ -1,6 +1,7 @@
 package com.ikernell.backend.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +35,13 @@ import java.util.List;
  *   anotaciones (quedan ahí escritas pero no se ejecutan) y lo único que
  *   protege la API es el anyRequest().authenticated() de abajo, sin
  *   distinguir por rol.
+ * - NUEVO: /v3/api-docs/** y /swagger-ui/** quedan permitAll aquí, pero
+ *   solo existen de verdad en el perfil dev -- en prod,
+ *   springdoc.api-docs.enabled=false / springdoc.swagger-ui.enabled=false
+ *   (ver application-prod.properties) desregistran esos controllers por
+ *   completo, así que la ruta ni siquiera existe (404) sin importar lo que
+ *   diga este permitAll. Documentación interactiva nunca debe quedar
+ *   pública en producción.
  */
 @Configuration
 @EnableMethodSecurity
@@ -40,6 +49,16 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    // CORREGIDO: antes el origen permitido estaba fijo en el código a
+    // "http://localhost:5173" -- imposible de desplegar sin recompilar.
+    // Ahora sale de una property por perfil: dev trae el puerto de Vite
+    // como valor por defecto (para no exigir configuración extra en
+    // desarrollo local), prod la exige por variable de entorno, sin
+    // default, igual que jwt.secret. Admite varios orígenes separados por
+    // coma (ej. dominio de producción + un preview de staging).
+    @Value("${cors.allowed-origins}")
+    private String origenesPermitidos;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,6 +74,11 @@ public class SecurityConfig {
                                 "/api/auth/restablecer-contrasena")
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/mensajes-contacto").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
+                        .permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -63,8 +87,13 @@ public class SecurityConfig {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        List<String> origenes = Arrays.stream(origenesPermitidos.split(","))
+                .map(String::strip)
+                .filter(origen -> !origen.isEmpty())
+                .toList();
+
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(origenes);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);

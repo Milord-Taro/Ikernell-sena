@@ -1,4 +1,4 @@
-import type { UsuarioResponse } from './usuario';
+import type { UsuarioResumenResponse } from './usuario';
 
 export type EstadoProyecto = 'Planeación' | 'En ejecución' | 'Finalizado' | 'Suspendido' | 'Cancelado';
 
@@ -20,7 +20,7 @@ export interface ProyectoResponse {
   estado: EstadoProyecto;
   fechaCreacion: string;
   /** Líder VIGENTE del proyecto ahora mismo, o null si nadie está asignado. */
-  liderActual: UsuarioResponse | null;
+  liderActual: UsuarioResumenResponse | null;
 }
 
 export interface ProyectoRequest {

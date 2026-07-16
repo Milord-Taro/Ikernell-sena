@@ -38,8 +38,7 @@ public class TipoInterrupcionService {
         validarNombreDisponible(request.getNombreTipoInterrupcion(), null);
 
         TipoInterrupcion tipo = tipoInterrupcionMapper.toEntity(request);
-        tipo.setCodigoTipoInterrupcion(codigoGeneradorService.siguienteCodigoTipoInterrupcion());
-        TipoInterrupcion guardado = tipoInterrupcionRepository.save(tipo);
+        TipoInterrupcion guardado = guardarConCodigoUnico(tipo);
 
         TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(guardado);
         trazabilidadService.registrar(
@@ -139,6 +138,23 @@ public class TipoInterrupcionService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de
+     * uq_tipo_interrupcion_codigo a un 409 legible en vez de un 500 sin
+     * explicación.
+     */
+    private TipoInterrupcion guardarConCodigoUnico(TipoInterrupcion tipo) {
+        tipo.setCodigoTipoInterrupcion(codigoGeneradorService.siguienteCodigoTipoInterrupcion());
+        try {
+            return tipoInterrupcionRepository.save(tipo);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el tipo de interrupción, intenta nuevamente.");
         }
     }
 

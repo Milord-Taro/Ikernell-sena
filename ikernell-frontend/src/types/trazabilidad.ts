@@ -1,4 +1,4 @@
-import type { UsuarioResponse } from './usuario';
+import type { UsuarioResumenResponse } from './usuario';
 
 export type OperacionTrazabilidad =
   | 'Crear'
@@ -29,7 +29,7 @@ export const ENTIDADES_TRAZABILIDAD = [
 
 export interface TrazabilidadResponse {
   idTrazabilidad: number;
-  usuario: UsuarioResponse | null;
+  usuario: UsuarioResumenResponse | null;
   entidad: string;
   codigoRegistro: string;
   operacion: OperacionTrazabilidad;

@@ -38,8 +38,7 @@ public class TipoErrorService {
         validarNombreDisponible(request.getNombreTipoError(), null);
 
         TipoError tipoError = tipoErrorMapper.toEntity(request);
-        tipoError.setCodigoTipoError(codigoGeneradorService.siguienteCodigoTipoError());
-        TipoError guardado = tipoErrorRepository.save(tipoError);
+        TipoError guardado = guardarConCodigoUnico(tipoError);
 
         TipoErrorResponse response = tipoErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
@@ -139,6 +138,22 @@ public class TipoErrorService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_tipo_error_codigo a
+     * un 409 legible en vez de un 500 sin explicación.
+     */
+    private TipoError guardarConCodigoUnico(TipoError tipoError) {
+        tipoError.setCodigoTipoError(codigoGeneradorService.siguienteCodigoTipoError());
+        try {
+            return tipoErrorRepository.save(tipoError);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el tipo de error, intenta nuevamente.");
         }
     }
 

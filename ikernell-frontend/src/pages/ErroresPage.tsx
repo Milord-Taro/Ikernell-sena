@@ -9,6 +9,7 @@ import { Alert, ConfirmDialog } from '../components/ui/Feedback';
 import { Modal } from '../components/ui/Modal';
 import { Pagination } from '../components/ui/Pagination';
 import { useAuth } from '../context/AuthContext';
+import { useCarga } from '../hooks/useCarga';
 import { CODIGO_ROL } from '../types/usuario';
 import {
   listarRegistrosError,
@@ -40,7 +41,7 @@ const TODOS = 'Todos' as const;
 export default function ErroresPage() {
   const { usuario } = useAuth();
   const [registros, setRegistros] = useState<RegistroErrorResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [error, setError] = useState<string | null>(null);
   const [estadoPendiente, setEstadoPendiente] = useState<
     { registro: RegistroErrorResponse; estado: EstadoRegistroError } | null
@@ -51,18 +52,14 @@ export default function ErroresPage() {
   const [filtroProyecto, setFiltroProyecto] = useState<number | typeof TODOS>(TODOS);
   const [pagina, setPagina] = useState(1);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
-      const resp = await listarRegistrosError();
-      setRegistros(resp);
-    } finally {
-      setCargando(false);
-    }
-  };
+  const cargar = () =>
+    ejecutar(async () => {
+      setRegistros(await listarRegistrosError());
+    });
 
   useEffect(() => {
     cargar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const aplicarCambioEstado = async (registro: RegistroErrorResponse, estado: EstadoRegistroError, nota?: string) => {
@@ -164,6 +161,7 @@ export default function ErroresPage() {
         </div>
       </div>
 
+      {errorCarga && <Alert variant="error" title="No se pudieron cargar los errores">{errorCarga}</Alert>}
       {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
       {cargando ? (

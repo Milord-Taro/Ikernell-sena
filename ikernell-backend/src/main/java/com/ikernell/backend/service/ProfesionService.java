@@ -38,8 +38,7 @@ public class ProfesionService {
         validarNombreDisponible(request.getNombreProfesion(), null);
 
         Profesion profesion = profesionMapper.toEntity(request);
-        profesion.setCodigoProfesion(codigoGeneradorService.siguienteCodigoProfesion());
-        Profesion guardada = profesionRepository.save(profesion);
+        Profesion guardada = guardarConCodigoUnico(profesion);
 
         ProfesionResponse response = profesionMapper.toResponse(guardada);
         trazabilidadService.registrar(
@@ -145,6 +144,22 @@ public class ProfesionService {
             return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
         } catch (JsonProcessingException ex) {
             return "No fue posible serializar el detalle: " + ex.getMessage();
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_profesion_codigo a
+     * un 409 legible en vez de un 500 sin explicación.
+     */
+    private Profesion guardarConCodigoUnico(Profesion profesion) {
+        profesion.setCodigoProfesion(codigoGeneradorService.siguienteCodigoProfesion());
+        try {
+            return profesionRepository.save(profesion);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la profesión, intenta nuevamente.");
         }
     }
 

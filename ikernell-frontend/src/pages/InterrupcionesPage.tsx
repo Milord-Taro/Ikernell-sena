@@ -7,6 +7,7 @@ import { Select } from '../components/ui/FormControls';
 import { Alert, ConfirmDialog } from '../components/ui/Feedback';
 import { Pagination } from '../components/ui/Pagination';
 import { useAuth } from '../context/AuthContext';
+import { useCarga } from '../hooks/useCarga';
 import { CODIGO_ROL } from '../types/usuario';
 import { listarInterrupciones, eliminarInterrupcion } from '../services/interrupciones';
 import type { InterrupcionResponse } from '../types/interrupcion';
@@ -19,18 +20,16 @@ const TODOS = 'Todos' as const;
 export default function InterrupcionesPage() {
   const { usuario } = useAuth();
   const [registros, setRegistros] = useState<InterrupcionResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [error, setError] = useState<string | null>(null);
   const [registroAEliminar, setRegistroAEliminar] = useState<InterrupcionResponse | null>(null);
   const [filtroProyecto, setFiltroProyecto] = useState<number | typeof TODOS>(TODOS);
   const [pagina, setPagina] = useState(1);
 
-  const cargar = () => {
-    setCargando(true);
-    return listarInterrupciones()
-      .then(setRegistros)
-      .finally(() => setCargando(false));
-  };
+  const cargar = () =>
+    ejecutar(async () => {
+      setRegistros(await listarInterrupciones());
+    });
 
   useEffect(() => {
     cargar();
@@ -94,6 +93,7 @@ export default function InterrupcionesPage() {
         </div>
       </div>
 
+      {errorCarga && <Alert variant="error" title="No se pudieron cargar las interrupciones">{errorCarga}</Alert>}
       {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
       {cargando ? (

@@ -9,6 +9,7 @@ import { Alert, ConfirmDialog } from '../components/ui/Feedback';
 import { Modal } from '../components/ui/Modal';
 import { Pagination } from '../components/ui/Pagination';
 import { useAuth } from '../context/AuthContext';
+import { useCarga } from '../hooks/useCarga';
 import { ApiRequestError } from '../types/api';
 import { listarActividadesPorUsuario, cambiarEstadoActividad } from '../services/actividades';
 import { ESTADOS_ACTIVIDAD_SELECCIONABLES } from '../types/actividad';
@@ -36,7 +37,7 @@ const TODOS = 'Todos' as const;
 export default function MisActividadesPage() {
   const { usuario } = useAuth();
   const [actividades, setActividades] = useState<ActividadResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [error, setError] = useState<string | null>(null);
   const [actividadHistorial, setActividadHistorial] = useState<ActividadResponse | null>(null);
   const [actividadACancelar, setActividadACancelar] = useState<ActividadResponse | null>(null);
@@ -47,15 +48,11 @@ export default function MisActividadesPage() {
   const [filtroProyecto, setFiltroProyecto] = useState<number | typeof TODOS>(TODOS);
   const [pagina, setPagina] = useState(1);
 
-  const cargar = async () => {
-    if (!usuario) return;
-    setCargando(true);
-    try {
-      const resp = await listarActividadesPorUsuario(usuario.idUsuario);
-      setActividades(resp);
-    } finally {
-      setCargando(false);
-    }
+  const cargar = () => {
+    if (!usuario) return Promise.resolve();
+    return ejecutar(async () => {
+      setActividades(await listarActividadesPorUsuario(usuario.idUsuario));
+    });
   };
 
   useEffect(() => {
@@ -170,6 +167,7 @@ export default function MisActividadesPage() {
         </div>
       </div>
 
+      {errorCarga && <Alert variant="error" title="No se pudieron cargar tus actividades">{errorCarga}</Alert>}
       {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
       {cargando ? (

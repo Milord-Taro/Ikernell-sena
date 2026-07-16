@@ -24,6 +24,7 @@ import com.ikernell.backend.repository.ProfesionRepository;
 import com.ikernell.backend.repository.RolRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,14 +60,13 @@ public class UsuarioService {
         Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
 
         Usuario usuario = usuarioMapper.toEntity(request);
-        usuario.setCodigoUsuario(codigoGeneradorService.siguienteCodigoUsuario());
         usuario.setCorreoElectronico(correo);
         usuario.setHashContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setRol(rol);
         usuario.setProfesion(profesion);
         usuario.setEspecialidad(especialidad);
 
-        Usuario guardado = usuarioRepository.save(usuario);
+        Usuario guardado = guardarConCodigoUnico(usuario);
 
         UsuarioResponse response = usuarioMapper.toResponse(guardado);
         trazabilidadService.registrar(
@@ -194,6 +194,24 @@ public class UsuarioService {
 
         usuario.setHashContrasena(passwordEncoder.encode(request.getContrasenaNueva()));
         usuarioRepository.save(usuario);
+    }
+
+    /**
+     * CORREGIDO: siguienteCodigoUsuario() calcula el código a partir del
+     * MAX() actual, así que dos altas concurrentes pueden calcular el
+     * mismo siguiente código antes de que la primera termine de guardar.
+     * save() sobre una entidad nueva con GenerationType.IDENTITY ejecuta el
+     * INSERT de inmediato, así que la violación de uq_usuario_codigo se
+     * lanza aquí mismo -- se traduce a un 409 legible en vez de tumbar la
+     * petición con un 500 sin explicación.
+     */
+    private Usuario guardarConCodigoUnico(Usuario usuario) {
+        usuario.setCodigoUsuario(codigoGeneradorService.siguienteCodigoUsuario());
+        try {
+            return usuarioRepository.save(usuario);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el usuario, intenta nuevamente.");
+        }
     }
 
     private Usuario buscarOFallar(Integer idUsuario) {

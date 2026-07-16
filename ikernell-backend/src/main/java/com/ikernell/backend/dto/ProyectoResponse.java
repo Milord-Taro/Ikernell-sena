@@ -29,5 +29,5 @@ public class ProyectoResponse {
     // null si nadie está asignado como líder todavía). Se calcula en
     // ProyectoService, no lo pone el mapper -- por eso @Setter es
     // necesario aquí, no solo @Builder.
-    private UsuarioResponse liderActual;
+    private UsuarioResumenResponse liderActual;
 }

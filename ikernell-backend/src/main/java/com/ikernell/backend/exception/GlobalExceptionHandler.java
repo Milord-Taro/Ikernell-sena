@@ -1,6 +1,7 @@
 package com.ikernell.backend.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException;
 
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -80,12 +82,18 @@ public class GlobalExceptionHandler {
 
     /**
      * Cualquier excepción no controlada explícitamente cae aquí como 500,
-     * evitando exponer detalles internos del stacktrace al cliente.
+     * evitando exponer detalles internos del stacktrace al cliente -- pero
+     * SÍ queda registrada con su stacktrace completo en el log del
+     * servidor, que es donde alguien puede diagnosticarla. Antes esta
+     * excepción se perdía en silencio: el cliente veía un 500 genérico y
+     * no quedaba ningún rastro de qué había fallado ni por qué.
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> manejarExcepcionGeneral(
             Exception ex,
             HttpServletRequest request) {
+
+        log.error("Error no controlado en {} {}", request.getMethod(), request.getRequestURI(), ex);
 
         ApiError error = ApiError.of(
                 HttpStatus.INTERNAL_SERVER_ERROR,

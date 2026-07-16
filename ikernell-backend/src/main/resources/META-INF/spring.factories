@@ -1,0 +1,10 @@
+# CORREGIDO (A2): registra FlywayMigrationListener para CUALQUIER
+# arranque de SpringApplication -- no solo el main() de producción, sino
+# también @SpringBootTest en los tests. Con el listener agregado a mano
+# solo en IkernellBackendApplication.main() (primer intento), un test
+# @SpringBootTest contra una base de datos realmente vacía habría fallado
+# (Hibernate con ddl-auto=validate no encuentra tablas, porque Flyway
+# nunca corrió) -- spring.factories aplica el listener de forma uniforme,
+# sea cual sea el punto de entrada que arranque el SpringApplication.
+org.springframework.context.ApplicationListener=\
+com.ikernell.backend.config.FlywayMigrationListener

@@ -12,25 +12,32 @@ Monorepo con frontend React + TypeScript, backend Spring Boot y base de datos Po
 ## Estructura del proyecto
 
 ```
-/home/milord-taro/Proyectos_Sena/Ikernell-sena/
+ikernell-sena-overhaul/
 ├── ikernell-backend/
-│   ├── src/main/java/com/ikernell/
+│   ├── src/main/java/com/ikernell/backend/
 │   │   ├── controller/   # Solo recibe request y delega — sin lógica de negocio
 │   │   ├── service/      # Toda la lógica de negocio va aquí
 │   │   ├── repository/   # Interfaces JPA — sin SQL manual salvo casos justificados
-│   │   ├── model/        # Entidades JPA
-│   │   └── dto/          # Objetos de transferencia de datos
+│   │   ├── entity/       # Entidades JPA
+│   │   ├── dto/          # Objetos de transferencia de datos
+│   │   ├── mapper/       # MapStruct: entity <-> DTO
+│   │   ├── security/     # JWT, Spring Security
+│   │   ├── exception/    # Excepciones de dominio + @RestControllerAdvice
+│   │   └── audit/        # Trazabilidad (auditoría)
 │   └── pom.xml
 │
 ├── ikernell-frontend/
 │   ├── src/
 │   │   ├── components/
+│   │   ├── features/     # Componentes específicos de un módulo de negocio
 │   │   ├── pages/
-│   │   ├── services/     # Llamadas HTTP al backend (axios / fetch)
-│   │   └── hooks/
+│   │   ├── services/     # Llamadas HTTP al backend (fetch tipado en services/api.ts)
+│   │   ├── context/
+│   │   └── types/
 │   ├── package.json
 │   └── vite.config.ts
 │
+├── docs/                 # Documentación del overhaul (architecture/, planning/, audit/)
 └── README.md
 ```
 
@@ -65,17 +72,26 @@ proyecto. Analizarlos conjuntamente cuando una tarea involucre cambios full-stac
 ./mvnw verify              # Build completo + tests + verificaciones
 ```
 
+> Tests unitarios de Service/Mapper con JUnit 5 + Mockito + AssertJ (ya
+> incluidos vía `spring-boot-starter-test`, nada que instalar). Para una
+> guía paso a paso de cómo leer, correr y escribir estos tests —
+> pensada para quien nunca escribió uno — ver `docs/GUIA_TESTING.md`.
+
 ### Frontend
 
 ```bash
 # Desde /ikernell-frontend
 npm install                # Instalar dependencias
-npm run typecheck     	  # Verificación estricta de TypeScript
+npm run typecheck          # Verificación estricta de TypeScript (tsc -b --noEmit)
 npm run dev                # Servidor de desarrollo (Vite — puerto 5173)
-npm run build              # Build de producción
-npm run lint               # ESLint — ejecutar antes de dar una tarea por terminada
-npm test                   # Tests unitarios
+npm run build               # Build de producción
+npm run lint                # oxlint — ejecutar antes de dar una tarea por terminada
 ```
+
+> **Nota:** el proyecto todavía no tiene un framework de tests en el frontend
+> (no existe `npm test`). Está en el backlog de calidad — ver
+> `docs/Ikernell v2.0/planning/`. No inventar ese script hasta que se
+> incorpore Vitest o equivalente.
 
 ### Base de datos
 
@@ -150,9 +166,12 @@ portafolio, noticias, FAQ, links y contacto.
 
 ### Base de datos
 
-- Nombres de tablas en snake_case y en plural (`trabajadores`, `proyectos`, `actividades`)
-- Toda migración de schema va como script SQL numerado en el directorio de migraciones
-- No hacer cambios de schema sin el script de migración correspondiente
+- Nombres de tablas en snake_case y en singular (`usuario`, `proyecto`, `actividad`)
+- Las migraciones de schema van con Flyway, en `ikernell-backend/src/main/resources/db/migration/`,
+  como `V{n}__descripcion.sql` (ver `docs/Ikernell v2.0/architecture/06-base-de-datos.md`)
+- No hacer cambios de schema directamente en la base de datos: siempre a través de una
+  migración nueva -- `spring.jpa.hibernate.ddl-auto=validate` hace que el backend
+  falle al arrancar si el schema real no coincide con las entidades JPA
 - No ejecutar DROP sobre datos sin confirmación explícita
 
 ---
@@ -163,6 +182,39 @@ portafolio, noticias, FAQ, links y contacto.
 - **NUNCA** commitear tokens, contraseñas, API keys ni secrets
 - No modificar configuración de Spring Security sin autorización explícita
 - No agregar dependencias en `pom.xml` o `package.json` sin avisar primero
+
+---
+
+## Política de visibilidad de datos de Usuario
+
+La mayoría de los endpoints de lectura (proyectos, actividades, errores,
+interrupciones, equipo de un proyecto, auditoría) están abiertos a
+**cualquier autenticado**, no solo a Coordinador/Líder -- es una decisión
+de diseño deliberada (cualquier miembro de un equipo puede necesitar ver
+en qué proyecto/actividad está su compañero). Pero eso significa que
+**cualquier dato de Usuario embebido en esas respuestas queda expuesto a
+todos los roles**, incluido un Desarrollador consultando la lista de
+proyectos de la organización.
+
+Por eso existen dos niveles de detalle de Usuario en la API:
+
+- **`UsuarioResponse`** (completo: incluye `numeroIdentificacion` y
+  `fechaNacimiento`) -- únicamente en endpoints ya restringidos a
+  Coordinador/Líder (`/api/usuarios/**`) o cuando el usuario consulta su
+  **propio** perfil (`/api/usuarios/me`, login).
+- **`UsuarioResumenResponse`** (`idUsuario`, `codigoUsuario`, `nombres`,
+  `apellidos`, `correoElectronico`, `rol`) -- en **todo** lugar donde un
+  usuario va embebido dentro de otro recurso: `Proyecto.liderActual`,
+  `Actividad.usuario`, `RegistroError.usuarioCreador`,
+  `Interrupcion.usuarioCreador`, `AsignacionProyecto.usuario`,
+  `MensajeContacto.responsable`, `Trazabilidad.usuario`.
+
+**Regla:** si agregas un nuevo campo a `Usuario`/`UsuarioResponse`, o un
+DTO nuevo que embeba un usuario dentro de otro recurso, usa
+`UsuarioResumenResponse` (o amplíalo si el campo nuevo es genuinamente
+no sensible) -- no `UsuarioResponse` completo, salvo que el endpoint ya
+esté restringido a Coordinador/Líder o sea el propio perfil del
+solicitante.
 
 ---
 
@@ -190,8 +242,7 @@ portafolio, noticias, FAQ, links y contacto.
 
 - Proyecto en fase de pulimiento — **priorizar no romper lo que ya funciona**
 - Supervisión humana en todos los cambios — proponer antes de ejecutar cuando sea ambiguo
-- Trabajar en branch `codex/[nombre-tarea]` — no tocar `main` directamente
-- Máquina de desarrollo: Ubuntu, usuario `milord-taro`
+- Trabajar en una branch de feature/fix — no tocar `main` directamente
 
 ## Refactorizaciones
 
