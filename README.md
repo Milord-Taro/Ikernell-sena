@@ -28,7 +28,7 @@ Sistema web para la gestión de proyectos de desarrollo de software desarrollado
 Antes de ejecutar el proyecto es necesario tener instalado:
 
 - Java 17
-- PostgreSQL 18
+- PostgreSQL 14 o superior (probado en 14.x; el baseline de Flyway se genero contra 14)
 - Node.js v22
 - npm
 - Git
@@ -57,6 +57,22 @@ cd Ikernell-sena
 ---
 
 # Restaurar la base de datos
+
+> **Opción rápida con Docker (recomendada para "clone and run"):** si tienes
+> Docker, no necesitas instalar ni configurar PostgreSQL. Desde la raíz del
+> repo:
+>
+> ```bash
+> docker compose up -d          # levanta PostgreSQL 14 con la base ikernell_v2 vacía
+> #   ...arranca el backend una vez (Flyway crea el schema: V1 + V2 + V3)...
+> docker compose exec -T db \
+>   psql -U postgres -d ikernell_v2 -f "/seed/Seed_catalogos.sql"   # catálogos + datos demo
+> ```
+>
+> El `docker-compose.yml` ya usa la base/usuario/clave que espera el perfil
+> `dev` (`ikernell_v2`, `postgres`/`postgres`), así que el backend arranca sin
+> configurar nada más. Detalles y notas de puerto en la cabecera de ese archivo.
+> El resto de esta sección describe el equivalente manual (sin Docker).
 
 El schema (tablas, restricciones, índices) ya **no se crea a mano**: lo
 gestiona [Flyway](https://flywaydb.org/), que corre automáticamente al

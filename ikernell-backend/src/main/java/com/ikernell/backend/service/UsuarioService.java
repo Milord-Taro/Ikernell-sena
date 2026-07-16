@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -46,7 +45,6 @@ public class UsuarioService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public UsuarioResponse crear(UsuarioRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
@@ -71,7 +69,7 @@ public class UsuarioService {
         UsuarioResponse response = usuarioMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "Usuario", guardado.getCodigoUsuario(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -131,7 +129,7 @@ public class UsuarioService {
         UsuarioResponse response = usuarioMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "Usuario", actualizado.getCodigoUsuario(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -177,7 +175,7 @@ public class UsuarioService {
         trazabilidadService.registrar(
                 solicitante, "Usuario", guardado.getCodigoUsuario(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -224,14 +222,6 @@ public class UsuarioService {
         return usuarioRepository.findByCorreoElectronico(correoElectronico)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
-    }
-
-    private String construirDetalle(UsuarioResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     private Rol buscarRolOFallar(Integer idRol) {

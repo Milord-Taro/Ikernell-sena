@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.EtapaRequest;
@@ -41,7 +40,6 @@ public class EtapaService {
     private final NotificacionService notificacionService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public EtapaResponse crear(EtapaRequest request, String correoSolicitante) {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
@@ -61,7 +59,7 @@ public class EtapaService {
         EtapaResponse response = etapaMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Etapa", guardada.getCodigoEtapa(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -105,7 +103,7 @@ public class EtapaService {
         EtapaResponse response = etapaMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Etapa", actualizada.getCodigoEtapa(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -125,7 +123,7 @@ public class EtapaService {
         EtapaResponse response = etapaMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Etapa", guardada.getCodigoEtapa(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -169,7 +167,7 @@ public class EtapaService {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, etapa.getProyecto().getIdProyecto());
 
-        String detalle = construirDetalle(etapaMapper.toResponse(etapa));
+        String detalle = DetalleObjectMapper.serializar(etapaMapper.toResponse(etapa));
 
         try {
             etapaRepository.delete(etapa);
@@ -196,14 +194,6 @@ public class EtapaService {
     private void validarFechas(EtapaRequest request) {
         if (request.getFechaFin().isBefore(request.getFechaInicio())) {
             throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
-        }
-    }
-
-    private String construirDetalle(EtapaResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
         }
     }
 

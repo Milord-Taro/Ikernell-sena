@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoInterrupcionRequest;
@@ -31,7 +30,6 @@ public class TipoInterrupcionService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public TipoInterrupcionResponse crear(TipoInterrupcionRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
@@ -43,7 +41,7 @@ public class TipoInterrupcionService {
         TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "TipoInterrupcion", guardado.getCodigoTipoInterrupcion(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -73,7 +71,7 @@ public class TipoInterrupcionService {
         TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "TipoInterrupcion", actualizado.getCodigoTipoInterrupcion(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -89,7 +87,7 @@ public class TipoInterrupcionService {
         trazabilidadService.registrar(
                 solicitante, "TipoInterrupcion", guardado.getCodigoTipoInterrupcion(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -105,7 +103,7 @@ public class TipoInterrupcionService {
         TipoInterrupcion tipo = buscarOFallar(idTipoInterrupcion);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(tipoInterrupcionMapper.toResponse(tipo));
+        String detalle = DetalleObjectMapper.serializar(tipoInterrupcionMapper.toResponse(tipo));
 
         try {
             tipoInterrupcionRepository.delete(tipo);
@@ -131,14 +129,6 @@ public class TipoInterrupcionService {
         return usuarioRepository.findByCorreoElectronico(correoElectronico)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
-    }
-
-    private String construirDetalle(TipoInterrupcionResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     /**

@@ -33,6 +33,12 @@
 		<!-- Sprint 7: generación de reportes -->
 		<pdfbox.version>3.0.7</pdfbox.version>
 		<poi.version>5.5.1</poi.version>
+		<!-- Grupos de test excluidos por defecto. Los tests etiquetados como
+		     "integration" (ej. el @SpringBootTest que levanta el contexto y
+		     necesita una base PostgreSQL real) NO corren con `mvn test`, para
+		     que la suite sea verde en cualquier máquina/CI sin base de datos.
+		     Para incluirlos donde SÍ hay base: `mvn test -Dtest.excluded.groups=`. -->
+		<test.excluded.groups>integration</test.excluded.groups>
 	</properties>
 
 	<dependencies>
@@ -182,6 +188,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludedGroups>${test.excluded.groups}</excludedGroups>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

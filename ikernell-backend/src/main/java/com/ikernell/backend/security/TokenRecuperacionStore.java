@@ -26,12 +26,23 @@ public class TokenRecuperacionStore {
     private final Map<String, EntradaToken> tokens = new ConcurrentHashMap<>();
 
     public String generarToken(String correoElectronico) {
+        // Limpieza oportunista: un token que se genera pero nunca se consume
+        // (el usuario pidió recuperar y no completó el flujo) se quedaría en el
+        // mapa para siempre. Purgar los expirados en cada alta acota el
+        // crecimiento sin necesitar un @Scheduled aparte.
+        purgarExpirados();
+
         String token = UUID.randomUUID().toString();
         LocalDateTime expiracion = LocalDateTime.now().plusMinutes(VIGENCIA_MINUTOS);
 
         tokens.put(token, new EntradaToken(correoElectronico, expiracion));
 
         return token;
+    }
+
+    private void purgarExpirados() {
+        LocalDateTime ahora = LocalDateTime.now();
+        tokens.values().removeIf(entrada -> entrada.expiracion().isBefore(ahora));
     }
 
     /**

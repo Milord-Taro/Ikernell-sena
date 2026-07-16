@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoErrorRequest;
@@ -31,7 +30,6 @@ public class TipoErrorService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public TipoErrorResponse crear(TipoErrorRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
@@ -43,7 +41,7 @@ public class TipoErrorService {
         TipoErrorResponse response = tipoErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "TipoError", guardado.getCodigoTipoError(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -73,7 +71,7 @@ public class TipoErrorService {
         TipoErrorResponse response = tipoErrorMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "TipoError", actualizado.getCodigoTipoError(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -89,7 +87,7 @@ public class TipoErrorService {
         trazabilidadService.registrar(
                 solicitante, "TipoError", guardado.getCodigoTipoError(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -105,7 +103,7 @@ public class TipoErrorService {
         TipoError tipoError = buscarOFallar(idTipoError);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(tipoErrorMapper.toResponse(tipoError));
+        String detalle = DetalleObjectMapper.serializar(tipoErrorMapper.toResponse(tipoError));
 
         try {
             tipoErrorRepository.delete(tipoError);
@@ -131,14 +129,6 @@ public class TipoErrorService {
         return usuarioRepository.findByCorreoElectronico(correoElectronico)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
-    }
-
-    private String construirDetalle(TipoErrorResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -48,7 +47,6 @@ public class RegistroErrorService {
     private final UsuarioRepository usuarioRepository;
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
-
 
     /**
      * CORREGIDO: antes cualquier autenticado podía reportar un error en
@@ -101,7 +99,7 @@ public class RegistroErrorService {
         RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "RegistroError", guardado.getCodigoRegistroError(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -179,7 +177,7 @@ public class RegistroErrorService {
         RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "RegistroError", guardado.getCodigoRegistroError(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -207,21 +205,13 @@ public class RegistroErrorService {
                     "Solo quien registró este error, o un Coordinador, puede eliminarlo.");
         }
 
-        String detalle = construirDetalle(registroErrorMapper.toResponse(registroError));
+        String detalle = DetalleObjectMapper.serializar(registroErrorMapper.toResponse(registroError));
 
         registroErrorRepository.delete(registroError);
 
         trazabilidadService.registrar(
                 solicitante, "RegistroError", registroError.getCodigoRegistroError(),
                 OperacionTrazabilidad.ELIMINAR, detalle);
-    }
-
-    private String construirDetalle(RegistroErrorResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     private EstadoRegistroError parsearEstado(String estadoTexto) {

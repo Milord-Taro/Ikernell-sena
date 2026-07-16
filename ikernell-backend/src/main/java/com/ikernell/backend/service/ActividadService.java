@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ActividadRequest;
@@ -46,7 +45,6 @@ public class ActividadService {
     private final NotificacionService notificacionService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public ActividadResponse crear(ActividadRequest request, String correoSolicitante) {
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
@@ -76,7 +74,7 @@ public class ActividadService {
         ActividadResponse response = actividadMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", guardada.getCodigoActividad(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -88,7 +86,9 @@ public class ActividadService {
      * KPIs "org-wide" o "de mis proyectos" sin un fan-out etapa por etapa.
      */
     public List<ActividadResponse> listarTodas() {
-        return actividadRepository.findAll()
+        // CORREGIDO: orden explícito por id. findAll() no garantiza orden, así
+        // que la lista podía cambiar entre recargas (render no determinista).
+        return actividadRepository.findAllByOrderByIdActividadAsc()
                 .stream()
                 .map(actividadMapper::toResponse)
                 .toList();
@@ -140,7 +140,7 @@ public class ActividadService {
         ActividadResponse response = actividadMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", actualizada.getCodigoActividad(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -165,7 +165,7 @@ public class ActividadService {
         notificarAsignacion(guardada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", guardada.getCodigoActividad(),
-                OperacionTrazabilidad.ASIGNAR, construirDetalle(actividadMapper.toResponse(guardada)));
+                OperacionTrazabilidad.ASIGNAR, DetalleObjectMapper.serializar(actividadMapper.toResponse(guardada)));
 
         return actividadMapper.toResponse(guardada);
     }
@@ -235,7 +235,7 @@ public class ActividadService {
         ActividadResponse response = actividadMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", guardada.getCodigoActividad(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -255,7 +255,7 @@ public class ActividadService {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
-        String detalle = construirDetalle(actividadMapper.toResponse(actividad));
+        String detalle = DetalleObjectMapper.serializar(actividadMapper.toResponse(actividad));
 
         try {
             actividadRepository.delete(actividad);
@@ -298,14 +298,6 @@ public class ActividadService {
     private void validarFechas(ActividadRequest request) {
         if (request.getFechaFin().isBefore(request.getFechaInicio())) {
             throw new BusinessException("La fecha de fin no puede ser anterior a la fecha de inicio.");
-        }
-    }
-
-    private String construirDetalle(ActividadResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
         }
     }
 

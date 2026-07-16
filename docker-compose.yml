@@ -1,0 +1,44 @@
+# PostgreSQL para desarrollo local — evita instalar/configurar Postgres a mano.
+#
+# Levanta exactamente la base que espera el perfil `dev` del backend:
+#   jdbc:postgresql://localhost:5432/ikernell_v2  (usuario/clave: postgres/postgres)
+# así que tras `docker compose up -d` el backend arranca sin tocar nada más.
+#
+# El SCHEMA lo crea Flyway al arrancar el backend por primera vez (no este
+# archivo): por eso el seed de catálogos/demo NO se puede cargar como
+# init-script (las tablas aún no existen al iniciar el contenedor). El orden
+# correcto de "clone and run" es:
+#
+#   1. docker compose up -d
+#   2. Arrancar el backend una vez  ->  Flyway crea las 15 tablas + V2 + V3 + V4
+#   3. Cargar catálogos + datos demo (el archivo va montado dentro del contenedor):
+#        docker compose exec -T db \
+#          psql -U postgres -d ikernell_v2 -f "/seed/Seed_catalogos.sql"
+#
+# Nota: publica el puerto 5432. Si ya tienes un PostgreSQL local escuchando ahí,
+# detenlo antes (o cambia el mapeo a "5433:5432" y ajusta DB_URL/el puerto del
+# datasource en consecuencia).
+
+services:
+  db:
+    image: postgres:14
+    container_name: ikernell-db
+    environment:
+      POSTGRES_DB: ikernell_v2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ikernell-pgdata:/var/lib/postgresql/data
+      # Seed montado de solo lectura para poder aplicarlo con `docker compose exec`
+      # DESPUÉS de que Flyway haya creado el schema (ver cabecera).
+      - "./docs/Base de datos/Base de Datos V2/Seed_catalogos.sql:/seed/Seed_catalogos.sql:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ikernell_v2"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ikernell-pgdata:

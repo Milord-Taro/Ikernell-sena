@@ -67,7 +67,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(correoElectronico);
 
-            if (jwtService.esTokenValido(token, userDetails.getUsername())) {
+            // CORREGIDO: se revalida isEnabled() en CADA petición. Un usuario
+            // inhabilitado mientras su JWT sigue vigente (hasta 30 min) debe
+            // perder el acceso de inmediato, no cuando expire el token. El
+            // token sigue firmado y no-expirado, pero el estado 'activo' del
+            // usuario en BD es la fuente de verdad para cada request.
+            if (userDetails.isEnabled() && jwtService.esTokenValido(token, userDetails.getUsername())) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

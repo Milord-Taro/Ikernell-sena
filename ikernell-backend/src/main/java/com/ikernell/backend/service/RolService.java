@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.RolRequest;
@@ -31,7 +30,6 @@ public class RolService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public RolResponse crear(RolRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
@@ -43,7 +41,7 @@ public class RolService {
         RolResponse response = rolMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "Rol", guardado.getCodigoRol(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -79,7 +77,7 @@ public class RolService {
         RolResponse response = rolMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "Rol", actualizado.getCodigoRol(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -95,7 +93,7 @@ public class RolService {
         trazabilidadService.registrar(
                 solicitante, "Rol", guardado.getCodigoRol(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -111,7 +109,7 @@ public class RolService {
         Rol rol = buscarOFallar(idRol);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(rolMapper.toResponse(rol));
+        String detalle = DetalleObjectMapper.serializar(rolMapper.toResponse(rol));
 
         try {
             rolRepository.delete(rol);
@@ -137,14 +135,6 @@ public class RolService {
         return usuarioRepository.findByCorreoElectronico(correoElectronico)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
-    }
-
-    private String construirDetalle(RolResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.EspecialidadRequest;
@@ -31,7 +30,6 @@ public class EspecialidadService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public EspecialidadResponse crear(EspecialidadRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
@@ -43,7 +41,7 @@ public class EspecialidadService {
         EspecialidadResponse response = especialidadMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Especialidad", guardada.getCodigoEspecialidad(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -79,7 +77,7 @@ public class EspecialidadService {
         EspecialidadResponse response = especialidadMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Especialidad", actualizada.getCodigoEspecialidad(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -95,7 +93,7 @@ public class EspecialidadService {
         trazabilidadService.registrar(
                 solicitante, "Especialidad", guardada.getCodigoEspecialidad(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -111,7 +109,7 @@ public class EspecialidadService {
         Especialidad especialidad = buscarOFallar(idEspecialidad);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(especialidadMapper.toResponse(especialidad));
+        String detalle = DetalleObjectMapper.serializar(especialidadMapper.toResponse(especialidad));
 
         try {
             especialidadRepository.delete(especialidad);
@@ -137,14 +135,6 @@ public class EspecialidadService {
         return usuarioRepository.findByCorreoElectronico(correoElectronico)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
-    }
-
-    private String construirDetalle(EspecialidadResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     /**

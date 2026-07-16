@@ -78,20 +78,20 @@ Finalizado
 | ID | Épica | Prioridad | Estado |
 |----|--------|-----------|---------|
 | EP-00 | Plataforma y Fundamentos | P0 | ✅ Completada |
-| EP-01 | Autenticación y Control de Acceso | P0 | 📋 Pendiente |
-| EP-02 | Gestión de Usuarios | P0 | 📋 Pendiente |
-| EP-03 | Gestión Organizacional | P0 | 📋 Pendiente |
-| EP-04 | Gestión de Proyectos | P0 | 📋 Pendiente |
-| EP-05 | Gestión de Etapas | P1 | 📋 Pendiente |
-| EP-06 | Gestión de Actividades | P0 | 📋 Pendiente |
-| EP-07 | Registro de Errores | P0 | 📋 Pendiente |
-| EP-08 | Registro de Interrupciones | P1 | 📋 Pendiente |
-| EP-09 | Mensajes de Contacto | P2 | 📋 Pendiente |
-| EP-10 | Dashboard | P0 | 📋 Pendiente |
-| EP-11 | Configuración | P2 | 📋 Pendiente |
-| EP-12 | Reportes y Exportación | P2 | 📋 Pendiente |
-| EP-13 | Funcionalidades de Valor Agregado | P1 | 📋 Pendiente |
-| EP-14 | Calidad, UX y Documentación | P0 | 📋 Pendiente |
+| EP-01 | Autenticación y Control de Acceso | P0 | ✅ Completada |
+| EP-02 | Gestión de Usuarios | P0 | ✅ Completada |
+| EP-03 | Gestión Organizacional | P0 | ✅ Completada |
+| EP-04 | Gestión de Proyectos | P0 | ✅ Completada |
+| EP-05 | Gestión de Etapas | P1 | ✅ Completada |
+| EP-06 | Gestión de Actividades | P0 | ✅ Completada |
+| EP-07 | Registro de Errores | P0 | ✅ Completada |
+| EP-08 | Registro de Interrupciones | P1 | ✅ Completada |
+| EP-09 | Mensajes de Contacto | P2 | ✅ Completada |
+| EP-10 | Dashboard | P0 | ✅ Completada |
+| EP-11 | Configuración | P2 | ✅ Completada |
+| EP-12 | Reportes y Exportación | P2 | ✅ Completada |
+| EP-13 | Funcionalidades de Valor Agregado | P1 | ✅ Completada |
+| EP-14 | Calidad, UX y Documentación | P0 | 🚧 En desarrollo |
 
 ---
 
@@ -134,8 +134,8 @@ Versión
 
 Estado
 
-Planeación del Overhaul
+Overhaul: implementación de EP-01..EP-13 completa; EP-14 (calidad/UX/docs) en curso
 
 Última actualización
 
-Pendiente
+2026-07-16

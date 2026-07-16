@@ -1,6 +1,6 @@
 # Matriz de roles y permisos
 
-Esta matriz resume el comportamiento esperado por rol segun la documentacion del proyecto y el estado actual del aplicativo. Debe revisarse cuando se implemente seguridad real en backend.
+Esta matriz resume el comportamiento por rol segun la documentacion del proyecto y el estado actual del aplicativo. La seguridad esta implementada en backend (JWT + `@PreAuthorize` + reglas de pertenencia en los Services); la columna "Estado actual" refleja lo verificable en el codigo. El filtrado de rutas en el frontend es UX: la fuente de verdad es el backend.
 
 ## Roles
 
@@ -8,35 +8,40 @@ Esta matriz resume el comportamiento esperado por rol segun la documentacion del
 | --- | --- | --- |
 | Visitante | Publico / anonimo | Consulta informacion publica y envia mensajes de contacto. |
 | Coordinador | Autenticado | Gestiona usuarios, mensajes, catalogos e informes generales. |
-| Lider | Autenticado | Gestiona proyectos, etapas, actividades y reportes del proyecto. |
+| Lider | Autenticado | Gestiona los proyectos de los que es lider vigente, sus etapas, actividades y reportes. |
 | Desarrollador | Autenticado | Consulta actividades asignadas y registra errores/interrupciones. |
 
 ## Permisos esperados
 
+Notacion: el rol organizacional se valida con `@PreAuthorize` (hasRole/hasAnyRole) en el controller; la *pertenencia* al proyecto (ownership) la valida `AutorizacionProyectoService` en el Service.
+
 | Modulo / Accion | Visitante | Coordinador | Lider | Desarrollador | Estado actual |
 | --- | --- | --- | --- | --- | --- |
-| Ver portal publico | Si | Si | Si | Si | Implementado |
-| Enviar mensaje de contacto | Si | Si | Si | Si | Implementado |
-| Iniciar sesion | No aplica | Si | Si | Si | Parcial: login simple sin token/sesion |
-| Ver dashboard | No | Si | Si | Si | Implementado en frontend |
-| Gestionar usuarios | No | Si | No | No | Implementado en frontend; falta seguridad backend real |
-| Crear usuario Coordinador | No | No | No | No | Bloqueado en frontend y backend |
+| Ver portal publico | Si | Si | Si | Si | Implementado (endpoint publico) |
+| Enviar mensaje de contacto | Si | Si | Si | Si | Implementado (`POST /api/mensajes-contacto` publico) |
+| Iniciar sesion | No aplica | Si | Si | Si | Implementado: JWT firmado (HS256) + BCrypt, sesion stateless |
+| Ver dashboard | No | Si | Si | Si | Implementado (requiere JWT valido) |
+| Gestionar usuarios | No | Si | No | No | Implementado backend (`@PreAuthorize` Coordinador) |
+| Crear usuario Coordinador | No | No | No | No | Bloqueado en backend |
 | Inhabilitar Coordinador | No | No | No | No | Bloqueado en backend |
-| Ver mensajes de contacto | No | Si | No | No | Implementado en frontend; falta seguridad backend real |
-| Atender mensajes | No | Si | No | No | Parcial: guarda respuesta, falta definir correo real |
-| Gestionar proyectos | No | Puede consultar | Si | Puede consultar asignados | Parcial: validar permisos exactos |
-| Gestionar etapas | No | Puede consultar | Si | Puede consultar | Por validar |
-| Gestionar actividades | No | Puede consultar | Si | Ejecuta asignadas | Parcial: validar restricciones reales |
-| Registrar errores | No | Puede consultar | Puede consultar | Si | Implementado / por validar |
-| Registrar interrupciones | No | Puede consultar | Puede consultar | Si | Implementado / por validar |
-| Gestionar tipos de error | No | Si | No | No | Implementado en frontend; falta seguridad backend real |
-| Gestionar tipos de interrupcion | No | Si | No | No | Implementado en frontend; falta seguridad backend real |
-| Generar informes | No | Si | Si, segun proyecto | No | Parcial: validar alcance documental |
+| Rechazo inmediato de cuenta inhabilitada | - | - | - | - | Implementado: el filtro valida `isEnabled()` en cada peticion |
+| Ver mensajes de contacto | No | Si | No | No | Implementado backend (`@PreAuthorize` Coordinador) |
+| Atender mensajes | No | Si | No | No | Implementado (guarda respuesta/estado); envio de correo real fuera de alcance |
+| Gestionar proyectos | No | Cualquiera | Solo del que es lider vigente | Consulta asignados | Implementado: rol + ownership. Eliminar: solo Coordinador |
+| Gestionar etapas | No | Cualquiera | Solo de sus proyectos | Consulta | Implementado: rol + ownership |
+| Gestionar actividades | No | Cualquiera | Solo de sus proyectos | Ejecuta las asignadas (escalera de estados) | Implementado: rol + ownership en Service |
+| Registrar errores | No | Consulta | Consulta | Si | Implementado (gate de registro en Service) |
+| Registrar interrupciones | No | Consulta | Consulta | Si | Implementado (gate de registro en Service) |
+| Gestionar tipos de error | No | Si | No | No | Implementado backend (`@PreAuthorize` Coordinador a nivel de clase) |
+| Gestionar tipos de interrupcion | No | Si | No | No | Implementado backend (`@PreAuthorize` Coordinador a nivel de clase) |
+| Generar informes / metricas | No | Si (org-wide) | Si, segun sus proyectos | Solo lo suyo | Implementado: endpoints de metricas separados por rol |
 
-## Pendientes para seguridad real
+## Estado de la seguridad
 
-- Definir mecanismo de autenticacion: token, sesion o alcance academico documentado.
-- Proteger endpoints desde backend, no solo rutas del frontend.
-- Evitar que usuarios sin permisos llamen endpoints directamente.
-- Crear pruebas para permisos criticos.
-- Documentar limitaciones si no se implementa seguridad completa.
+- **Implementado:** autenticacion JWT stateless, `@EnableMethodSecurity` con `@PreAuthorize` por operacion, reglas de pertenencia (ownership) en los Services, y rechazo por peticion de cuentas inhabilitadas.
+- **Endpoints protegidos desde backend**, no solo rutas del frontend: `anyRequest().authenticated()` mas los `@PreAuthorize` cierran el acceso directo por API a quien no tiene permiso.
+
+## Pendientes
+
+- **Pruebas automatizadas** de esta matriz (autorizacion por rol + ownership + escaleras de estado). Es el mayor valor pendiente: convierte esta tabla en garantia verificable en vez de afirmacion.
+- Endurecimientos de produccion (rate limiting, CSP, correo real) documentados en `docs/decisiones-alcance.md` como fuera de alcance del caso de estudio.

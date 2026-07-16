@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -48,7 +47,6 @@ public class ProyectoService {
     private final NotificacionService notificacionService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     /**
      * Cualquiera con el rol organizacional Líder de Proyecto o Coordinador
      * puede crear un proyecto (el @PreAuthorize del Controller ya filtra
@@ -92,7 +90,7 @@ public class ProyectoService {
         ProyectoResponse response = enriquecerConLider(guardado);
         trazabilidadService.registrar(
                 creador, "Proyecto", guardado.getCodigoProyecto(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -125,7 +123,7 @@ public class ProyectoService {
         ProyectoResponse response = enriquecerConLider(actualizado);
         trazabilidadService.registrar(
                 solicitante, "Proyecto", actualizado.getCodigoProyecto(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -156,7 +154,7 @@ public class ProyectoService {
         ProyectoResponse response = enriquecerConLider(guardado);
         trazabilidadService.registrar(
                 solicitante, "Proyecto", guardado.getCodigoProyecto(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -195,7 +193,7 @@ public class ProyectoService {
         Usuario solicitante = autorizacionProyectoService.buscarUsuarioOFallar(correoSolicitante);
         Proyecto proyecto = buscarOFallar(idProyecto);
 
-        String detalle = construirDetalle(enriquecerConLider(proyecto));
+        String detalle = DetalleObjectMapper.serializar(enriquecerConLider(proyecto));
 
         try {
             proyectoRepository.delete(proyecto);
@@ -209,14 +207,6 @@ public class ProyectoService {
         trazabilidadService.registrar(
                 solicitante, "Proyecto", proyecto.getCodigoProyecto(),
                 OperacionTrazabilidad.ELIMINAR, detalle);
-    }
-
-    private String construirDetalle(ProyectoResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     private void vincularLider(Proyecto proyecto, Usuario lider) {
@@ -249,11 +239,20 @@ public class ProyectoService {
      * proyectos haya.
      */
     private List<ProyectoResponse> enriquecerConLider(List<Proyecto> proyectos) {
+        // CORREGIDO: función de merge en el toMap. La invariante "un solo
+        // Líder vigente por proyecto" ya la garantiza el índice único parcial
+        // uq_lider_vigente_por_proyecto (V3), pero si datos previos a esa
+        // migración -- o un entorno donde el índice no se creó -- dejaron dos
+        // líderes vigentes, un toMap sin merge lanzaría IllegalStateException
+        // y tumbaría GET /api/proyectos para TODOS. Con merge, la lectura
+        // degrada de forma controlada (se queda con el primero) en vez de
+        // devolver 500 en la página principal.
         Map<Integer, UsuarioResumenResponse> lideresPorProyecto = asignacionProyectoRepository
                 .findByRolProyectoAndFechaDesvinculacionIsNull(RolProyecto.LIDER).stream()
                 .collect(Collectors.toMap(
                         a -> a.getProyecto().getIdProyecto(),
-                        a -> usuarioMapper.toResumen(a.getUsuario())));
+                        a -> usuarioMapper.toResumen(a.getUsuario()),
+                        (existente, duplicado) -> existente));
 
         return proyectos.stream()
                 .map(proyecto -> {

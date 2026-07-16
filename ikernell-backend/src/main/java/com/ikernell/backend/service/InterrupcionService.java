@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -48,7 +47,6 @@ public class InterrupcionService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     /**
      * CORREGIDO: mismo bug que tenía RegistroErrorService.crear() -- antes
      * cualquier autenticado podía registrar una interrupción en CUALQUIER
@@ -91,7 +89,7 @@ public class InterrupcionService {
         InterrupcionResponse response = interrupcionMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Interrupcion", guardada.getCodigoInterrupcion(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -160,7 +158,7 @@ public class InterrupcionService {
                     "Solo quien registró esta interrupción, o un Coordinador, puede eliminarla.");
         }
 
-        String detalle = construirDetalle(interrupcionMapper.toResponse(interrupcion));
+        String detalle = DetalleObjectMapper.serializar(interrupcionMapper.toResponse(interrupcion));
 
         interrupcionRepository.delete(interrupcion);
 
@@ -169,16 +167,11 @@ public class InterrupcionService {
                 OperacionTrazabilidad.ELIMINAR, detalle);
     }
 
-    private String construirDetalle(InterrupcionResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
-    }
-
     public List<InterrupcionResponse> listarTodos() {
-        return interrupcionRepository.findAll().stream().map(interrupcionMapper::toResponse).toList();
+        // CORREGIDO: orden explícito por id (findAll() no garantiza orden ->
+        // lista no determinista entre recargas).
+        return interrupcionRepository.findAllByOrderByIdInterrupcionAsc()
+                .stream().map(interrupcionMapper::toResponse).toList();
     }
 
     public List<InterrupcionResponse> listarPorActividad(Integer idActividad) {

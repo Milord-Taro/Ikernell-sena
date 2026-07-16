@@ -37,7 +37,7 @@ ikernell-sena-overhaul/
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── docs/                 # Documentación del overhaul (architecture/, planning/, audit/)
+├── docs/                 # Documentación (el overhaul vive en `docs/Ikernell v2.0/`: architecture/, planning/, audit/)
 └── README.md
 ```
 
@@ -50,11 +50,11 @@ proyecto. Analizarlos conjuntamente cuando una tarea involucre cambios full-stac
 
 | Capa       | Tecnología                                              |
 | ---------- | ------------------------------------------------------- |
-| Frontend   | React 18.3.1 + TypeScript 5.8.2, Vite 6.3.5             |
+| Frontend   | React 19.2 + TypeScript 6.0, Vite 8.1                   |
 | Backend    | Java 17.0.19 (OpenJDK), Spring Boot 4.1.0, Maven 3.9.12 |
 | ORM        | Spring Data JPA                                         |
-| Seguridad  | Spring Security                                         |
-| Base datos | PostgreSQL 18.4 — schema: `public`                      |
+| Seguridad  | Spring Security (JWT stateless + method security)      |
+| Base datos | PostgreSQL 14.x — schema: `public`                      |
 | Runtime    | Node.js v22.22.1, npm 9.2.0                             |
 | Control    | Git — monorepo en GitHub                                |
 
@@ -83,15 +83,17 @@ proyecto. Analizarlos conjuntamente cuando una tarea involucre cambios full-stac
 # Desde /ikernell-frontend
 npm install                # Instalar dependencias
 npm run typecheck          # Verificación estricta de TypeScript (tsc -b --noEmit)
+npm run test               # Vitest (jsdom + Testing Library) — corre los *.test.tsx
 npm run dev                # Servidor de desarrollo (Vite — puerto 5173)
 npm run build               # Build de producción
 npm run lint                # oxlint — ejecutar antes de dar una tarea por terminada
 ```
 
-> **Nota:** el proyecto todavía no tiene un framework de tests en el frontend
-> (no existe `npm test`). Está en el backlog de calidad — ver
-> `docs/Ikernell v2.0/planning/`. No inventar ese script hasta que se
-> incorpore Vitest o equivalente.
+> **Tests de frontend:** Vitest está configurado (`vitest.config.ts`, entorno
+> jsdom, setup en `src/test/setup.ts`). Hay tests iniciales para `useCarga`,
+> `formatDate` y el filtrado por rol del `Sidebar`. Los `*.test.tsx` se
+> excluyen del `tsconfig.app.json`, así que `typecheck`/`build` no los tocan;
+> Vitest los transpila con esbuild (runtime JSX automático).
 
 ### Base de datos
 
