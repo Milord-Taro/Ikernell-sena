@@ -100,7 +100,7 @@ export default function ConfiguracionPage() {
                 type="password"
                 required
                 minLength={8}
-                hint="Mínimo 8 caracteres."
+                hint="Mín. 8 caracteres, con letras y números"
                 value={contrasenaNueva}
                 onChange={(e) => setContrasenaNueva(e.target.value)}
               />

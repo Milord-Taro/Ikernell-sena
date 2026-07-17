@@ -1,26 +1,42 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import DashboardHome from './pages/DashboardHome';
-import MetricasPage from './pages/MetricasPage';
-import CatalogosPage from './pages/CatalogosPage';
-import UsuariosPage from './pages/UsuariosPage';
-import ProyectosPage from './pages/ProyectosPage';
-import ProyectoDetallePage from './pages/ProyectoDetallePage';
-import MisActividadesPage from './pages/MisActividadesPage';
-import ErroresPage from './pages/ErroresPage';
-import InterrupcionesPage from './pages/InterrupcionesPage';
-import MensajesPage from './pages/MensajesPage';
-import ConfiguracionPage from './pages/ConfiguracionPage';
-import AuditoriaPage from './pages/AuditoriaPage';
-import NotificacionesPage from './pages/NotificacionesPage';
-import NotFoundPage from './pages/NotFoundPage';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { RoleRoute } from './routes/RoleRoute';
 import { CODIGO_ROL } from './types/usuario';
 
+// CORREGIDO: antes todas las páginas del dashboard se importaban de
+// forma eager -- un visitante anónimo que solo abre la landing (la
+// sección pública, sin sesión) terminaba descargando el bundle completo
+// de la app de gestión igual. Con lazy() cada página del dashboard queda
+// en su propio chunk, que Vite solo pide cuando el usuario navega ahí.
+const DashboardHome = lazy(() => import('./pages/DashboardHome'));
+const MetricasPage = lazy(() => import('./pages/MetricasPage'));
+const CatalogosPage = lazy(() => import('./pages/CatalogosPage'));
+const UsuariosPage = lazy(() => import('./pages/UsuariosPage'));
+const ProyectosPage = lazy(() => import('./pages/ProyectosPage'));
+const ProyectoDetallePage = lazy(() => import('./pages/ProyectoDetallePage'));
+const MisActividadesPage = lazy(() => import('./pages/MisActividadesPage'));
+const ErroresPage = lazy(() => import('./pages/ErroresPage'));
+const InterrupcionesPage = lazy(() => import('./pages/InterrupcionesPage'));
+const MensajesPage = lazy(() => import('./pages/MensajesPage'));
+const ConfiguracionPage = lazy(() => import('./pages/ConfiguracionPage'));
+const AuditoriaPage = lazy(() => import('./pages/AuditoriaPage'));
+const NotificacionesPage = lazy(() => import('./pages/NotificacionesPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+
+function CargandoPagina() {
+  return (
+    <div className="flex items-center justify-center py-24">
+      <p className="type-body-sm text-[var(--text-tertiary)]">Cargando...</p>
+    </div>
+  );
+}
+
 function App() {
   return (
+    <Suspense fallback={<CargandoPagina />}>
     <Routes>
       <Route path="/" element={<LandingPage />} />
 
@@ -123,6 +139,7 @@ function App() {
       {/* Cualquier otra ruta fuera de "/" y "/dashboard/*". */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </Suspense>
   );
 }
 

@@ -9,6 +9,7 @@ import { Alert, ConfirmDialog } from '../../components/ui/Feedback';
 import { EtapaFormModal } from './EtapaFormModal';
 import { ActividadesEtapaModal } from '../actividades/ActividadesEtapaModal';
 import { useAuth } from '../../context/AuthContext';
+import { useCarga } from '../../hooks/useCarga';
 import { CODIGO_ROL } from '../../types/usuario';
 import { ApiRequestError } from '../../types/api';
 import {
@@ -37,22 +38,18 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
     usuario?.rol.codigoRol === CODIGO_ROL.COORDINADOR || usuario?.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO;
 
   const [etapas, setEtapas] = useState<EtapaResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [etapaEditando, setEtapaEditando] = useState<EtapaResponse | null>(null);
   const [etapaActividades, setEtapaActividades] = useState<EtapaResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [etapaAEliminar, setEtapaAEliminar] = useState<EtapaResponse | null>(null);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       const resp = await listarEtapasPorProyecto(idProyecto);
       setEtapas(resp.slice().sort((a, b) => a.orden - b.orden));
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   useEffect(() => {
     cargar();
@@ -101,6 +98,7 @@ export function EtapasList({ idProyecto }: EtapasListProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      {errorCarga && <Alert variant="error" title="No se pudieron cargar las etapas">{errorCarga}</Alert>}
       {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
       <div className="flex items-center justify-between">

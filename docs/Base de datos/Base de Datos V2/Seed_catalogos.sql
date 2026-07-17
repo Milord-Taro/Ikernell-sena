@@ -796,6 +796,10 @@ NULL,
 -- Datos de prueba para la entidad registro_error.
 -- ============================================================
 
+-- CORREGIDO: se agrega la columna 'estado' (NOT NULL en el schema, CHECK en
+-- 'Abierto'|'En progreso'|'Resuelto'|'Descartado'). El seed la omitía y por eso
+-- fallaba al cargarse sobre el schema actual. Se reparte una mezcla de estados
+-- para que la demo muestre el ciclo de vida completo del registro de errores.
 INSERT INTO registro_error
 (
     codigo_registro_error,
@@ -803,7 +807,8 @@ INSERT INTO registro_error
     id_tipo_error,
     titulo,
     descripcion,
-    severidad
+    severidad,
+    estado
 )
 VALUES
 
@@ -813,7 +818,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-013'),
 'Token JWT expirado',
 'La sesión expira antes del tiempo configurado para usuarios autenticados.',
-'Alta'
+'Alta',
+'Resuelto'
 ),
 
 (
@@ -822,7 +828,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-008'),
 'Validación de correo incompleta',
 'El formulario permite registrar correos electrónicos con formato inválido.',
-'Media'
+'Media',
+'En progreso'
 ),
 
 (
@@ -831,7 +838,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-001'),
 'Usuario duplicado',
 'Es posible registrar dos usuarios con el mismo documento de identidad.',
-'Alta'
+'Alta',
+'Resuelto'
 ),
 
 (
@@ -840,7 +848,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-004'),
 'Error al asignar integrantes',
 'La API devuelve un error al agregar desarrolladores al proyecto.',
-'Alta'
+'Alta',
+'Abierto'
 ),
 
 (
@@ -849,7 +858,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-005'),
 'Violación de llave foránea',
 'Se presenta un error de integridad al registrar una asignación.',
-'Crítica'
+'Crítica',
+'En progreso'
 ),
 
 (
@@ -858,7 +868,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-003'),
 'Botón sin estilos',
 'El botón de enviar solicitud no mantiene el estilo definido por el sistema.',
-'Baja'
+'Baja',
+'Abierto'
 ),
 
 (
@@ -867,7 +878,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-009'),
 'Configuración SMTP incorrecta',
 'La configuración del servidor SMTP impide el envío de correos.',
-'Media'
+'Media',
+'Descartado'
 ),
 
 (
@@ -876,7 +888,8 @@ VALUES
 (SELECT id_tipo_error FROM tipo_error WHERE codigo_tipo_error='TER-015'),
 'Visualización incorrecta en Firefox',
 'La interfaz presenta diferencias visuales respecto a Chrome.',
-'Baja'
+'Baja',
+'Abierto'
 );
 
 -- id_usuario_creador no está en el INSERT de arriba porque cada fila ya

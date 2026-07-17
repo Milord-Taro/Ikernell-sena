@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.EspecialidadRequest;
@@ -31,20 +30,18 @@ public class EspecialidadService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public EspecialidadResponse crear(EspecialidadRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarNombreDisponible(request.getNombreEspecialidad(), null);
 
         Especialidad especialidad = especialidadMapper.toEntity(request);
-        especialidad.setCodigoEspecialidad(codigoGeneradorService.siguienteCodigoEspecialidad());
-        Especialidad guardada = especialidadRepository.save(especialidad);
+        Especialidad guardada = guardarConCodigoUnico(especialidad);
 
         EspecialidadResponse response = especialidadMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Especialidad", guardada.getCodigoEspecialidad(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -80,7 +77,7 @@ public class EspecialidadService {
         EspecialidadResponse response = especialidadMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Especialidad", actualizada.getCodigoEspecialidad(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -96,7 +93,7 @@ public class EspecialidadService {
         trazabilidadService.registrar(
                 solicitante, "Especialidad", guardada.getCodigoEspecialidad(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -112,7 +109,7 @@ public class EspecialidadService {
         Especialidad especialidad = buscarOFallar(idEspecialidad);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(especialidadMapper.toResponse(especialidad));
+        String detalle = DetalleObjectMapper.serializar(especialidadMapper.toResponse(especialidad));
 
         try {
             especialidadRepository.delete(especialidad);
@@ -140,11 +137,23 @@ public class EspecialidadService {
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
     }
 
-    private String construirDetalle(EspecialidadResponse response) {
+    /**
+     * CORREGIDO: siguienteCodigoEspecialidad() calcula el código a partir
+     * del MAX() actual, así que dos altas concurrentes pueden calcular el
+     * mismo siguiente código antes de que la primera termine de guardar.
+     * save() sobre una entidad nueva con GenerationType.IDENTITY ejecuta el
+     * INSERT de inmediato (lo necesita para obtener el id generado), así
+     * que la violación de uq_especialidad_codigo se lanza aquí mismo y no
+     * queda diferida al flush final -- se traduce a un 409 legible en vez
+     * de tumbar la petición con un 500 sin explicación.
+     */
+    private Especialidad guardarConCodigoUnico(Especialidad especialidad) {
+        especialidad.setCodigoEspecialidad(codigoGeneradorService.siguienteCodigoEspecialidad());
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return especialidadRepository.save(especialidad);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "No se pudo generar un código único para la especialidad, intenta nuevamente.");
         }
     }
 

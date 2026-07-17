@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -21,6 +20,7 @@ import com.ikernell.backend.repository.AsignacionProyectoRepository;
 import com.ikernell.backend.repository.ProyectoRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +39,6 @@ public class AsignacionProyectoService {
     private final AutorizacionProyectoService autorizacionProyectoService;
     private final NotificacionService notificacionService;
     private final TrazabilidadService trazabilidadService;
-
 
     @Transactional
     public AsignacionProyectoResponse crear(AsignacionProyectoRequest request, String correoSolicitante) {
@@ -91,7 +90,14 @@ public class AsignacionProyectoService {
                             request.getIdProyecto(), RolProyecto.LIDER)
                     .ifPresent(liderAnterior -> {
                         liderAnterior.setFechaDesvinculacion(LocalDate.now());
-                        asignacionProyectoRepository.save(liderAnterior);
+                        // CORREGIDO: saveAndFlush (no save). Con el índice único
+                        // parcial uq_lider_vigente_por_proyecto (V3) el orden
+                        // importa: Hibernate ejecuta los INSERT antes que los
+                        // UPDATE en el flush, así que sin forzar aquí el UPDATE
+                        // de desvinculación, el INSERT del nuevo líder chocaría
+                        // con el anterior (ambos vigentes por un instante) y
+                        // fallaría el reemplazo normal de líder.
+                        asignacionProyectoRepository.saveAndFlush(liderAnterior);
                         // NUEVO: el líder saliente se entera de que ya no lo es --
                         // mismo criterio que "Te agregaron a un proyecto", pero
                         // en la dirección de salida (antes solo se avisaba al
@@ -109,7 +115,19 @@ public class AsignacionProyectoService {
         asignacion.setUsuario(usuario);
         asignacion.setProyecto(proyecto);
 
-        AsignacionProyecto guardada = asignacionProyectoRepository.save(asignacion);
+        AsignacionProyecto guardada;
+        try {
+            // CORREGIDO: saveAndFlush dentro de try. La verificación de arriba
+            // es check-then-act y no protege contra dos asignaciones de Líder
+            // concurrentes; el índice uq_lider_vigente_por_proyecto (V3) es la
+            // red real. Se fuerza el flush aquí para que la posible violación
+            // de restricción se traduzca a un 409 legible en vez de escapar en
+            // el commit como un 500 sin contexto.
+            guardada = asignacionProyectoRepository.saveAndFlush(asignacion);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException(
+                    "El proyecto ya tiene un líder vigente. Refresca e intenta nuevamente.");
+        }
 
         notificacionService.crear(new NotificacionRequest(
                 usuario.getIdUsuario(),
@@ -121,7 +139,7 @@ public class AsignacionProyectoService {
         AsignacionProyectoResponse response = asignacionProyectoMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "AsignacionProyecto", String.valueOf(guardada.getIdAsignacionProyecto()),
-                OperacionTrazabilidad.ASIGNAR, construirDetalle(response));
+                OperacionTrazabilidad.ASIGNAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -172,16 +190,8 @@ public class AsignacionProyectoService {
         AsignacionProyectoResponse response = asignacionProyectoMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "AsignacionProyecto", String.valueOf(guardada.getIdAsignacionProyecto()),
-                OperacionTrazabilidad.DESASIGNAR, construirDetalle(response));
+                OperacionTrazabilidad.DESASIGNAR, DetalleObjectMapper.serializar(response));
 
         return response;
-    }
-
-    private String construirDetalle(AsignacionProyectoResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 }

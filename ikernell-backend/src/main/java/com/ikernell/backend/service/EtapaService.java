@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.EtapaRequest;
@@ -41,7 +40,6 @@ public class EtapaService {
     private final NotificacionService notificacionService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public EtapaResponse crear(EtapaRequest request, String correoSolicitante) {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
@@ -54,15 +52,14 @@ public class EtapaService {
 
         Etapa etapa = etapaMapper.toEntity(request);
         etapa.setProyecto(proyecto);
-        etapa.setCodigoEtapa(codigoGeneradorService.siguienteCodigoEtapa(proyecto));
         etapa.setEstado(EstadoEtapa.PENDIENTE);
 
-        Etapa guardada = etapaRepository.save(etapa);
+        Etapa guardada = guardarConCodigoUnico(etapa, proyecto);
 
         EtapaResponse response = etapaMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Etapa", guardada.getCodigoEtapa(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -106,7 +103,7 @@ public class EtapaService {
         EtapaResponse response = etapaMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Etapa", actualizada.getCodigoEtapa(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -126,7 +123,7 @@ public class EtapaService {
         EtapaResponse response = etapaMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Etapa", guardada.getCodigoEtapa(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -170,7 +167,7 @@ public class EtapaService {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, etapa.getProyecto().getIdProyecto());
 
-        String detalle = construirDetalle(etapaMapper.toResponse(etapa));
+        String detalle = DetalleObjectMapper.serializar(etapaMapper.toResponse(etapa));
 
         try {
             etapaRepository.delete(etapa);
@@ -200,11 +197,19 @@ public class EtapaService {
         }
     }
 
-    private String construirDetalle(EtapaResponse response) {
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DEL MISMO PROYECTO pueden calcular el mismo siguiente código
+     * antes de que la primera termine de guardar; se traduce la violación
+     * de uq_etapa_codigo a un 409 legible en vez de un 500 sin explicación.
+     */
+    private Etapa guardarConCodigoUnico(Etapa etapa, Proyecto proyecto) {
+        etapa.setCodigoEtapa(codigoGeneradorService.siguienteCodigoEtapa(proyecto));
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return etapaRepository.save(etapa);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la etapa, intenta nuevamente.");
         }
     }
 

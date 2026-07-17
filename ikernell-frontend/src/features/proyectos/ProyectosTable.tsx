@@ -5,7 +5,9 @@ import { Plus, Search } from "lucide-react";
 import { Table } from "../../components/ui/Table";
 import { Button } from "../../components/ui/Button";
 import { Badge } from "../../components/ui/Badge";
+import { Alert } from "../../components/ui/Feedback";
 import { Select } from "../../components/ui/FormControls";
+import { useCarga } from "../../hooks/useCarga";
 import { ProyectoFormModal } from "./ProyectoFormModal";
 import { MenuDescarga } from "./ReportesProyecto";
 import { useAuth } from "../../context/AuthContext";
@@ -39,22 +41,19 @@ export function ProyectosTable() {
     esCoordinador || usuario?.rol.codigoRol === CODIGO_ROL.LIDER_PROYECTO;
 
   const [proyectos, setProyectos] = useState<ProyectoResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error, ejecutar } = useCarga();
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
   const [modalAbierto, setModalAbierto] = useState(false);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       setProyectos(await listarProyectos());
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   useEffect(() => {
     cargar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filas: FilaProyecto[] = proyectos
@@ -75,6 +74,12 @@ export function ProyectosTable() {
 
   return (
     <div className="flex flex-col gap-4">
+      {error && (
+        <Alert variant="error" title="No se pudieron cargar los proyectos">
+          {error}
+        </Alert>
+      )}
+
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="relative w-64">
@@ -124,6 +129,7 @@ export function ProyectosTable() {
 
       <Table<FilaProyecto>
         keyField="proyecto"
+        rowKey={(f) => f.proyecto.idProyecto}
         loading={cargando}
         data={filas}
         onRowClick={(fila) =>
@@ -137,17 +143,26 @@ export function ProyectosTable() {
             header: "Código",
             mono: true,
             width: "140px",
+            sortable: true,
+            sortValue: (f) => f.proyecto.codigoProyecto,
             render: (f) => f.proyecto.codigoProyecto,
           },
           {
             key: "nombre",
             header: "Nombre",
+            sortable: true,
+            sortValue: (f) => f.proyecto.nombreProyecto,
             render: (f) => f.proyecto.nombreProyecto,
           },
           {
             key: "lider",
             header: "Líder",
             width: "200px",
+            sortable: true,
+            sortValue: (f) =>
+              f.proyecto.liderActual
+                ? `${f.proyecto.liderActual.nombres} ${f.proyecto.liderActual.apellidos}`
+                : null,
             render: (f) =>
               f.proyecto.liderActual ? (
                 <span className="text-[var(--text-secondary)]">
@@ -164,6 +179,8 @@ export function ProyectosTable() {
             key: "estado",
             header: "Estado",
             width: "200px",
+            sortable: true,
+            sortValue: (f) => f.proyecto.estado,
             render: (f) => (
               <Badge variant={variantePorEstado[f.proyecto.estado]}>
                 {f.proyecto.estado}
@@ -173,13 +190,17 @@ export function ProyectosTable() {
           {
             key: "fechaInicio",
             header: "Inicio",
-            width: "150px",
+            width: "220px",
+            sortable: true,
+            sortValue: (f) => f.proyecto.fechaInicio,
             render: (f) => formatFecha(f.proyecto.fechaInicio),
           },
           {
             key: "fechaFin",
             header: "Fin",
-            width: "150px",
+            width: "220px",
+            sortable: true,
+            sortValue: (f) => f.proyecto.fechaFin,
             render: (f) => formatFecha(f.proyecto.fechaFin),
           },
         ]}

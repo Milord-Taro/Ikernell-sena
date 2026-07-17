@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -17,6 +16,7 @@ import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
+import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.RegistroErrorMapper;
@@ -26,6 +26,7 @@ import com.ikernell.backend.repository.RegistroErrorRepository;
 import com.ikernell.backend.repository.TipoErrorRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +47,6 @@ public class RegistroErrorService {
     private final UsuarioRepository usuarioRepository;
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
-
 
     /**
      * CORREGIDO: antes cualquier autenticado podía reportar un error en
@@ -72,7 +72,6 @@ public class RegistroErrorService {
         RegistroError registroError = registroErrorMapper.toEntity(request);
         registroError.setActividad(actividad);
         registroError.setTipoError(tipoError);
-        registroError.setCodigoRegistroError(codigoGeneradorService.siguienteCodigoRegistroError(actividad));
         // NUEVO: quién lo creó -- cualquier miembro vigente del equipo del
         // proyecto (no necesariamente el dueño de la actividad), o el
         // Coordinador.
@@ -81,7 +80,7 @@ public class RegistroErrorService {
         // Resuelto/Descartado, eso solo se llega ahí vía cambiarEstado().
         registroError.setEstado(EstadoRegistroError.ABIERTO);
 
-        RegistroError guardado = registroErrorRepository.save(registroError);
+        RegistroError guardado = guardarConCodigoUnico(registroError, actividad);
 
         // NUEVO: solo Alta/Crítica notifica -- Baja/Media son ruido para
         // el Líder, se ven igual en la vista de supervisión de Errores.
@@ -100,7 +99,7 @@ public class RegistroErrorService {
         RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "RegistroError", guardado.getCodigoRegistroError(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -178,7 +177,7 @@ public class RegistroErrorService {
         RegistroErrorResponse response = registroErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "RegistroError", guardado.getCodigoRegistroError(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -206,7 +205,7 @@ public class RegistroErrorService {
                     "Solo quien registró este error, o un Coordinador, puede eliminarlo.");
         }
 
-        String detalle = construirDetalle(registroErrorMapper.toResponse(registroError));
+        String detalle = DetalleObjectMapper.serializar(registroErrorMapper.toResponse(registroError));
 
         registroErrorRepository.delete(registroError);
 
@@ -215,19 +214,28 @@ public class RegistroErrorService {
                 OperacionTrazabilidad.ELIMINAR, detalle);
     }
 
-    private String construirDetalle(RegistroErrorResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
-    }
-
     private EstadoRegistroError parsearEstado(String estadoTexto) {
         try {
             return EstadoRegistroError.desdeValor(estadoTexto);
         } catch (IllegalArgumentException ex) {
             throw new BusinessException(ex.getMessage());
+        }
+    }
+
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DE LA MISMA ACTIVIDAD pueden calcular el mismo siguiente
+     * código antes de que la primera termine de guardar; se traduce la
+     * violación de uq_registro_error_codigo a un 409 legible en vez de un
+     * 500 sin explicación.
+     */
+    private RegistroError guardarConCodigoUnico(RegistroError registroError, Actividad actividad) {
+        registroError.setCodigoRegistroError(codigoGeneradorService.siguienteCodigoRegistroError(actividad));
+        try {
+            return registroErrorRepository.save(registroError);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el registro de error, intenta nuevamente.");
         }
     }
 

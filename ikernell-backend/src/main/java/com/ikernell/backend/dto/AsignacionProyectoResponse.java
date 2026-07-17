@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class AsignacionProyectoResponse {
 
     private Integer idAsignacionProyecto;
-    private UsuarioResponse usuario;
+    private UsuarioResumenResponse usuario;
     private ProyectoResponse proyecto;
     private RolProyecto rolProyecto;
     private LocalDate fechaAsignacion;

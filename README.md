@@ -19,7 +19,7 @@ Sistema web para la gestión de proyectos de desarrollo de software desarrollado
 - TypeScript
 - Vite
 - Tailwind CSS
-- shadcn/ui
+- Kit de componentes propio (`src/components/ui/`), sin librería de componentes externa
 
 ---
 
@@ -28,7 +28,7 @@ Sistema web para la gestión de proyectos de desarrollo de software desarrollado
 Antes de ejecutar el proyecto es necesario tener instalado:
 
 - Java 17
-- PostgreSQL 18
+- PostgreSQL 14 o superior (probado en 14.x; el baseline de Flyway se genero contra 14)
 - Node.js v22
 - npm
 - Git
@@ -58,23 +58,79 @@ cd Ikernell-sena
 
 # Restaurar la base de datos
 
-1. Crea una base de datos vacía en PostgreSQL, por ejemplo `ikernell_solutions` (o `ikernell_v2`, ver nota de perfiles más abajo).
+> **Opción rápida con Docker (recomendada para "clone and run"):** si tienes
+> Docker, no necesitas instalar ni configurar PostgreSQL. Desde la raíz del
+> repo:
+>
+> ```bash
+> docker compose up -d          # levanta PostgreSQL 14 con la base ikernell_v2 vacía
+> #   ...arranca el backend una vez (Flyway aplica todas las migraciones y crea el schema)...
+> docker compose exec -T db \
+>   psql -U postgres -d ikernell_v2 -f "/seed/Seed_catalogos.sql"   # catálogos + datos demo
+> ```
+>
+> El `docker-compose.yml` ya usa la base/usuario/clave que espera el perfil
+> `dev` (`ikernell_v2`, `postgres`/`postgres`), así que el backend arranca sin
+> configurar nada más. Detalles y notas de puerto en la cabecera de ese archivo.
+> El resto de esta sección describe el equivalente manual (sin Docker).
 
-2. Ejecuta el script de esquema consolidado (crea tablas, restricciones y demás):
+El schema (tablas, restricciones, índices) ya **no se crea a mano**: lo
+gestiona [Flyway](https://flywaydb.org/), que corre automáticamente al
+arrancar el backend por primera vez.
+
+1. Crea una base de datos **vacía** en PostgreSQL, por ejemplo `ikernell_v2`
+   (ver nota de perfiles más abajo -- el perfil `dev` ya apunta ahí por defecto).
+
+2. Arranca el backend una vez (ver "Ejecutar Backend" más abajo). En el
+   primer arranque vas a ver en el log líneas como:
 
    ```
-   docs/Base de datos/Base de Datos V2/ikernell_v2_FINAL.sql
+   Creating Schema History table "public"."flyway_schema_history" ...
+   Migrating schema "public" to version "1 - baseline"
+   Successfully applied 1 migration to schema "public", now at version v1
    ```
 
-   (Hay una copia idéntica en `ikernell-backend/schema.sql`, pensada para las herramientas de auditoría del backend — puedes usar cualquiera de las dos, son el mismo archivo.)
+   Eso confirma que Flyway creó las 15 tablas + restricciones a partir de
+   `ikernell-backend/src/main/resources/db/migration/V1__baseline.sql`.
+   Este archivo es la fuente de verdad del schema -- las copias en
+   `ikernell-backend/schema.sql` y
+   `docs/Base de datos/Base de Datos V2/ikernell_v2_FINAL.sql` son solo
+   referencia/lectura (pensadas para las herramientas de auditoría del
+   backend y para consulta humana), **no se ejecutan a mano**.
 
-3. Carga los datos base de catálogos (roles, profesiones, especialidades, tipos de error, tipos de interrupción):
+3. Con el backend ya arrancado (y las tablas creadas), carga los datos
+   base de catálogos (roles, profesiones, especialidades, tipos de error,
+   tipos de interrupción):
 
    ```
    docs/Base de datos/Base de Datos V2/Seed_catalogos.sql
    ```
 
 > **Nota:** la carpeta `docs/Base de datos/DB Legacy/` contiene el esquema y los scripts de una versión anterior del caso de estudio (SENA 2017). No la uses para levantar el sistema actual — solo se conserva como referencia histórica.
+
+## ¿Cómo se mantiene el schema al día? (Flyway)
+
+**Nunca** modifiques el schema conectándote a la base de datos a mano
+(ni con `ALTER TABLE` por psql, ni con un cliente gráfico). Cualquier
+cambio de schema va como un script SQL **nuevo** en:
+
+```
+ikernell-backend/src/main/resources/db/migration/
+```
+
+con el nombre `V{siguiente-número}__descripcion.sql` (ej.
+`V2__agrega_columna_x.sql`). Al arrancar, Flyway detecta el archivo
+nuevo y lo aplica automáticamente, en orden, sobre cualquier base de
+datos que todavía no lo tenga -- tu máquina, la de un compañero, o
+producción, todas terminan con exactamente el mismo schema sin que
+nadie tenga que ejecutar nada a mano ni recordar qué cambios ya aplicó.
+
+`spring.jpa.hibernate.ddl-auto=validate` (en `application.properties`)
+es el complemento de esto: si algún día las entidades JPA y el schema
+real se desalinean (por ejemplo, alguien edita una entidad sin agregar
+la migración correspondiente), el backend **falla al arrancar** con un
+mensaje claro, en vez de fallar en producción con la primera query que
+toque esa tabla.
 
 ---
 
@@ -99,6 +155,7 @@ El perfil activo se controla con `SPRING_PROFILES_ACTIVE` (por defecto `dev`, no
 | `DB_URL` | URL JDBC completa (solo se usa en `prod`; en `dev` la URL ya está fija a `ikernell_v2`) | — |
 | `JWT_SECRET` | Secreto para firmar los tokens JWT | secreto de desarrollo embebido (**cámbialo en producción**, en `prod` la app falla al arrancar si falta) |
 | `JWT_EXPIRATION_MS` | Duración de la sesión en milisegundos | `1800000` (30 minutos) |
+| `CORS_ALLOWED_ORIGINS` | Orígenes permitidos para llamar a la API (separados por coma si son varios) | `http://localhost:5173` (en `prod` es obligatoria, sin default) |
 
 Opción recomendada para trabajar en casa/oficina, si tu instalación local de PostgreSQL usa otro usuario, contraseña o nombre de base de datos distinto al de arriba:
 

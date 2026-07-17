@@ -1,4 +1,4 @@
-  import { useEffect, useState } from 'react';
+  import { useCallback, useEffect, useState } from 'react';
   import { Plus, Search } from 'lucide-react';
   import { Table } from '../../components/ui/Table';
   import { Button } from '../../components/ui/Button';
@@ -8,6 +8,7 @@
   import { Alert } from '../../components/ui/Feedback';
   import { UsuarioFormModal } from './UsuarioFormModal';
   import { useAuth } from '../../context/AuthContext';
+  import { useCarga } from '../../hooks/useCarga';
   import { ApiRequestError } from '../../types/api';
   import {
     listarUsuarios,
@@ -33,7 +34,7 @@
     const [roles, setRoles] = useState<RolResponse[]>([]);
     const [profesiones, setProfesiones] = useState<ProfesionResponse[]>([]);
     const [especialidades, setEspecialidades] = useState<EspecialidadResponse[]>([]);
-    const [cargando, setCargando] = useState(true);
+    const { cargando, error: errorCarga, ejecutar } = useCarga();
     const [busqueda, setBusqueda] = useState('');
     const [filtroRol, setFiltroRol] = useState('');
     const [filtroEstado, setFiltroEstado] = useState<'activos' | 'inhabilitados' | 'todos'>('activos');
@@ -46,9 +47,8 @@
     // roles) -- pedirlos aquí para un Líder provoca un 403 que, al estar
     // en el mismo Promise.all, tumbaba TODA la carga (incluida la lista
     // de usuarios, que el Líder sí puede ver) y dejaba la tabla vacía.
-    const cargarTodo = async () => {
-      setCargando(true);
-      try {
+    const cargarTodo = useCallback(() => {
+      return ejecutar(async () => {
         const [usuariosResp, rolesResp] = await Promise.all([
           listarUsuarios(),
           rolesService.listar(),
@@ -64,14 +64,18 @@
           setProfesiones(profesionesResp.filter((p) => p.activo));
           setEspecialidades(especialidadesResp.filter((e) => e.activo));
         }
-      } finally {
-        setCargando(false);
-      }
-    };
+      });
+    }, [esCoordinador, ejecutar]);
 
+    // CORREGIDO: dependencia explícita en cargarTodo (memoizado con
+    // useCallback) en vez de `[]` -- `usuarioActual` se resuelve async
+    // (empieza null), así que `esCoordinador` puede pasar de false a true
+    // DESPUÉS del montaje inicial. Con `[]`, el closure original (con
+    // esCoordinador=false) quedaba fijo para siempre y un Coordinador
+    // recién resuelto nunca cargaba profesiones/especialidades.
     useEffect(() => {
       cargarTodo();
-    }, []);
+    }, [cargarTodo]);
 
     const filas: FilaUsuario[] = usuarios
       .filter((u) => {
@@ -117,6 +121,7 @@
 
     return (
       <div className="flex flex-col gap-4">
+        {errorCarga && <Alert variant="error" title="No se pudieron cargar los usuarios">{errorCarga}</Alert>}
         {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
         <div className="flex items-center justify-between gap-3">
@@ -166,6 +171,7 @@
 
         <Table<FilaUsuario>
           keyField="usuario"
+          rowKey={(fila) => fila.usuario.idUsuario}
           loading={cargando}
           data={filas}
           emptyMessage="No hay usuarios registrados"
@@ -174,6 +180,8 @@
             {
               key: 'nombre',
               header: 'Usuario',
+              sortable: true,
+              sortValue: (fila) => `${fila.usuario.nombres} ${fila.usuario.apellidos}`,
               render: (fila) => (
                 <div className="flex items-center gap-2.5">
                   <Avatar name={`${fila.usuario.nombres} ${fila.usuario.apellidos}`} size="sm" />
@@ -186,17 +194,29 @@
                 </div>
               ),
             },
-            { key: 'codigo', header: 'Código', mono: true, width: '200px', render: (f) => f.usuario.codigoUsuario },
+            {
+              key: 'codigo',
+              header: 'Código',
+              mono: true,
+              width: '200px',
+              sortable: true,
+              sortValue: (f) => f.usuario.codigoUsuario,
+              render: (f) => f.usuario.codigoUsuario,
+            },
             {
               key: 'rol',
               header: 'Rol',
               width: '300px',
+              sortable: true,
+              sortValue: (fila) => fila.usuario.rol.nombreRol,
               render: (fila) => <Badge variant="info">{fila.usuario.rol.nombreRol}</Badge>,
             },
             {
               key: 'estado',
               header: 'Estado',
               width: '100px',
+              sortable: true,
+              sortValue: (fila) => fila.usuario.activo,
               render: (fila) => (
                 <Switch
                   checked={fila.usuario.activo}

@@ -24,7 +24,7 @@ public class MensajeContactoResponse {
     private String detalle;
     private EstadoMensaje estado;
     private String respuesta;
-    private UsuarioResponse responsable;
+    private UsuarioResumenResponse responsable;
     private LocalDateTime fechaEnvio;
     private LocalDateTime fechaAtencion;
 }

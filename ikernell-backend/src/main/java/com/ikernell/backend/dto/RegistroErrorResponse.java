@@ -21,7 +21,7 @@ public class RegistroErrorResponse {
     private String codigoRegistroError;
     private ActividadResponse actividad;
     private TipoErrorResponse tipoError;
-    private UsuarioResponse usuarioCreador;
+    private UsuarioResumenResponse usuarioCreador;
     private String titulo;
     private String descripcion;
     private NivelCriticidad severidad;

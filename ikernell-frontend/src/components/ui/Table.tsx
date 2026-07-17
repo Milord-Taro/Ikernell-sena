@@ -1,21 +1,53 @@
 import { type ReactNode, useState } from 'react'
-import { ArrowUpDown } from 'lucide-react'
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import { Pagination } from './Pagination'
 
 interface Column<T> {
   key: string
   header: string
   sortable?: boolean
+  /**
+   * Valor a comparar al ordenar por esta columna. Necesario cuando `key`
+   * no es directamente `row[key]` -- ej. datos anidados (`row.proyecto.nombre`)
+   * o cuando `render` devuelve JSX en vez del valor crudo. Si se omite,
+   * se usa `row[key]`.
+   */
+  sortValue?: (row: T) => string | number | boolean | null | undefined
   width?: string
   render?: (row: T) => ReactNode
   mono?: boolean
   align?: 'left' | 'right' | 'center'
 }
 
+type Direccion = 'asc' | 'desc'
+
+/** Compara valores heterogéneos: numérico si ambos son número, texto con
+ * reglas de español (acentos, mayúsculas) en cualquier otro caso. Un valor
+ * nulo/indefinido siempre queda al final, sin importar la dirección. */
+function compararValores(a: unknown, b: unknown): number {
+  const aVacio = a === null || a === undefined || a === ''
+  const bVacio = b === null || b === undefined || b === ''
+  if (aVacio && bVacio) return 0
+  if (aVacio) return 1
+  if (bVacio) return -1
+
+  if (typeof a === 'number' && typeof b === 'number') return a - b
+  if (typeof a === 'boolean' && typeof b === 'boolean') return Number(a) - Number(b)
+
+  return String(a).localeCompare(String(b), 'es', { numeric: true, sensitivity: 'base' })
+}
+
 interface TableProps<T extends Record<string, unknown>> {
   columns: Column<T>[]
   data: T[]
+  /** Nombre del campo con la key única de cada fila. Debe ser un valor
+   * primitivo (string/number) -- si `row[keyField]` es un objeto anidado,
+   * usar `rowKey` en su lugar. */
   keyField?: string
+  /** Alternativa a `keyField` para filas envueltas en un objeto (ej.
+   * `{ proyecto: ProyectoResponse }`), donde `row[keyField]` sería el
+   * objeto anidado completo en vez de un id primitivo. */
+  rowKey?: (row: T) => string | number
   loading?: boolean
   emptyMessage?: string
   emptyDescription?: string
@@ -29,6 +61,7 @@ export function Table<T extends Record<string, unknown>>({
   columns,
   data,
   keyField = 'id',
+  rowKey,
   loading = false,
   emptyMessage = 'No hay registros',
   emptyDescription = 'No se encontraron registros para los filtros actuales.',
@@ -49,11 +82,32 @@ export function Table<T extends Record<string, unknown>>({
   // página 1 en cada re-render ajeno (como abrir un modal), no solo
   // cuando cambian los filtros.
   const [pagina, setPagina] = useState(1)
-  const totalPaginas = pageSize > 0 ? Math.max(1, Math.ceil(data.length / pageSize)) : 1
+  const [orden, setOrden] = useState<{ key: string; direccion: Direccion } | null>(null)
+
+  const alClicEncabezado = (col: Column<T>) => {
+    if (!col.sortable) return
+    setPagina(1)
+    setOrden((actual) => {
+      if (actual?.key !== col.key) return { key: col.key, direccion: 'asc' }
+      if (actual.direccion === 'asc') return { key: col.key, direccion: 'desc' }
+      return null
+    })
+  }
+
+  const columnaOrdenada = orden ? columns.find((c) => c.key === orden.key) : undefined
+  const datosOrdenados = orden && columnaOrdenada
+    ? [...data].sort((a, b) => {
+        const obtenerValor = columnaOrdenada.sortValue ?? ((row: T) => row[columnaOrdenada.key] as string | number | boolean | null | undefined)
+        const factor = orden.direccion === 'asc' ? 1 : -1
+        return factor * compararValores(obtenerValor(a), obtenerValor(b))
+      })
+    : data
+
+  const totalPaginas = pageSize > 0 ? Math.max(1, Math.ceil(datosOrdenados.length / pageSize)) : 1
   const paginaActual = Math.min(pagina, totalPaginas)
   const datosVisibles = pageSize > 0
-    ? data.slice((paginaActual - 1) * pageSize, paginaActual * pageSize)
-    : data
+    ? datosOrdenados.slice((paginaActual - 1) * pageSize, paginaActual * pageSize)
+    : datosOrdenados
 
   if (loading) {
     return (
@@ -119,24 +173,41 @@ export function Table<T extends Record<string, unknown>>({
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-[var(--border)] bg-[var(--muted)]">
-              {columns.map(col => (
-                <th
-                  key={col.key}
-                  className={`px-4 py-2.5 type-label text-[var(--text-tertiary)] ${alignClass[col.align ?? 'left']}`}
-                  style={col.width ? { width: col.width } : {}}
-                >
-                  <span className={`flex items-center gap-1 ${col.align === 'right' ? 'justify-end' : col.align === 'center' ? 'justify-center' : ''}`}>
-                    {col.header}
-                    {col.sortable && <ArrowUpDown size={11} className="shrink-0 opacity-50" />}
-                  </span>
-                </th>
-              ))}
+              {columns.map(col => {
+                const activa = orden?.key === col.key
+                const ariaSort = !col.sortable ? undefined : activa ? (orden!.direccion === 'asc' ? 'ascending' : 'descending') : 'none'
+                const Icono = activa ? (orden!.direccion === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown
+
+                return (
+                  <th
+                    key={col.key}
+                    className={`px-4 py-2.5 type-label text-[var(--text-tertiary)] ${alignClass[col.align ?? 'left']}`}
+                    style={col.width ? { width: col.width } : {}}
+                    aria-sort={ariaSort}
+                  >
+                    {col.sortable ? (
+                      <button
+                        type="button"
+                        onClick={() => alClicEncabezado(col)}
+                        className={`flex items-center gap-1 hover:text-[var(--text-primary)] transition-colors ${col.align === 'right' ? 'justify-end w-full' : col.align === 'center' ? 'justify-center w-full' : ''}`}
+                      >
+                        {col.header}
+                        <Icono size={11} className={`shrink-0 ${activa ? '' : 'opacity-50'}`} />
+                      </button>
+                    ) : (
+                      <span className={`flex items-center gap-1 ${col.align === 'right' ? 'justify-end' : col.align === 'center' ? 'justify-center' : ''}`}>
+                        {col.header}
+                      </span>
+                    )}
+                  </th>
+                )
+              })}
             </tr>
           </thead>
           <tbody>
             {datosVisibles.map((row, idx) => (
               <tr
-                key={String(row[keyField] ?? idx)}
+                key={String(rowKey ? rowKey(row) : (row[keyField] ?? idx))}
                 onClick={() => onRowClick?.(row)}
                 className={`border-b border-[var(--divider)] last:border-0 transition-colors duration-75 ${onRowClick ? 'cursor-pointer hover:bg-[var(--muted)]' : ''}`}
               >

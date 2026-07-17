@@ -221,7 +221,7 @@ export function LoginModal({ open, onClose, onSuccess }: LoginModalProps) {
             minLength={8}
             value={nuevaContrasena}
             onChange={(e) => setNuevaContrasena(e.target.value)}
-            placeholder="Mínimo 8 caracteres"
+            placeholder="Mín. 8 caracteres, con letras y números"
           />
           <Input
             label="Confirmar contraseña"

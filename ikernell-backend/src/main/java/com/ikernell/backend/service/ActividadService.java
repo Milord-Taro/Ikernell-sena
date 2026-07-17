@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ActividadRequest;
@@ -46,7 +45,6 @@ public class ActividadService {
     private final NotificacionService notificacionService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public ActividadResponse crear(ActividadRequest request, String correoSolicitante) {
         Etapa etapa = buscarEtapaOFallar(request.getIdEtapa());
@@ -57,7 +55,6 @@ public class ActividadService {
 
         Actividad actividad = actividadMapper.toEntity(request);
         actividad.setEtapa(etapa);
-        actividad.setCodigoActividad(codigoGeneradorService.siguienteCodigoActividad(etapa));
 
         if (request.getIdUsuario() != null) {
             validarPerteneceAlEquipo(request.getIdUsuario(), etapa.getProyecto().getIdProyecto());
@@ -68,7 +65,7 @@ public class ActividadService {
             actividad.setEstado(EstadoActividad.PENDIENTE_DE_ASIGNACION);
         }
 
-        Actividad guardada = actividadRepository.save(actividad);
+        Actividad guardada = guardarConCodigoUnico(actividad, etapa);
         // NUEVO: si nace ya asignada, se notifica al desarrollador de una vez.
         if (guardada.getUsuario() != null) {
             notificarAsignacion(guardada);
@@ -77,7 +74,7 @@ public class ActividadService {
         ActividadResponse response = actividadMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", guardada.getCodigoActividad(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -89,7 +86,9 @@ public class ActividadService {
      * KPIs "org-wide" o "de mis proyectos" sin un fan-out etapa por etapa.
      */
     public List<ActividadResponse> listarTodas() {
-        return actividadRepository.findAll()
+        // CORREGIDO: orden explícito por id. findAll() no garantiza orden, así
+        // que la lista podía cambiar entre recargas (render no determinista).
+        return actividadRepository.findAllByOrderByIdActividadAsc()
                 .stream()
                 .map(actividadMapper::toResponse)
                 .toList();
@@ -141,7 +140,7 @@ public class ActividadService {
         ActividadResponse response = actividadMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", actualizada.getCodigoActividad(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -166,7 +165,7 @@ public class ActividadService {
         notificarAsignacion(guardada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", guardada.getCodigoActividad(),
-                OperacionTrazabilidad.ASIGNAR, construirDetalle(actividadMapper.toResponse(guardada)));
+                OperacionTrazabilidad.ASIGNAR, DetalleObjectMapper.serializar(actividadMapper.toResponse(guardada)));
 
         return actividadMapper.toResponse(guardada);
     }
@@ -236,7 +235,7 @@ public class ActividadService {
         ActividadResponse response = actividadMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Actividad", guardada.getCodigoActividad(),
-                OperacionTrazabilidad.CAMBIAR_ESTADO, construirDetalle(response));
+                OperacionTrazabilidad.CAMBIAR_ESTADO, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -256,7 +255,7 @@ public class ActividadService {
         Usuario solicitante = autorizacionProyectoService.verificarPuedeGestionar(
                 correoSolicitante, actividad.getEtapa().getProyecto().getIdProyecto());
 
-        String detalle = construirDetalle(actividadMapper.toResponse(actividad));
+        String detalle = DetalleObjectMapper.serializar(actividadMapper.toResponse(actividad));
 
         try {
             actividadRepository.delete(actividad);
@@ -302,11 +301,20 @@ public class ActividadService {
         }
     }
 
-    private String construirDetalle(ActividadResponse response) {
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DE LA MISMA ETAPA pueden calcular el mismo siguiente código
+     * antes de que la primera termine de guardar; se traduce la violación
+     * de uq_actividad_codigo a un 409 legible en vez de un 500 sin
+     * explicación.
+     */
+    private Actividad guardarConCodigoUnico(Actividad actividad, Etapa etapa) {
+        actividad.setCodigoActividad(codigoGeneradorService.siguienteCodigoActividad(etapa));
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return actividadRepository.save(actividad);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la actividad, intenta nuevamente.");
         }
     }
 

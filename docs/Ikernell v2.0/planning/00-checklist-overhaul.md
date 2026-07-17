@@ -17,12 +17,12 @@ Todas las actividades deberán derivarse del Product Backlog y alinearse con la 
 # Estado General
 
 - [x] Planeación completada
-- [ ] Dominio revisado
-- [ ] Base de Datos actualizada
-- [ ] Backend refactorizado
-- [ ] Design System implementado
-- [ ] Frontend actualizado
-- [ ] Valor agregado implementado
+- [x] Dominio revisado
+- [x] Base de Datos actualizada
+- [x] Backend refactorizado
+- [x] Design System implementado
+- [x] Frontend actualizado
+- [x] Valor agregado implementado
 - [ ] Documentación SENA actualizada
 - [ ] Validación final completada
 - [ ] Proyecto listo para entrega
@@ -37,52 +37,52 @@ Todas las actividades deberán derivarse del Product Backlog y alinearse con la 
 - [x] Arquitectura
 - [x] Product Backlog
 - [x] Design System
-- [ ] Refinamiento del Checklist
+- [x] Refinamiento del Checklist
 
 ---
 
 ## Día 2
 
-- [ ] Revisar Dominio
-- [ ] Actualizar Base de Datos
-- [ ] Resolver observaciones críticas
+- [x] Revisar Dominio
+- [x] Actualizar Base de Datos
+- [x] Resolver observaciones críticas
 
 ---
 
 ## Día 3
 
-- [ ] Refactor Backend
+- [x] Refactor Backend
 
 ---
 
 ## Día 4
 
-- [ ] Refactor Frontend
+- [x] Refactor Frontend
 
 ---
 
 ## Día 5
 
-- [ ] Design System
-- [ ] UX
-- [ ] Componentes reutilizables
+- [x] Design System
+- [x] UX
+- [x] Componentes reutilizables
 
 ---
 
 ## Día 6
 
-- [ ] Documentación
-- [ ] Casos de Uso
-- [ ] HU
-- [ ] RF
-- [ ] DER
+- [x] Documentación
+- [x] Casos de Uso
+- [x] HU
+- [x] RF
+- [x] DER
 
 ---
 
 ## Día 7
 
-- [ ] Pruebas
-- [ ] Correcciones finales
+- [x] Pruebas
+- [x] Correcciones finales
 - [ ] Entrega
 
 ---
@@ -130,32 +130,32 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
 ## Backend
 
-- [ ] Revisar autenticación
-- [ ] Revisar autorización
-- [ ] Revisar sesiones
+- [x] Revisar autenticación
+- [x] Revisar autorización
+- [x] Revisar sesiones
 
 ---
 
 ## Frontend
 
-- [ ] Login
-- [ ] Logout
-- [ ] ProtectedRoute
-- [ ] RoleRoute
+- [x] Login
+- [x] Logout
+- [x] ProtectedRoute
+- [x] RoleRoute
 
 ---
 
 ## Validación
 
-- [ ] Permisos
-- [ ] Seguridad
-- [ ] Flujo de autenticación
+- [x] Permisos
+- [x] Seguridad
+- [x] Flujo de autenticación
 
 ---
 
@@ -163,76 +163,76 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
 ## Dominio
 
-- [ ] Revisar responsabilidades
-- [ ] Revisar atributos
-- [ ] Revisar relaciones
-- [ ] Revisar reglas del negocio
+- [x] Revisar responsabilidades
+- [x] Revisar atributos
+- [x] Revisar relaciones
+- [x] Revisar reglas del negocio
 
 ---
 
 ## Base de Datos
 
-- [ ] Revisar Usuario
-- [ ] Revisar restricciones
-- [ ] Actualizar SQL
+- [x] Revisar Usuario
+- [x] Revisar restricciones
+- [x] Actualizar SQL
 
 ---
 
 ## Backend
 
-- [ ] Entity
-- [ ] DTO
-- [ ] Mapper
-- [ ] Repository
-- [ ] Service
-- [ ] Controller
-- [ ] Validaciones
+- [x] Entity
+- [x] DTO
+- [x] Mapper
+- [x] Repository
+- [x] Service
+- [x] Controller
+- [x] Validaciones
 
 ---
 
 ## Frontend
 
-- [ ] Lista
-- [ ] Crear
-- [ ] Editar
-- [ ] Detalle
-- [ ] Búsqueda
-- [ ] Filtros
-- [ ] Responsive
-- [ ] Empty State
-- [ ] Error State
+- [x] Lista
+- [x] Crear
+- [x] Editar
+- [x] Detalle
+- [x] Búsqueda
+- [x] Filtros
+- [x] Responsive
+- [x] Empty State
+- [x] Error State
 
 ---
 
 ## Design System
 
-- [ ] Formularios
-- [ ] Cards
-- [ ] Tabla
-- [ ] Avatar
-- [ ] Modal
+- [x] Formularios
+- [x] Cards
+- [x] Tabla
+- [x] Avatar
+- [x] Modal
 
 ---
 
 ## Documentación
 
-- [ ] HU
-- [ ] RF
-- [ ] Caso de Uso
+- [x] HU
+- [x] RF
+- [x] Caso de Uso
 
 ---
 
 ## Validación
 
-- [ ] CRUD
-- [ ] API
-- [ ] Permisos
+- [x] CRUD
+- [x] API
+- [x] Permisos
 
 ---
 
@@ -240,17 +240,17 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] CRUD Roles
-- [ ] CRUD Profesiones
-- [ ] CRUD Especialidades
-- [ ] Revisar modelo de Roles
-- [ ] Revisar relaciones
-- [ ] Actualizar SQL
-- [ ] Actualizar documentación
+- [x] CRUD Roles
+- [x] CRUD Profesiones
+- [x] CRUD Especialidades
+- [x] Revisar modelo de Roles
+- [x] Revisar relaciones
+- [x] Actualizar SQL
+- [x] Actualizar documentación
 
 ---
 
@@ -258,20 +258,20 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Revisar dominio
-- [ ] CRUD
-- [ ] Asignaciones
-- [ ] Validaciones
-- [ ] Búsqueda
-- [ ] Filtros
-- [ ] Vista detalle
-- [ ] Design System
-- [ ] Responsive
-- [ ] Documentación
+- [x] Revisar dominio
+- [x] CRUD
+- [x] Asignaciones
+- [x] Validaciones
+- [x] Búsqueda
+- [x] Filtros
+- [x] Vista detalle
+- [x] Design System
+- [x] Responsive
+- [x] Documentación
 
 ---
 
@@ -279,16 +279,16 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Revisar dominio
-- [ ] CRUD
-- [ ] Orden
-- [ ] Indicadores
-- [ ] Timeline visual
-- [ ] Responsive
+- [x] Revisar dominio
+- [x] CRUD
+- [x] Orden
+- [x] Indicadores
+- [x] Timeline visual
+- [x] Responsive
 
 ---
 
@@ -296,17 +296,17 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Revisar dominio
-- [ ] CRUD
-- [ ] Estados
-- [ ] Asignaciones
-- [ ] Seguimiento
-- [ ] Responsive
-- [ ] Documentación
+- [x] Revisar dominio
+- [x] CRUD
+- [x] Estados
+- [x] Asignaciones
+- [x] Seguimiento
+- [x] Responsive
+- [x] Documentación
 
 ---
 
@@ -314,16 +314,16 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Revisar dominio
-- [ ] CRUD
-- [ ] Historial
-- [ ] Tipo Error
-- [ ] Responsive
-- [ ] Documentación
+- [x] Revisar dominio
+- [x] CRUD
+- [x] Historial
+- [x] Tipo Error
+- [x] Responsive
+- [x] Documentación
 
 ---
 
@@ -331,15 +331,15 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Revisar dominio
-- [ ] CRUD
-- [ ] Tipo Interrupción
-- [ ] Timeline
-- [ ] Responsive
+- [x] Revisar dominio
+- [x] CRUD
+- [x] Tipo Interrupción
+- [x] Timeline
+- [x] Responsive
 
 ---
 
@@ -347,15 +347,15 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Bandeja
-- [ ] Responder
-- [ ] Responsable
-- [ ] Estados
-- [ ] Responsive
+- [x] Bandeja
+- [x] Responder
+- [x] Responsable
+- [x] Estados
+- [x] Responsive
 
 ---
 
@@ -363,15 +363,15 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Nuevo Layout
-- [ ] KPI Cards
-- [ ] Actividad reciente
-- [ ] Indicadores
-- [ ] Responsive
+- [x] Nuevo Layout
+- [x] KPI Cards
+- [x] Actividad reciente
+- [x] Indicadores
+- [x] Responsive
 
 ---
 
@@ -379,13 +379,13 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Reorganizar vista
-- [ ] Preferencias
-- [ ] Catálogos
+- [x] Reorganizar vista
+- [x] Preferencias
+- [x] Catálogos
 
 ---
 
@@ -393,13 +393,13 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
-- [ ] Exportación PDF
-- [ ] Exportación Excel
-- [ ] Uniformar formatos
+- [x] Exportación PDF
+- [x] Exportación Excel
+- [x] Uniformar formatos
 
 ---
 
@@ -407,25 +407,25 @@ Estado
 
 Estado
 
-📋 Pendiente
+✅ Completada
 
 ---
 
 ## Auditoría Global
 
-- [ ] Diseñar modelo
-- [ ] Crear entidad
-- [ ] Backend
-- [ ] Frontend
-- [ ] Documentación
+- [x] Diseñar modelo
+- [x] Crear entidad
+- [x] Backend
+- [x] Frontend
+- [x] Documentación
 
 ---
 
 ## Timeline del Proyecto
 
-- [ ] Diseñar interfaz
-- [ ] Backend
-- [ ] Frontend
+- [x] Diseñar interfaz
+- [x] Backend
+- [x] Frontend
 
 ---
 
@@ -433,30 +433,30 @@ Estado
 
 Estado
 
-📋 Pendiente
+🚧 En desarrollo
 
 ---
 
 ## UX
 
-- [ ] Estandarizar botones
-- [ ] Estandarizar cards
-- [ ] Estandarizar tablas
-- [ ] Estandarizar formularios
-- [ ] Estados de carga
-- [ ] Estados vacíos
-- [ ] Confirmaciones
+- [x] Estandarizar botones
+- [x] Estandarizar cards
+- [x] Estandarizar tablas
+- [x] Estandarizar formularios
+- [x] Estados de carga
+- [x] Estados vacíos
+- [x] Confirmaciones
 
 ---
 
 ## Documentación
 
-- [ ] Historias de Usuario
-- [ ] Requerimientos Funcionales
-- [ ] Requerimientos No Funcionales
-- [ ] Casos de Uso
-- [ ] DER
-- [ ] Diccionario de Datos
+- [x] Historias de Usuario
+- [x] Requerimientos Funcionales
+- [x] Requerimientos No Funcionales
+- [x] Casos de Uso
+- [x] DER
+- [x] Diccionario de Datos
 - [ ] Manual Técnico
 - [ ] Manual de Usuario
 
@@ -476,26 +476,26 @@ Estado
 
 ## Sistema
 
-- [ ] Dominio
-- [ ] Base de Datos
-- [ ] Backend
-- [ ] Frontend
+- [x] Dominio
+- [x] Base de Datos
+- [x] Backend
+- [x] Frontend
 
 ---
 
 ## Calidad
 
-- [ ] UX
-- [ ] Responsive
-- [ ] Consistencia visual
-- [ ] Design System
+- [x] UX
+- [x] Responsive
+- [x] Consistencia visual
+- [x] Design System
 
 ---
 
 ## Documentación
 
-- [ ] Arquitectura
-- [ ] Documentación SENA
+- [x] Arquitectura
+- [x] Documentación SENA
 - [ ] Manuales
 
 ---
@@ -503,7 +503,7 @@ Estado
 # Entrega
 
 - [ ] Limpiar repositorio
-- [ ] Revisar README
+- [x] Revisar README
 - [ ] Consolidar documentación
 - [ ] Validación final
 - [ ] Crear versión final
@@ -515,7 +515,7 @@ Estado
 
 Épicas completadas
 
-0 / 15
+14 / 15
 
 Observaciones resueltas
 
@@ -523,19 +523,19 @@ Observaciones resueltas
 
 Valor agregado implementado
 
-0 / 2
+2 / 2
 
 Documentación actualizada
 
-0 %
+75 %
 
 Backend
 
-0 %
+100 %
 
 Frontend
 
-0 %
+95 %
 
 Estado General
 
@@ -543,4 +543,4 @@ Estado General
 
 Última actualización
 
-Pendiente
+2026-07-16

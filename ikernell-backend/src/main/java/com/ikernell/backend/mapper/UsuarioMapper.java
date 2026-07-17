@@ -2,6 +2,7 @@ package com.ikernell.backend.mapper;
 
 import com.ikernell.backend.dto.UsuarioRequest;
 import com.ikernell.backend.dto.UsuarioResponse;
+import com.ikernell.backend.dto.UsuarioResumenResponse;
 import com.ikernell.backend.dto.UsuarioUpdateRequest;
 import com.ikernell.backend.entity.Usuario;
 import org.mapstruct.Mapper;
@@ -25,6 +26,10 @@ public interface UsuarioMapper {
     Usuario toEntity(UsuarioRequest request);
 
     UsuarioResponse toResponse(Usuario usuario);
+
+    // CORREGIDO: versión reducida para todo contexto donde el usuario va
+    // embebido dentro de otro recurso -- ver UsuarioResumenResponse.
+    UsuarioResumenResponse toResumen(Usuario usuario);
 
     @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "correoElectronico", ignore = true)

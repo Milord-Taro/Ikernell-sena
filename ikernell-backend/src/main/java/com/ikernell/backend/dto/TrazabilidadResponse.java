@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class TrazabilidadResponse {
 
     private Integer idTrazabilidad;
-    private UsuarioResponse usuario;
+    private UsuarioResumenResponse usuario;
     private String entidad;
     private String codigoRegistro;
     private OperacionTrazabilidad operacion;

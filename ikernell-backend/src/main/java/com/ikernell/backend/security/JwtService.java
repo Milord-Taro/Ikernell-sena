@@ -3,7 +3,7 @@ package com.ikernell.backend.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -11,21 +11,18 @@ import java.util.Date;
 import java.util.function.Function;
 
 @Component
+@RequiredArgsConstructor
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String secreto;
-
-    @Value("${jwt.expiration-ms}")
-    private long expiracionMs;
+    private final JwtProperties propiedades;
 
     private SecretKey obtenerClave() {
-        return Keys.hmacShaKeyFor(secreto.getBytes());
+        return Keys.hmacShaKeyFor(propiedades.getSecret().getBytes());
     }
 
     public String generarToken(String correoElectronico, String codigoRol) {
         Date ahora = new Date();
-        Date expiracion = new Date(ahora.getTime() + expiracionMs);
+        Date expiracion = new Date(ahora.getTime() + propiedades.getExpirationMs());
 
         return Jwts.builder()
                 .subject(correoElectronico)
@@ -46,7 +43,7 @@ public class JwtService {
     }
 
     public long getExpiracionMs() {
-        return expiracionMs;
+        return propiedades.getExpirationMs();
     }
 
     private boolean esTokenExpirado(String token) {

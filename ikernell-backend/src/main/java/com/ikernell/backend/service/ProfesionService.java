@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.ProfesionRequest;
@@ -31,20 +30,18 @@ public class ProfesionService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public ProfesionResponse crear(ProfesionRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarNombreDisponible(request.getNombreProfesion(), null);
 
         Profesion profesion = profesionMapper.toEntity(request);
-        profesion.setCodigoProfesion(codigoGeneradorService.siguienteCodigoProfesion());
-        Profesion guardada = profesionRepository.save(profesion);
+        Profesion guardada = guardarConCodigoUnico(profesion);
 
         ProfesionResponse response = profesionMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Profesion", guardada.getCodigoProfesion(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -80,7 +77,7 @@ public class ProfesionService {
         ProfesionResponse response = profesionMapper.toResponse(actualizada);
         trazabilidadService.registrar(
                 solicitante, "Profesion", actualizada.getCodigoProfesion(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -96,7 +93,7 @@ public class ProfesionService {
         trazabilidadService.registrar(
                 solicitante, "Profesion", guardada.getCodigoProfesion(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -112,7 +109,7 @@ public class ProfesionService {
         Profesion profesion = buscarOFallar(idProfesion);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(profesionMapper.toResponse(profesion));
+        String detalle = DetalleObjectMapper.serializar(profesionMapper.toResponse(profesion));
 
         try {
             profesionRepository.delete(profesion);
@@ -140,11 +137,19 @@ public class ProfesionService {
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
     }
 
-    private String construirDetalle(ProfesionResponse response) {
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_profesion_codigo a
+     * un 409 legible en vez de un 500 sin explicación.
+     */
+    private Profesion guardarConCodigoUnico(Profesion profesion) {
+        profesion.setCodigoProfesion(codigoGeneradorService.siguienteCodigoProfesion());
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return profesionRepository.save(profesion);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la profesión, intenta nuevamente.");
         }
     }
 

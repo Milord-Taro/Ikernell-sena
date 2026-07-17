@@ -1,5 +1,5 @@
 import type { ActividadResponse } from './actividad';
-import type { TipoInterrupcionResponse, UsuarioResponse } from './usuario';
+import type { TipoInterrupcionResponse, UsuarioResumenResponse } from './usuario';
 
 export interface InterrupcionResponse {
   idInterrupcion: number;
@@ -7,7 +7,7 @@ export interface InterrupcionResponse {
   actividad: ActividadResponse;
   tipoInterrupcion: TipoInterrupcionResponse;
   /** NUEVO: quién la registró -- hoy siempre el desarrollador de la actividad. */
-  usuarioCreador: UsuarioResponse | null;
+  usuarioCreador: UsuarioResumenResponse | null;
   motivo: string;
   duracionMinutos: number;
   fechaRegistro: string;

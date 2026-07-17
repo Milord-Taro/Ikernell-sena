@@ -3,6 +3,8 @@ package com.ikernell.backend.repository;
 import com.ikernell.backend.entity.AsignacionProyecto;
 import com.ikernell.backend.enums.RolProyecto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,4 +34,19 @@ public interface AsignacionProyectoRepository extends JpaRepository<AsignacionPr
     // VIGENTE de ESTE proyecto puntual? (no de proyectos en general).
     boolean existsByUsuario_IdUsuarioAndProyecto_IdProyectoAndRolProyectoAndFechaDesvinculacionIsNull(
             Integer idUsuario, Integer idProyecto, RolProyecto rolProyecto);
+
+    // ================= Métricas (B4 + B5) =================
+
+    // "Mis proyectos" de un Líder -- todo lo demás en MetricasService se
+    // acota con esta lista de ids.
+    @Query("SELECT a.proyecto.idProyecto FROM AsignacionProyecto a "
+            + "WHERE a.usuario.idUsuario = :idUsuario AND a.rolProyecto = com.ikernell.backend.enums.RolProyecto.LIDER "
+            + "AND a.fechaDesvinculacion IS NULL")
+    List<Integer> idsProyectosDondeEsLiderVigente(@Param("idUsuario") Integer idUsuario);
+
+    // "Mi equipo" de un Líder -- usuarios distintos con asignación vigente
+    // (cualquier rol_proyecto) en cualquiera de sus proyectos.
+    @Query("SELECT COUNT(DISTINCT a.usuario.idUsuario) FROM AsignacionProyecto a "
+            + "WHERE a.proyecto.idProyecto IN :idsProyecto AND a.fechaDesvinculacion IS NULL")
+    long contarUsuariosDistintosEnProyectos(@Param("idsProyecto") List<Integer> idsProyecto);
 }

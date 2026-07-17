@@ -55,6 +55,14 @@ public class Trazabilidad {
     @Column(name = "detalle", columnDefinition = "TEXT")
     private String detalle;
 
+    // CORREGIDO (C7): antes se recalculaba en cada lectura, recorriendo
+    // todo el historial del recurso en memoria (ver
+    // TrazabilidadQueryService antes de este cambio). Ahora
+    // TrazabilidadService.registrar() lo calcula una sola vez, al crear
+    // el evento -- ver V2__trazabilidad_detalle_anterior.sql.
+    @Column(name = "detalle_anterior", columnDefinition = "TEXT")
+    private String detalleAnterior;
+
     @Column(name = "direccion_ip", length = 45)
     private String direccionIp;
 

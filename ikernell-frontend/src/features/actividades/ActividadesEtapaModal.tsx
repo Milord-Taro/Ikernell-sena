@@ -12,6 +12,7 @@ import { ActividadFormModal } from './ActividadFormModal';
 import { ActividadHistorialModal } from '../registros/ActividadHistorialModal';
 import { RegistrarInterrupcionModal } from '../registros/RegistrarInterrupcionModal';
 import { useAuth } from '../../context/AuthContext';
+import { useCarga } from '../../hooks/useCarga';
 import { CODIGO_ROL } from '../../types/usuario';
 import { ApiRequestError } from '../../types/api';
 import {
@@ -63,7 +64,7 @@ export function ActividadesEtapaModal({
 
   const [actividades, setActividades] = useState<ActividadResponse[]>([]);
   const [equipoVigente, setEquipoVigente] = useState<AsignacionProyectoResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [formAbierto, setFormAbierto] = useState(false);
   const [actividadEditando, setActividadEditando] = useState<ActividadResponse | null>(null);
   const [actividadHistorial, setActividadHistorial] = useState<ActividadResponse | null>(null);
@@ -74,19 +75,15 @@ export function ActividadesEtapaModal({
   const [notaFinalizacion, setNotaFinalizacion] = useState('');
   const [interrupcionModalAbierto, setInterrupcionModalAbierto] = useState(false);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       const [actividadesResp, asignacionesResp] = await Promise.all([
         listarActividadesPorEtapa(idEtapa),
         listarAsignacionesPorProyecto(idProyecto),
       ]);
       setActividades(actividadesResp);
       setEquipoVigente(asignacionesResp.filter((a) => !a.fechaDesvinculacion));
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   useEffect(() => {
     if (open) cargar();
@@ -214,6 +211,7 @@ export function ActividadesEtapaModal({
         size="xl"
       >
         <div className="flex flex-col gap-4">
+          {errorCarga && <Alert variant="error" title="No se pudieron cargar las actividades">{errorCarga}</Alert>}
           {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
           {puedeGestionar && (

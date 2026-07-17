@@ -18,4 +18,10 @@ public interface MensajeContactoRepository extends JpaRepository<MensajeContacto
     List<MensajeContacto> findByEstadoOrderByIdMensajeContactoAsc(EstadoMensaje estado);
 
     List<MensajeContacto> findAllByOrderByIdMensajeContactoAsc();
+
+    // Métrica (B4 + B5): "Mensajes no leídos" -- Coordinador.
+    long countByEstado(EstadoMensaje estado);
+
+    // Feed de actividad reciente -- acotado (Top 8) en la propia consulta.
+    List<MensajeContacto> findTop8ByOrderByFechaEnvioDesc();
 }

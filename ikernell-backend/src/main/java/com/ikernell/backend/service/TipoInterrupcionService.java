@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoInterrupcionRequest;
@@ -31,20 +30,18 @@ public class TipoInterrupcionService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public TipoInterrupcionResponse crear(TipoInterrupcionRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarNombreDisponible(request.getNombreTipoInterrupcion(), null);
 
         TipoInterrupcion tipo = tipoInterrupcionMapper.toEntity(request);
-        tipo.setCodigoTipoInterrupcion(codigoGeneradorService.siguienteCodigoTipoInterrupcion());
-        TipoInterrupcion guardado = tipoInterrupcionRepository.save(tipo);
+        TipoInterrupcion guardado = guardarConCodigoUnico(tipo);
 
         TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "TipoInterrupcion", guardado.getCodigoTipoInterrupcion(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -74,7 +71,7 @@ public class TipoInterrupcionService {
         TipoInterrupcionResponse response = tipoInterrupcionMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "TipoInterrupcion", actualizado.getCodigoTipoInterrupcion(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -90,7 +87,7 @@ public class TipoInterrupcionService {
         trazabilidadService.registrar(
                 solicitante, "TipoInterrupcion", guardado.getCodigoTipoInterrupcion(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -106,7 +103,7 @@ public class TipoInterrupcionService {
         TipoInterrupcion tipo = buscarOFallar(idTipoInterrupcion);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(tipoInterrupcionMapper.toResponse(tipo));
+        String detalle = DetalleObjectMapper.serializar(tipoInterrupcionMapper.toResponse(tipo));
 
         try {
             tipoInterrupcionRepository.delete(tipo);
@@ -134,11 +131,20 @@ public class TipoInterrupcionService {
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
     }
 
-    private String construirDetalle(TipoInterrupcionResponse response) {
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de
+     * uq_tipo_interrupcion_codigo a un 409 legible en vez de un 500 sin
+     * explicación.
+     */
+    private TipoInterrupcion guardarConCodigoUnico(TipoInterrupcion tipo) {
+        tipo.setCodigoTipoInterrupcion(codigoGeneradorService.siguienteCodigoTipoInterrupcion());
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return tipoInterrupcionRepository.save(tipo);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el tipo de interrupción, intenta nuevamente.");
         }
     }
 

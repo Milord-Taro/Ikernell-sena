@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.RolRequest;
@@ -31,20 +30,18 @@ public class RolService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public RolResponse crear(RolRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarNombreDisponible(request.getNombreRol(), null);
 
         Rol rol = rolMapper.toEntity(request);
-        rol.setCodigoRol(codigoGeneradorService.siguienteCodigoRol());
-        Rol guardado = rolRepository.save(rol);
+        Rol guardado = guardarConCodigoUnico(rol);
 
         RolResponse response = rolMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "Rol", guardado.getCodigoRol(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -80,7 +77,7 @@ public class RolService {
         RolResponse response = rolMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "Rol", actualizado.getCodigoRol(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -96,7 +93,7 @@ public class RolService {
         trazabilidadService.registrar(
                 solicitante, "Rol", guardado.getCodigoRol(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -112,7 +109,7 @@ public class RolService {
         Rol rol = buscarOFallar(idRol);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(rolMapper.toResponse(rol));
+        String detalle = DetalleObjectMapper.serializar(rolMapper.toResponse(rol));
 
         try {
             rolRepository.delete(rol);
@@ -140,11 +137,19 @@ public class RolService {
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
     }
 
-    private String construirDetalle(RolResponse response) {
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_rol_codigo a un 409
+     * legible en vez de un 500 sin explicación.
+     */
+    private Rol guardarConCodigoUnico(Rol rol) {
+        rol.setCodigoRol(codigoGeneradorService.siguienteCodigoRol());
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return rolRepository.save(rol);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el rol, intenta nuevamente.");
         }
     }
 

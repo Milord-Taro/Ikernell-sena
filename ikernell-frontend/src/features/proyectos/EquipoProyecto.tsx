@@ -8,6 +8,7 @@ import { Avatar } from '../../components/ui/DataDisplay';
 import { Alert } from '../../components/ui/Feedback';
 import { Modal } from '../../components/ui/Modal';
 import { useAuth } from '../../context/AuthContext';
+import { useCarga } from '../../hooks/useCarga';
 import { ApiRequestError } from '../../types/api';
 import { CODIGO_ROL } from '../../types/usuario';
 import {
@@ -34,7 +35,7 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
 
   const [asignaciones, setAsignaciones] = useState<AsignacionProyectoResponse[]>([]);
   const [usuarios, setUsuarios] = useState<UsuarioResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [idUsuarioNuevo, setIdUsuarioNuevo] = useState('');
   const [rolNuevo, setRolNuevo] = useState<RolProyecto>('Desarrollador');
@@ -48,17 +49,13 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
   // incluida la lista de compañeros de su propio proyecto (que sí puede
   // ver: GET /api/asignaciones-proyecto está abierto a cualquier
   // autenticado).
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       setAsignaciones(await listarAsignacionesPorProyecto(idProyecto));
       if (puedeGestionarEquipo) {
         setUsuarios(await listarUsuarios());
       }
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   useEffect(() => {
     cargar();
@@ -114,6 +111,7 @@ export function EquipoProyecto({ idProyecto }: EquipoProyectoProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      {errorCarga && <Alert variant="error" title="No se pudo cargar el equipo">{errorCarga}</Alert>}
       {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
       <div className="flex items-center justify-between">

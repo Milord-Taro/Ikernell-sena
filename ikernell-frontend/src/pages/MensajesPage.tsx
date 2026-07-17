@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { Alert } from '../components/ui/Feedback';
 import { Tabs } from '../components/layout/Navigation';
 import { MensajeDetalleModal } from '../features/mensajes/MensajeDetalleModal';
+import { useCarga } from '../hooks/useCarga';
 import { listarMensajes } from '../services/mensajes';
 import { formatFechaHora } from '../utils/formatDate';
 import type { MensajeContactoResponse, EstadoMensaje } from '../types/mensaje';
@@ -29,18 +31,14 @@ const tabs = [
 export default function MensajesPage() {
   const [tabActiva, setTabActiva] = useState('todos');
   const [mensajes, setMensajes] = useState<MensajeContactoResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error, ejecutar } = useCarga();
   const [mensajeAbierto, setMensajeAbierto] = useState<MensajeContactoResponse | null>(null);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       const resp = await listarMensajes(tabActiva === 'todos' ? undefined : (tabActiva as EstadoMensaje));
       setMensajes(resp.slice().sort((a, b) => b.fechaEnvio.localeCompare(a.fechaEnvio)));
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   useEffect(() => {
     cargar();
@@ -57,6 +55,12 @@ export default function MensajesPage() {
       </div>
 
       <Tabs tabs={tabs} active={tabActiva} onChange={setTabActiva} variant="pill" />
+
+      {error && (
+        <Alert variant="error" title="No se pudieron cargar los mensajes">
+          {error}
+        </Alert>
+      )}
 
       {cargando ? (
         <p className="type-body-sm text-[var(--text-tertiary)]">Cargando mensajes...</p>

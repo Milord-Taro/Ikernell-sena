@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { Table } from "../components/ui/Table";
 import { Badge } from "../components/ui/Badge";
+import { Alert } from "../components/ui/Feedback";
 import { Select } from "../components/ui/FormControls";
 import { Modal } from "../components/ui/Modal";
+import { Pagination } from "../components/ui/Pagination";
 import type { JsonValue } from "../components/ui/JsonTree";
 import { JsonDiffTree } from "../components/ui/JsonDiffTree";
 import { formatFechaHora } from "../utils/formatDate";
+import { useCarga } from "../hooks/useCarga";
 import { listarTrazabilidad } from "../services/trazabilidad";
 import { ENTIDADES_TRAZABILIDAD } from "../types/trazabilidad";
 import type {
   TrazabilidadResponse,
   OperacionTrazabilidad,
 } from "../types/trazabilidad";
+
+const TAMANO_PAGINA = 20;
 
 const variantePorOperacion: Record<
   OperacionTrazabilidad,
@@ -55,25 +60,37 @@ interface FilaTabla extends Record<string, unknown> {
  */
 export default function AuditoriaPage() {
   const [eventos, setEventos] = useState<TrazabilidadResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const { cargando, error, ejecutar } = useCarga();
   const [entidadFiltro, setEntidadFiltro] = useState("");
+  // CORREGIDO (B4): paginación real del servidor -- antes se traía TODO
+  // el historial de auditoría en cada carga (la única tabla que crece
+  // sin límite en el sistema) y se paginaba solo en el cliente.
+  const [pagina, setPagina] = useState(1);
   const [eventoAbierto, setEventoAbierto] =
     useState<TrazabilidadResponse | null>(null);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
-      const resp = await listarTrazabilidad(entidadFiltro || undefined);
-      setEventos(resp);
-    } finally {
-      setCargando(false);
-    }
-  };
+  const cargar = () =>
+    ejecutar(async () => {
+      // "pagina" acá es 1-based (mismo criterio que <Pagination>); el
+      // backend espera 0-based, de ahí el "- 1".
+      const resp = await listarTrazabilidad(entidadFiltro || undefined, pagina - 1, TAMANO_PAGINA);
+      setEventos(resp.contenido);
+      setTotalPaginas(resp.totalPaginas);
+    });
 
   useEffect(() => {
     cargar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entidadFiltro]);
+  }, [entidadFiltro, pagina]);
+
+  // Cambiar de filtro vuelve a la primera página -- de lo contrario,
+  // filtrar mientras se está en la página 5 podría pedir una página que
+  // ya no existe para el nuevo filtro.
+  const alCambiarFiltro = (valor: string) => {
+    setEntidadFiltro(valor);
+    setPagina(1);
+  };
 
   const filas: FilaTabla[] = eventos.map((e) => ({
     idTrazabilidad: e.idTrazabilidad,
@@ -96,11 +113,17 @@ export default function AuditoriaPage() {
         </p>
       </div>
 
+      {error && (
+        <Alert variant="error" title="No se pudo cargar la auditoría">
+          {error}
+        </Alert>
+      )}
+
       <div className="w-56">
         <Select
           label="Entidad"
           value={entidadFiltro}
-          onChange={(e) => setEntidadFiltro(e.target.value)}
+          onChange={(e) => alCambiarFiltro(e.target.value)}
         >
           <option value="">Todas</option>
           {ENTIDADES_TRAZABILIDAD.map((ent) => (
@@ -115,6 +138,7 @@ export default function AuditoriaPage() {
         keyField="idTrazabilidad"
         loading={cargando}
         data={filas}
+        pageSize={0}
         emptyMessage="Sin eventos registrados"
         emptyDescription="No hay eventos de auditoría para este filtro."
         onRowClick={(fila) => setEventoAbierto(fila.original)}
@@ -123,23 +147,27 @@ export default function AuditoriaPage() {
             key: "fecha",
             header: "Fecha",
             width: "320px",
+            sortable: true,
             render: (row) => formatFechaHora(row.fecha),
           },
-          { key: "usuario", header: "Usuario" },
+          { key: "usuario", header: "Usuario", sortable: true },
           {
             key: "operacion",
             header: "Operación",
             width: "250px",
+            sortable: true,
             render: (row) => (
               <Badge variant={variantePorOperacion[row.operacion]} size="sm">
                 {row.operacion}
               </Badge>
             ),
           },
-          { key: "entidad", header: "Entidad", width: "200px" },
-          { key: "codigo", header: "Código", mono: true, width: "220px" },
+          { key: "entidad", header: "Entidad", width: "200px", sortable: true },
+          { key: "codigo", header: "Código", mono: true, width: "220px", sortable: true },
         ]}
       />
+
+      <Pagination pagina={pagina} totalPaginas={totalPaginas} onCambiar={setPagina} />
 
       {eventoAbierto && (
         <Modal

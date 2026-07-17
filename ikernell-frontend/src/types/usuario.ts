@@ -66,6 +66,24 @@ export interface UsuarioResponse {
 }
 
 /**
+ * CORREGIDO: versión reducida de UsuarioResponse para todo contexto donde
+ * el usuario va embebido dentro de otro recurso (líder de un proyecto,
+ * responsable de una actividad, quien creó un error/interrupción, miembro
+ * de equipo, quien ejecutó un evento de auditoría...) -- coincide con
+ * UsuarioResumenResponse.java del backend. Sin numeroIdentificacion ni
+ * fechaNacimiento: la mayoría de esos endpoints están abiertos a
+ * cualquier autenticado, no solo Coordinador/Líder.
+ */
+export interface UsuarioResumenResponse {
+  idUsuario: number;
+  codigoUsuario: string;
+  nombres: string;
+  apellidos: string;
+  correoElectronico: string;
+  rol: RolResponse;
+}
+
+/**
  * Creación (Coordinador): incluye correo y contraseña, ninguno de los
  * dos editable después -- coincide con UsuarioRequest.java del backend.
  */

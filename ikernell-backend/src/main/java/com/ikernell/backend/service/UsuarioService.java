@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -24,6 +23,7 @@ import com.ikernell.backend.repository.ProfesionRepository;
 import com.ikernell.backend.repository.RolRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +45,6 @@ public class UsuarioService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public UsuarioResponse crear(UsuarioRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
@@ -59,19 +58,18 @@ public class UsuarioService {
         Especialidad especialidad = buscarEspecialidadOFallar(request.getIdEspecialidad());
 
         Usuario usuario = usuarioMapper.toEntity(request);
-        usuario.setCodigoUsuario(codigoGeneradorService.siguienteCodigoUsuario());
         usuario.setCorreoElectronico(correo);
         usuario.setHashContrasena(passwordEncoder.encode(request.getContrasena()));
         usuario.setRol(rol);
         usuario.setProfesion(profesion);
         usuario.setEspecialidad(especialidad);
 
-        Usuario guardado = usuarioRepository.save(usuario);
+        Usuario guardado = guardarConCodigoUnico(usuario);
 
         UsuarioResponse response = usuarioMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "Usuario", guardado.getCodigoUsuario(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -131,7 +129,7 @@ public class UsuarioService {
         UsuarioResponse response = usuarioMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "Usuario", actualizado.getCodigoUsuario(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -177,7 +175,7 @@ public class UsuarioService {
         trazabilidadService.registrar(
                 solicitante, "Usuario", guardado.getCodigoUsuario(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -196,6 +194,24 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
+    /**
+     * CORREGIDO: siguienteCodigoUsuario() calcula el código a partir del
+     * MAX() actual, así que dos altas concurrentes pueden calcular el
+     * mismo siguiente código antes de que la primera termine de guardar.
+     * save() sobre una entidad nueva con GenerationType.IDENTITY ejecuta el
+     * INSERT de inmediato, así que la violación de uq_usuario_codigo se
+     * lanza aquí mismo -- se traduce a un 409 legible en vez de tumbar la
+     * petición con un 500 sin explicación.
+     */
+    private Usuario guardarConCodigoUnico(Usuario usuario) {
+        usuario.setCodigoUsuario(codigoGeneradorService.siguienteCodigoUsuario());
+        try {
+            return usuarioRepository.save(usuario);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el usuario, intenta nuevamente.");
+        }
+    }
+
     private Usuario buscarOFallar(Integer idUsuario) {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -206,14 +222,6 @@ public class UsuarioService {
         return usuarioRepository.findByCorreoElectronico(correoElectronico)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
-    }
-
-    private String construirDetalle(UsuarioResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
     }
 
     private Rol buscarRolOFallar(Integer idRol) {

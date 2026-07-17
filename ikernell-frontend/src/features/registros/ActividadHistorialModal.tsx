@@ -7,6 +7,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Tabs } from '../../components/layout/Navigation';
 import { Input, Textarea, Select } from '../../components/ui/FormControls';
 import { Alert } from '../../components/ui/Feedback';
+import { useCarga } from '../../hooks/useCarga';
 import { ApiRequestError } from '../../types/api';
 import { NIVELES_CRITICIDAD } from '../../types/actividad';
 import type { ActividadResponse, NivelCriticidad } from '../../types/actividad';
@@ -59,12 +60,11 @@ export function ActividadHistorialModal({ open, actividad, onClose }: ActividadH
   const [tiposError, setTiposError] = useState<TipoErrorResponse[]>([]);
   const [registrosError, setRegistrosError] = useState<RegistroErrorResponse[]>([]);
   const [interrupciones, setInterrupciones] = useState<InterrupcionResponse[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const { cargando, error: errorCarga, ejecutar } = useCarga();
   const [error, setError] = useState<string | null>(null);
 
-  const cargar = async () => {
-    setCargando(true);
-    try {
+  const cargar = () =>
+    ejecutar(async () => {
       const [tiposErrorResp, registrosResp, interrupcionesResp] = await Promise.all([
         tiposErrorService.listar(),
         listarRegistrosErrorPorActividad(actividad.idActividad),
@@ -73,10 +73,7 @@ export function ActividadHistorialModal({ open, actividad, onClose }: ActividadH
       setTiposError(tiposErrorResp.filter((t) => t.activo));
       setRegistrosError(registrosResp);
       setInterrupciones(interrupcionesResp);
-    } finally {
-      setCargando(false);
-    }
-  };
+    });
 
   useEffect(() => {
     if (open) cargar();
@@ -91,6 +88,7 @@ export function ActividadHistorialModal({ open, actividad, onClose }: ActividadH
       size="lg"
     >
       <div className="flex flex-col gap-4">
+        {errorCarga && <Alert variant="error" title="No se pudo cargar el historial">{errorCarga}</Alert>}
         {error && <Alert variant="error" title="No se pudo completar la acción">{error}</Alert>}
 
         <Tabs tabs={tabsHistorial} active={tab} onChange={setTab} variant="pill" />

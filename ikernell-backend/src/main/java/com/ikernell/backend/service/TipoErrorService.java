@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.dto.TipoErrorRequest;
@@ -31,20 +30,18 @@ public class TipoErrorService {
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
 
-
     @Transactional
     public TipoErrorResponse crear(TipoErrorRequest request, String correoSolicitante) {
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
         validarNombreDisponible(request.getNombreTipoError(), null);
 
         TipoError tipoError = tipoErrorMapper.toEntity(request);
-        tipoError.setCodigoTipoError(codigoGeneradorService.siguienteCodigoTipoError());
-        TipoError guardado = tipoErrorRepository.save(tipoError);
+        TipoError guardado = guardarConCodigoUnico(tipoError);
 
         TipoErrorResponse response = tipoErrorMapper.toResponse(guardado);
         trazabilidadService.registrar(
                 solicitante, "TipoError", guardado.getCodigoTipoError(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -74,7 +71,7 @@ public class TipoErrorService {
         TipoErrorResponse response = tipoErrorMapper.toResponse(actualizado);
         trazabilidadService.registrar(
                 solicitante, "TipoError", actualizado.getCodigoTipoError(),
-                OperacionTrazabilidad.ACTUALIZAR, construirDetalle(response));
+                OperacionTrazabilidad.ACTUALIZAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -90,7 +87,7 @@ public class TipoErrorService {
         trazabilidadService.registrar(
                 solicitante, "TipoError", guardado.getCodigoTipoError(),
                 activo ? OperacionTrazabilidad.ACTUALIZAR : OperacionTrazabilidad.INHABILITAR,
-                construirDetalle(response));
+                DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -106,7 +103,7 @@ public class TipoErrorService {
         TipoError tipoError = buscarOFallar(idTipoError);
         Usuario solicitante = buscarSolicitanteOFallar(correoSolicitante);
 
-        String detalle = construirDetalle(tipoErrorMapper.toResponse(tipoError));
+        String detalle = DetalleObjectMapper.serializar(tipoErrorMapper.toResponse(tipoError));
 
         try {
             tipoErrorRepository.delete(tipoError);
@@ -134,11 +131,19 @@ public class TipoErrorService {
                         "No existe un usuario con el correo '" + correoElectronico + "'."));
     }
 
-    private String construirDetalle(TipoErrorResponse response) {
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * EspecialidadService.guardarConCodigoUnico() -- dos altas concurrentes
+     * pueden calcular el mismo siguiente código antes de que la primera
+     * termine de guardar; se traduce la violación de uq_tipo_error_codigo a
+     * un 409 legible en vez de un 500 sin explicación.
+     */
+    private TipoError guardarConCodigoUnico(TipoError tipoError) {
+        tipoError.setCodigoTipoError(codigoGeneradorService.siguienteCodigoTipoError());
         try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
+            return tipoErrorRepository.save(tipoError);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para el tipo de error, intenta nuevamente.");
         }
     }
 

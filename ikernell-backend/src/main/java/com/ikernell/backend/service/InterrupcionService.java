@@ -1,6 +1,5 @@
 package com.ikernell.backend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ikernell.backend.audit.DetalleObjectMapper;
 import com.ikernell.backend.audit.TrazabilidadService;
 import com.ikernell.backend.constants.RolConstantes;
@@ -16,6 +15,7 @@ import com.ikernell.backend.enums.OperacionTrazabilidad;
 import com.ikernell.backend.enums.RolProyecto;
 import com.ikernell.backend.enums.TipoNotificacion;
 import com.ikernell.backend.exception.BusinessException;
+import com.ikernell.backend.exception.ConflictException;
 import com.ikernell.backend.exception.ForbiddenException;
 import com.ikernell.backend.exception.ResourceNotFoundException;
 import com.ikernell.backend.mapper.InterrupcionMapper;
@@ -25,6 +25,7 @@ import com.ikernell.backend.repository.InterrupcionRepository;
 import com.ikernell.backend.repository.TipoInterrupcionRepository;
 import com.ikernell.backend.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +46,6 @@ public class InterrupcionService {
     private final NotificacionService notificacionService;
     private final TrazabilidadService trazabilidadService;
     private final CodigoGeneradorService codigoGeneradorService;
-
 
     /**
      * CORREGIDO: mismo bug que tenía RegistroErrorService.crear() -- antes
@@ -82,15 +82,14 @@ public class InterrupcionService {
         interrupcion.setActividad(actividad);
         interrupcion.setTipoInterrupcion(tipoInterrupcion);
         interrupcion.setUsuarioCreador(solicitante);
-        interrupcion.setCodigoInterrupcion(codigoGeneradorService.siguienteCodigoInterrupcion(actividad));
 
-        Interrupcion guardada = interrupcionRepository.save(interrupcion);
+        Interrupcion guardada = guardarConCodigoUnico(interrupcion, actividad);
         notificarLider(guardada, solicitante);
 
         InterrupcionResponse response = interrupcionMapper.toResponse(guardada);
         trazabilidadService.registrar(
                 solicitante, "Interrupcion", guardada.getCodigoInterrupcion(),
-                OperacionTrazabilidad.CREAR, construirDetalle(response));
+                OperacionTrazabilidad.CREAR, DetalleObjectMapper.serializar(response));
 
         return response;
     }
@@ -103,6 +102,23 @@ public class InterrupcionService {
      * el Líder conozca, no un dato rutinario). Si el propio Líder fue
      * quien la registró, no se le notifica a sí mismo.
      */
+    /**
+     * CORREGIDO: ver comentario equivalente en
+     * UsuarioService.guardarConCodigoUnico() -- dos altas concurrentes
+     * DENTRO DE LA MISMA ACTIVIDAD pueden calcular el mismo siguiente
+     * código antes de que la primera termine de guardar; se traduce la
+     * violación de uq_interrupcion_codigo a un 409 legible en vez de un
+     * 500 sin explicación.
+     */
+    private Interrupcion guardarConCodigoUnico(Interrupcion interrupcion, Actividad actividad) {
+        interrupcion.setCodigoInterrupcion(codigoGeneradorService.siguienteCodigoInterrupcion(actividad));
+        try {
+            return interrupcionRepository.save(interrupcion);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ConflictException("No se pudo generar un código único para la interrupción, intenta nuevamente.");
+        }
+    }
+
     private void notificarLider(Interrupcion interrupcion, Usuario solicitante) {
         Integer idProyecto = interrupcion.getActividad().getEtapa().getProyecto().getIdProyecto();
         asignacionProyectoRepository
@@ -142,7 +158,7 @@ public class InterrupcionService {
                     "Solo quien registró esta interrupción, o un Coordinador, puede eliminarla.");
         }
 
-        String detalle = construirDetalle(interrupcionMapper.toResponse(interrupcion));
+        String detalle = DetalleObjectMapper.serializar(interrupcionMapper.toResponse(interrupcion));
 
         interrupcionRepository.delete(interrupcion);
 
@@ -151,16 +167,11 @@ public class InterrupcionService {
                 OperacionTrazabilidad.ELIMINAR, detalle);
     }
 
-    private String construirDetalle(InterrupcionResponse response) {
-        try {
-            return DetalleObjectMapper.INSTANCE.writeValueAsString(response);
-        } catch (JsonProcessingException ex) {
-            return "No fue posible serializar el detalle: " + ex.getMessage();
-        }
-    }
-
     public List<InterrupcionResponse> listarTodos() {
-        return interrupcionRepository.findAll().stream().map(interrupcionMapper::toResponse).toList();
+        // CORREGIDO: orden explícito por id (findAll() no garantiza orden ->
+        // lista no determinista entre recargas).
+        return interrupcionRepository.findAllByOrderByIdInterrupcionAsc()
+                .stream().map(interrupcionMapper::toResponse).toList();
     }
 
     public List<InterrupcionResponse> listarPorActividad(Integer idActividad) {
