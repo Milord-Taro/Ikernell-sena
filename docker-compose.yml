@@ -10,7 +10,7 @@
 # correcto de "clone and run" es:
 #
 #   1. docker compose up -d
-#   2. Arrancar el backend una vez  ->  Flyway crea las 15 tablas + V2 + V3 + V4
+#   2. Arrancar el backend una vez  ->  Flyway aplica todas las migraciones (crea el schema)
 #   3. Cargar catálogos + datos demo (el archivo va montado dentro del contenedor):
 #        docker compose exec -T db \
 #          psql -U postgres -d ikernell_v2 -f "/seed/Seed_catalogos.sql"

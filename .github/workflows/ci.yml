@@ -7,10 +7,12 @@ name: CI
 # en un runner limpio, sin servicios externos.
 
 on:
+  # push solo a main (post-merge). Las ramas de trabajo se cubren vía
+  # pull_request, evitando que un PR del mismo repo dispare CI dos veces
+  # (una por el push a la rama y otra por el evento pull_request).
   push:
-    branches: ['**']
+    branches: [main]
   pull_request:
-    branches: ['**']
 
 # Cancela ejecuciones viejas de la misma rama cuando llega un push nuevo.
 concurrency:
@@ -58,6 +60,9 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Typecheck tests
+        run: npm run typecheck:test
 
       - name: Lint
         run: npm run lint

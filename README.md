@@ -64,7 +64,7 @@ cd Ikernell-sena
 >
 > ```bash
 > docker compose up -d          # levanta PostgreSQL 14 con la base ikernell_v2 vacía
-> #   ...arranca el backend una vez (Flyway crea el schema: V1 + V2 + V3)...
+> #   ...arranca el backend una vez (Flyway aplica todas las migraciones y crea el schema)...
 > docker compose exec -T db \
 >   psql -U postgres -d ikernell_v2 -f "/seed/Seed_catalogos.sql"   # catálogos + datos demo
 > ```
